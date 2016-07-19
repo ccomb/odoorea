@@ -1,0 +1,5 @@
+parts/
+.installed.cfg
+bin/
+develop-eggs/
+etc/
