@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+        <!-- MENUITEMS -->
+        <menuitem id="menu_rea"
+                  name="REA"
+                  sequence="12"/>
+        <menuitem id="menu_structure"
+                  name="Structure"
+                  parent="menu_rea"
+                  sequence="0"/>
+        <menuitem id="menu_behaviour"
+                  name="Behaviour"
+                  parent="menu_rea"
+                  sequence="10"/>
+
+    </data>
+</openerp>
+

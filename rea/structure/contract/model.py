@@ -25,9 +25,8 @@ class Contract(models.Model):
         string="Clauses",
         help=("Clauses contain the text of the contract and allow to generate"
               " commitments, sometimes depending on other commitments"))
-    commitments = fields.One2many(
+    commitments = fields.Many2many(
         'rea.commitment',
-        'contract',
         string="Commitments",
         help="The commitments of the contract")
     start = fields.Date(
@@ -40,6 +39,11 @@ class ContractType(models.Model):
     """ Abstract definition of actual contracts"""
     _name = 'rea.contract.type'
     _description = "Contract Type"
+
+    name = fields.Char(
+        string="name",
+        required=True,
+        index=True)
 
 
 class Party(models.Model):
@@ -72,5 +76,5 @@ class Clause(models.Model):
         'rea.contract',
         string="Contract")
     conditions = fields.Selection([
-        ''
+        ('foobar', 'Foobar'),
     ])

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+    <!-- AGENT -->
+    <record model="ir.ui.view" id="rea_agent_form_view">
+        <field name="name">rea.agent.form</field>
+        <field name="model">rea.agent</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="type"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter"></div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_agent_search_view">
+        <field name="name">rea.agent.search</field>
+        <field name="model">rea.agent</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <group expand="0" string="Group By">
+                    <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_agent_tree_view">
+        <field name="name">rea.agent.tree</field>
+        <field name="model">rea.agent</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="type"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="rea_agent_act_window">
+        <field name="name">Agents</field>
+        <field name="res_model">rea.agent</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record model="ir.ui.menu" id="rea_agent_menu">
+        <field name="name">Agents</field>
+        <field name="parent_id" ref="menu_structure"/>
+        <field name="action" ref="rea_agent_act_window"/>
+        <field name="sequence" eval="30"/>
+    </record>
+
+
+    <!-- AGENT TYPE -->
+    <record model="ir.ui.view" id="rea_agent_type_form_view">
+        <field name="name">rea.agent.type.form</field>
+        <field name="model">rea.agent.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter"></div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_agent_type_search_view">
+        <field name="name">rea.agent.type.search</field>
+        <field name="model">rea.agent.type</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_agent_type_tree_view">
+        <field name="name">rea.agent.type.tree</field>
+        <field name="model">rea.agent.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="rea_agent_type_act_window">
+        <field name="name">Agent Types</field>
+        <field name="res_model">rea.agent.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record model="ir.ui.menu" id="rea_agent_type_menu">
+        <field name="name">Agent Types</field>
+        <field name="parent_id" ref="menu_structure"/>
+        <field name="action" ref="rea_agent_type_act_window"/>
+        <field name="sequence" eval="60"/>
+    </record>
+
+</data>
+</openerp>

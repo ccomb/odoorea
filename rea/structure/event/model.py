@@ -22,6 +22,9 @@ class Event(models.Model):
         help="Commitments fulfilled by this event")
     quantity = fields.Float(
         string="Quantity")
+    resource = fields.Many2one(
+        'rea.resource',
+        string="Resource")
     provider = fields.Many2one(
         'rea.agent',
         string="Provider")
@@ -40,6 +43,7 @@ class EventType(models.Model):
         string="name",
         required=True,
         index=True)
-    type = fields.Selection([
-        ('i', 'Increment'),
-        ('d', 'Decrement')])
+    kind = fields.Selection(
+        [('i', 'Increment'),
+         ('d', 'Decrement')],
+        string="Kind")

@@ -15,7 +15,7 @@
     'name': 'rea',
     'version': '0.1',
     'description': """
-    Proof of concept of REA base models
+    Proof of concept of REA modeling
     """,
     'summary': "REA base models",
     'author': 'Christophe Combelles',
@@ -24,10 +24,25 @@
     'category': 'Uncategorized',
     'depends': ['base'],
     'data': [
-        'security/ir.model.access.csv',
-        'view/menu.xml',
+        'view.xml',
+        'structure/resource/security.xml',
+        'structure/resource/view.xml',
+        'structure/event/security.xml',
+        'structure/event/view.xml',
+        'structure/agent/security.xml',
+        'structure/agent/view.xml',
+        'structure/commitment/security.xml',
+        'structure/commitment/view.xml',
+        'structure/contract/security.xml',
+        'structure/contract/view.xml',
     ],
-    'demo': [],
+    'demo': [
+        'structure/resource/demo.xml',
+        'structure/event/demo.xml',
+        'structure/agent/demo.xml',
+        'structure/commitment/demo.xml',
+        'structure/contract/demo.xml',
+    ],
     'auto_install': False,
     'web': False,
     'post_load': None,

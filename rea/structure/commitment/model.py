@@ -22,13 +22,15 @@ class Commitment(models.Model):
         help="Events fulfilling this commitment")
     quantity = fields.Float(
         string="Quantity")
+    resource_type = fields.Many2one(
+        'rea.resource.type',
+        string="Resource Type")
     provider = fields.Many2one(
         'rea.agent',
         string="Provider")
     receiver = fields.Many2one(
         'rea.agent',
         string="Receiver")
-
 
     def fulfill(self):
         """Create the event
@@ -46,6 +48,7 @@ class CommitmentType(models.Model):
         string="name",
         required=True,
         index=True)
-    type = fields.Selection([
+    kind = fields.Selection([
         ('i', 'Increment'),
-        ('d', 'Decrement')])
+        ('d', 'Decrement')],
+        string="Kind")

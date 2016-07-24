@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+    <!-- EVENT -->
+    <record model="ir.ui.view" id="rea_event_form_view">
+        <field name="name">rea.event.form</field>
+        <field name="model">rea.event</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                </header>
+                <sheet>
+                    <group>
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="provider"/>
+                    <field name="receiver"/>
+                    <field name="quantity"/>
+                    <field name="resource"/>
+                    <field name="date"/>
+                    <field name="commitments" readonly="1"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter"></div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_event_search_view">
+        <field name="name">rea.event.search</field>
+        <field name="model">rea.event</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="type"/>
+                <field name="provider"/>
+                <field name="receiver"/>
+                <group expand="0" string="Group By">
+                    <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
+                    <filter string="Provider" domain="[]" context="{'group_by':'provider'}"/>
+                    <filter string="Receiver" domain="[]" context="{'group_by':'receiver'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_event_tree_view">
+        <field name="name">rea.event.tree</field>
+        <field name="model">rea.event</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="type"/>
+                <field name="date"/>
+                <field name="provider"/>
+                <field name="receiver"/>
+                <field name="quantity"/>
+                <field name="resource"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="rea_event_act_window">
+        <field name="name">Events</field>
+        <field name="res_model">rea.event</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record model="ir.ui.menu" id="rea_event_menu">
+        <field name="name">Events</field>
+        <field name="parent_id" ref="menu_structure"/>
+        <field name="action" ref="rea_event_act_window"/>
+        <field name="sequence" eval="20"/>
+    </record>
+
+
+    <!-- EVENT TYPE -->
+    <record model="ir.ui.view" id="rea_event_type_form_view">
+        <field name="name">rea.event.type.form</field>
+        <field name="model">rea.event.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="kind"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter"></div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_event_type_search_view">
+        <field name="name">rea.event.type.search</field>
+        <field name="model">rea.event.type</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="kind"/>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_event_type_tree_view">
+        <field name="name">rea.event.type.tree</field>
+        <field name="model">rea.event.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="kind"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="rea_event_type_act_window">
+        <field name="name">Event Types</field>
+        <field name="res_model">rea.event.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record model="ir.ui.menu" id="rea_event_type_menu">
+        <field name="name">Event Types</field>
+        <field name="parent_id" ref="menu_structure"/>
+        <field name="action" ref="rea_event_type_act_window"/>
+        <field name="sequence" eval="50"/>
+    </record>
+
+</data>
+</openerp>

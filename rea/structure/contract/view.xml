@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+    <!-- CONTRACT -->
+    <record model="ir.ui.view" id="rea_contract_form_view">
+        <field name="name">rea.contract.form</field>
+        <field name="model">rea.contract</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="type"/>
+                        <field name="start"/>
+                        <field name="end"/>
+                        <field name="parties"/>
+                        <field name="clauses"/>
+                        <field name="commitments"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter"></div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_contract_search_view">
+        <field name="name">rea.contract.search</field>
+        <field name="model">rea.contract</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="type"/>
+                <field name="parties"/>
+                <group expand="0" string="Group By">
+                    <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
+                    <filter string="Parties" domain="[]" context="{'group_by':'parties'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_contract_tree_view">
+        <field name="name">rea.contract.tree</field>
+        <field name="model">rea.contract</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="type"/>
+                <field name="start"/>
+                <field name="end"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="rea_contract_act_window">
+        <field name="name">Contracts</field>
+        <field name="res_model">rea.contract</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record model="ir.ui.menu" id="rea_contract_menu">
+        <field name="name">Contracts</field>
+        <field name="parent_id" ref="menu_structure"/>
+        <field name="action" ref="rea_contract_act_window"/>
+        <field name="sequence" eval="90"/>
+    </record>
+
+
+    <!-- CONTRACT TYPE -->
+    <record model="ir.ui.view" id="rea_contract_type_form_view">
+        <field name="name">rea.contract.type.form</field>
+        <field name="model">rea.contract.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter"></div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_contract_type_search_view">
+        <field name="name">rea.contract.type.search</field>
+        <field name="model">rea.contract.type</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_contract_type_tree_view">
+        <field name="name">rea.contract.type.tree</field>
+        <field name="model">rea.contract.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="rea_contract_type_act_window">
+        <field name="name">Contract Types</field>
+        <field name="res_model">rea.contract.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record model="ir.ui.menu" id="rea_contract_type_menu">
+        <field name="name">Contract Types</field>
+        <field name="parent_id" ref="menu_structure"/>
+        <field name="action" ref="rea_contract_type_act_window"/>
+        <field name="sequence" eval="100"/>
+    </record>
+
+
+    <!-- CONTRACT CLAUSE -->
+    <record model="ir.ui.view" id="rea_contract_clause_form_view">
+        <field name="name">rea.contract.clause.form</field>
+        <field name="model">rea.contract.clause</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="conditions"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter"></div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_contract_clause_tree_view">
+        <field name="name">rea.contract.clause.tree</field>
+        <field name="model">rea.contract.clause</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <!-- CONTRACT PARTY -->
+    <record model="ir.ui.view" id="rea_contract_party_form_view">
+        <field name="name">rea.contract.party.form</field>
+        <field name="model">rea.contract.party</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="agent"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter"></div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_contract_party_tree_view">
+        <field name="name">rea.contract.party.tree</field>
+        <field name="model">rea.contract.party</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+</data>
+</openerp>
