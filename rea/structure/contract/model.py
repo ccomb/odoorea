@@ -25,8 +25,9 @@ class Contract(models.Model):
         string="Clauses",
         help=("Clauses contain the text of the contract and allow to generate"
               " commitments, sometimes depending on other commitments"))
-    commitments = fields.Many2many(
+    commitments = fields.One2many(
         'rea.commitment',
+        'contract',
         string="Commitments",
         help="The commitments of the contract")
     start = fields.Date(

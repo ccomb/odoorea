@@ -22,6 +22,9 @@ class Event(models.Model):
         help="Commitments fulfilled by this event")
     quantity = fields.Float(
         string="Quantity")
+    resource_type = fields.Many2one(
+        'rea.resource.type',
+        string="Resource Type")
     resource = fields.Many2one(
         'rea.resource',
         string="Resource")

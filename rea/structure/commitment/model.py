@@ -28,6 +28,9 @@ class Commitment(models.Model):
     provider = fields.Many2one(
         'rea.agent',
         string="Provider")
+    contract = fields.Many2one(
+        'rea.contract',
+        string="Contract")
     receiver = fields.Many2one(
         'rea.agent',
         string="Receiver")

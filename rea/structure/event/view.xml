@@ -12,11 +12,12 @@
                 </header>
                 <sheet>
                     <group>
-                    <field name="name"/>
                     <field name="type"/>
+                    <field name="name"/>
                     <field name="provider"/>
                     <field name="receiver"/>
                     <field name="quantity"/>
+                    <field name="resource_type"/>
                     <field name="resource"/>
                     <field name="date"/>
                     <field name="commitments" readonly="1"/>
@@ -50,12 +51,13 @@
         <field name="model">rea.event</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="name"/>
                 <field name="type"/>
+                <field name="name"/>
                 <field name="date"/>
                 <field name="provider"/>
                 <field name="receiver"/>
                 <field name="quantity"/>
+                <field name="resource_type"/>
                 <field name="resource"/>
             </tree>
         </field>

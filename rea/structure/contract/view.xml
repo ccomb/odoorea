@@ -12,8 +12,8 @@
                 </header>
                 <sheet>
                     <group>
-                        <field name="name"/>
                         <field name="type"/>
+                        <field name="name"/>
                         <field name="start"/>
                         <field name="end"/>
                         <field name="parties"/>
@@ -47,8 +47,8 @@
         <field name="model">rea.contract</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="name"/>
                 <field name="type"/>
+                <field name="name"/>
                 <field name="start"/>
                 <field name="end"/>
             </tree>
@@ -180,6 +180,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
+                <field name="agent"/>
             </tree>
         </field>
     </record>

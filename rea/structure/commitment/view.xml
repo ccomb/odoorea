@@ -12,12 +12,14 @@
                 </header>
                 <sheet>
                     <group>
+                        <field name="type"/>
                         <field name="name"/>
+                        <field name="contract"/>
                         <field name="provider"/>
                         <field name="receiver"/>
-                        <field name="type"/>
                         <field name="date"/>
                         <field name="quantity"/>
+                        <field name="resource_type"/>
                         <field name="events"/>
                     </group>
                 </sheet>
@@ -32,10 +34,12 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
+                <field name="resource_type"/>
                 <field name="provider"/>
                 <field name="receiver"/>
                 <group expand="0" string="Group By">
                     <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
+                    <filter string="Resource Type" domain="[]" context="{'group_by':'resource_type'}"/>
                     <filter string="Provider" domain="[]" context="{'group_by':'provider'}"/>
                     <filter string="Receiver" domain="[]" context="{'group_by':'receiver'}"/>
                 </group>
@@ -48,9 +52,14 @@
         <field name="model">rea.commitment</field>
         <field name="arch" type="xml">
             <tree>
+                <field name="type"/>
                 <field name="name"/>
+                <field name="contract"/>
+                <field name="date"/>
                 <field name="provider"/>
                 <field name="receiver"/>
+                <field name="quantity"/>
+                <field name="resource_type"/>
             </tree>
         </field>
     </record>
