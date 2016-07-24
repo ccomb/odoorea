@@ -15,9 +15,9 @@
     'name': 'rea',
     'version': '0.1',
     'description': """
-    REA
+    Proof of concept of REA base models
     """,
-    'summary': "",
+    'summary': "REA base models",
     'author': 'Christophe Combelles',
     'website': 'https://anybox.fr',
     'license': 'AGPL-3',

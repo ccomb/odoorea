@@ -3,3 +3,5 @@ parts/
 bin/
 develop-eggs/
 etc/
+sandbox/
+.*\.swp$
