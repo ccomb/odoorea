@@ -51,8 +51,8 @@
         <field name="model">rea.event</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="type"/>
                 <field name="name"/>
+                <field name="type"/>
                 <field name="date"/>
                 <field name="provider"/>
                 <field name="receiver"/>

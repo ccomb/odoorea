@@ -39,8 +39,8 @@
         <field name="model">rea.agent</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="type"/>
                 <field name="name"/>
+                <field name="type"/>
             </tree>
         </field>
     </record>

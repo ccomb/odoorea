@@ -40,8 +40,8 @@
         <field name="model">rea.resource</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="type"/>
                 <field name="name"/>
+                <field name="type"/>
             </tree>
         </field>
     </record>

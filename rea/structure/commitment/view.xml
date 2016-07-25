@@ -52,8 +52,8 @@
         <field name="model">rea.commitment</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="type"/>
                 <field name="name"/>
+                <field name="type"/>
                 <field name="contract"/>
                 <field name="date"/>
                 <field name="provider"/>
