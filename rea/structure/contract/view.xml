@@ -36,7 +36,7 @@
                 <field name="agents"/>
                 <group expand="0" string="Group By">
                     <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
-                    <filter string="Parties" domain="[]" context="{'group_by':'agents'}"/>
+                    <filter string="Agent" domain="[]" context="{'group_by':'agents'}"/>
                 </group>
             </search>
         </field>
