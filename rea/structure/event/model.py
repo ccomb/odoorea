@@ -34,6 +34,12 @@ class Event(models.Model):
     receiver = fields.Many2one(
         'rea.agent',
         string="Receiver")
+    inflow = fields.Many2one(
+        'rea.resource',
+        string="Inflow")
+    outflow = fields.Many2one(
+        'rea.resource',
+        string="Outflow")
 
 
 class EventType(models.Model):
@@ -50,3 +56,12 @@ class EventType(models.Model):
         [('i', 'Increment'),
          ('d', 'Decrement')],
         string="Kind")
+    provider = fields.Many2one(
+        'rea.agent.type',
+        string="Provider Type")
+    receiver = fields.Many2one(
+        'rea.agent.type',
+        string="Receiver Type")
+    resource_type = fields.Many2one(
+        'rea.resource.type',
+        string="Resource Type")

@@ -2,7 +2,7 @@ from openerp import fields, models
 
 
 class Process(models.Model):
-    """ Set of event types bound by a duality reliationship
+    """ Set of events bound by a duality relationship.
     """
     _name = 'rea.process'
     _description = 'Process'
@@ -11,13 +11,29 @@ class Process(models.Model):
         string="name",
         required=True,
         index=True)
-    event_types = fields.Many2many(
-        'rea.event.type',
-        string="Event Types")
+    type = fields.Many2one(
+        'rea.process.type',
+        string="Process Type")
+    events = fields.Many2many(
+        'rea.event',
+        string="Events")
+
+
+class ProcessType(models.Model):
+    """ Set of event types bound by a duality relationship.
+    Abstract definition of actual Processes
+    """
+    _name = 'rea.process.type'
+    _description = 'Process Type'
+
+    name = fields.Char(
+        string="name",
+        required=True,
+        index=True)
     kind = fields.Selection([
         ('exchange', "Exchange"),
         ('conversion', "Conversion")],
         string="Kind")
-
-#  to be consistent with other models we could have a 'type' attribute
-#  pointing to a ProcessType, itself having a kind attribute.
+    event_types = fields.Many2many(
+        'rea.event.type',
+        string="Event Types")

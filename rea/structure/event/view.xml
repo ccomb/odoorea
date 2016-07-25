@@ -73,7 +73,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_event">
         <field name="name">Events</field>
-        <field name="parent_id" ref="menu_structure"/>
+        <field name="parent_id" ref="menu_operational"/>
         <field name="action" ref="rea_event_act_window"/>
         <field name="sequence" eval="20"/>
     </record>
@@ -89,8 +89,11 @@
                 </header>
                 <sheet>
                     <group>
-                        <field name="name"/>
                         <field name="kind"/>
+                        <field name="name"/>
+                        <field name="provider"/>
+                        <field name="receiver"/>
+                        <field name="resource_type"/>
                     </group>
                 </sheet>
                 <div class="oe_chatter"></div>
@@ -105,6 +108,9 @@
             <search>
                 <field name="name"/>
                 <field name="kind"/>
+                <field name="provider"/>
+                <field name="receiver"/>
+                <field name="resource_type"/>
             </search>
         </field>
     </record>
@@ -114,8 +120,11 @@
         <field name="model">rea.event.type</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="name"/>
                 <field name="kind"/>
+                <field name="name"/>
+                <field name="provider"/>
+                <field name="receiver"/>
+                <field name="resource_type"/>
             </tree>
         </field>
     </record>
@@ -130,9 +139,9 @@
 
     <record model="ir.ui.menu" id="menu_rea_event_type">
         <field name="name">Event Types</field>
-        <field name="parent_id" ref="menu_structure"/>
+        <field name="parent_id" ref="menu_modeling"/>
         <field name="action" ref="rea_event_type_act_window"/>
-        <field name="sequence" eval="50"/>
+        <field name="sequence" eval="20"/>
     </record>
 
 </data>
