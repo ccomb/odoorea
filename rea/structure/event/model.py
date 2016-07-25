@@ -53,8 +53,8 @@ class EventType(models.Model):
         required=True,
         index=True)
     kind = fields.Selection(
-        [('i', 'Increment'),
-         ('d', 'Decrement')],
+        [('increment', 'Increment'),
+         ('decrement', 'Decrement')],
         string="Kind")
     provider = fields.Many2one(
         'rea.agent.type',

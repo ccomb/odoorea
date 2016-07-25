@@ -76,7 +76,7 @@
         <field name="name">Commitments</field>
         <field name="parent_id" ref="menu_operational"/>
         <field name="action" ref="rea_commitment_act_window"/>
-        <field name="sequence" eval="40"/>
+        <field name="sequence" eval="50"/>
     </record>
 
 
@@ -133,7 +133,7 @@
         <field name="name">Commitment Types</field>
         <field name="parent_id" ref="menu_modeling"/>
         <field name="action" ref="rea_commitment_type_act_window"/>
-        <field name="sequence" eval="40"/>
+        <field name="sequence" eval="50"/>
     </record>
 
 </data>

@@ -14,17 +14,16 @@ class Contract(models.Model):
     type = fields.Many2one(
         'rea.contract.type',
         string="Type")
-    parties = fields.One2many(
-        'rea.contract.party',
-        'contract',
-        string="Parties",
+    agents = fields.Many2many(
+        'rea.agent',
+        string="Agents",
         help="Agents involved in this contract.")
     clauses = fields.One2many(
         'rea.contract.clause',
         'contract',
         string="Clauses",
         help=("Clauses contain the text of the contract and allow to generate"
-              " commitments, sometimes depending on other commitments"))
+              " commitments, possibly depending on other commitments"))
     commitments = fields.One2many(
         'rea.commitment',
         'contract',
@@ -45,23 +44,12 @@ class ContractType(models.Model):
         string="name",
         required=True,
         index=True)
-
-
-class Party(models.Model):
-    """ Agent implied in a contract with a specific role
-    """
-    _name = 'rea.contract.party'
-    _description = "Parties involved in a contract"
-
-    name = fields.Char(
-        string="name",
-        required=True)
-    contract = fields.Many2one(
-        'rea.contract',
-        string="Contract")
-    agent = fields.Many2one(
-        'rea.agent',
-        string="Agent")
+    agent_types = fields.Many2many(
+        'rea.agent.type',
+        string="Agent Types")
+    commitment_types = fields.Many2many(
+        'rea.commitment.type',
+        string="Commitment Types")
 
 
 class Clause(models.Model):
@@ -79,3 +67,6 @@ class Clause(models.Model):
     conditions = fields.Selection([
         ('foobar', 'Foobar'),
     ])
+
+
+# TODO ClauseType ??

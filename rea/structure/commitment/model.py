@@ -52,6 +52,6 @@ class CommitmentType(models.Model):
         required=True,
         index=True)
     kind = fields.Selection([
-        ('i', 'Increment'),
-        ('d', 'Decrement')],
+        ('increment', 'Increment'),
+        ('decrement', 'Decrement')],
         string="Kind")

@@ -39,12 +39,7 @@
         'process/view.xml',
     ],
     'demo': [
-        'structure/resource/demo.xml',
-        'structure/event/demo.xml',
-        'structure/agent/demo.xml',
-        'structure/commitment/demo.xml',
-        'structure/contract/demo.xml',
-        'process/demo.xml',
+        'tests/data.xml',
     ],
     'auto_install': False,
     'web': False,

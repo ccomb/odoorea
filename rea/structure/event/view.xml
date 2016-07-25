@@ -120,11 +120,11 @@
         <field name="model">rea.event.type</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="kind"/>
                 <field name="name"/>
+                <field name="resource_type"/>
                 <field name="provider"/>
                 <field name="receiver"/>
-                <field name="resource_type"/>
+                <field name="kind"/>
             </tree>
         </field>
     </record>

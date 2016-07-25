@@ -1,0 +1,62 @@
+<openerp>
+  <data>
+    <!-- modeling business 1 -->
+    <record model="rea.resource.type" id="res_type_usbkey">
+      <!-- FIXME 'product' instead of USB Key ?
+        And USB Key as a product group ? -->
+      <field name="name">USB Key</field>
+    </record>
+    <record model="rea.resource.type" id="res_type_euro">
+      <field name="name">euro</field>
+    </record>
+
+    <record model="rea.agent.type" id="agent_type_company">
+      <field name="name">Company</field>
+    </record>
+    <record model="rea.agent.type" id="agent_type_customer">
+      <field name="name">Customer</field>
+    </record>
+
+    <record model="rea.event.type" id="event_type_saleevent">
+      <field name="name">product sale</field>
+      <field name="kind">decrement</field>
+      <field name="provider" ref="agent_type_company"/>
+      <field name="receiver" ref="agent_type_customer"/>
+      <field name="resource_type" ref="res_type_usbkey"/>
+    </record>
+    <record model="rea.event.type" id="event_type_payment">
+      <field name="name">payment</field>
+      <field name="kind">increment</field>
+      <field name="provider" ref="agent_type_customer"/>
+      <field name="receiver" ref="agent_type_company"/>
+      <field name="resource_type" ref="res_type_euro"/>
+    </record>
+
+    <record model="rea.commitment.type" id="commitment_type_saleline">
+      <field name="name">Sale order line</field>
+      <field name="kind">decrement</field>
+    </record>
+    <record model="rea.commitment.type" id="commitment_type_saletotal">
+      <field name="name">Sale order total</field>
+      <field name="kind">increment</field>
+    </record>
+
+    <record model="rea.contract.type" id="contract_type_saleorder">
+      <field name="name">Sale order</field>
+      <field name="agent_types"
+             eval="[(6,0,[ref('agent_type_company'), ref('agent_type_customer')])]"/>
+      <field name="commitment_types"
+             eval="[(6,0,[ref('commitment_type_saleline'), ref('commitment_type_saletotal')])]"/>
+    </record>
+
+    <record model="rea.process.type" id="process_type_sale">
+      <field name="name">Sale process</field>
+      <field name="kind">exchange</field>
+      <field name="event_types"
+             eval="[(6,0,[ref('event_type_saleevent'), ref('event_type_payment')])]"/>
+    </record>
+
+    <!-- actual objects -->
+    
+  </data>
+</openerp>

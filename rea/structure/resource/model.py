@@ -27,3 +27,4 @@ class ResourceType(models.Model):
         string="name",
         required=True,
         index=True)
+    # TODO recursive with parent?
