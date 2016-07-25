@@ -12,7 +12,11 @@
         <menuitem id="menu_behaviour"
                   name="Behaviour"
                   parent="menu_rea"
-                  sequence="10"/>
+                  sequence="1000"/>
+        <menuitem id="menu_process"
+                  name="Process"
+                  parent="menu_rea"
+                  sequence="2000"/>
 
     </data>
 </openerp>

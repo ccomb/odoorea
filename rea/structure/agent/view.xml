@@ -53,7 +53,7 @@
         <field name="context">{}</field>
     </record>
 
-    <record model="ir.ui.menu" id="rea_agent_menu">
+    <record model="ir.ui.menu" id="menu_rea_agent">
         <field name="name">Agents</field>
         <field name="parent_id" ref="menu_structure"/>
         <field name="action" ref="rea_agent_act_window"/>
@@ -107,7 +107,7 @@
         <field name="context">{}</field>
     </record>
 
-    <record model="ir.ui.menu" id="rea_agent_type_menu">
+    <record model="ir.ui.menu" id="menu_rea_agent_type">
         <field name="name">Agent Types</field>
         <field name="parent_id" ref="menu_structure"/>
         <field name="action" ref="rea_agent_type_act_window"/>

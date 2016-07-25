@@ -35,6 +35,8 @@
         'structure/commitment/view.xml',
         'structure/contract/security.xml',
         'structure/contract/view.xml',
+        'process/security.xml',
+        'process/view.xml',
     ],
     'demo': [
         'structure/resource/demo.xml',
@@ -42,6 +44,7 @@
         'structure/agent/demo.xml',
         'structure/commitment/demo.xml',
         'structure/contract/demo.xml',
+        'process/demo.xml',
     ],
     'auto_install': False,
     'web': False,

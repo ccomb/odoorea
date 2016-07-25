@@ -71,7 +71,7 @@
         <field name="context">{}</field>
     </record>
 
-    <record model="ir.ui.menu" id="rea_event_menu">
+    <record model="ir.ui.menu" id="menu_rea_event">
         <field name="name">Events</field>
         <field name="parent_id" ref="menu_structure"/>
         <field name="action" ref="rea_event_act_window"/>
@@ -128,7 +128,7 @@
         <field name="context">{}</field>
     </record>
 
-    <record model="ir.ui.menu" id="rea_event_type_menu">
+    <record model="ir.ui.menu" id="menu_rea_event_type">
         <field name="name">Event Types</field>
         <field name="parent_id" ref="menu_structure"/>
         <field name="action" ref="rea_event_type_act_window"/>

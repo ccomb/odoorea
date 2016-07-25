@@ -54,7 +54,7 @@
         <field name="context">{}</field>
     </record>
 
-    <record model="ir.ui.menu" id="rea_resource_menu">
+    <record model="ir.ui.menu" id="menu_rea_resource">
         <field name="name">Resources</field>
         <field name="parent_id" ref="menu_structure"/>
         <field name="action" ref="rea_resource_act_window"/>
@@ -108,7 +108,7 @@
         <field name="context">{}</field>
     </record>
 
-    <record model="ir.ui.menu" id="rea_resource_type_menu">
+    <record model="ir.ui.menu" id="menu_rea_resource_type">
         <field name="name">Resource Types</field>
         <field name="parent_id" ref="menu_structure"/>
         <field name="action" ref="rea_resource_type_act_window"/>

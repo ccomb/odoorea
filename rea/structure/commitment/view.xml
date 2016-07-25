@@ -72,7 +72,7 @@
         <field name="context">{}</field>
     </record>
 
-    <record model="ir.ui.menu" id="rea_commitment_menu">
+    <record model="ir.ui.menu" id="menu_rea_commitment">
         <field name="name">Commitments</field>
         <field name="parent_id" ref="menu_structure"/>
         <field name="action" ref="rea_commitment_act_window"/>
@@ -129,7 +129,7 @@
         <field name="context">{}</field>
     </record>
 
-    <record model="ir.ui.menu" id="rea_commitment_type_menu">
+    <record model="ir.ui.menu" id="menu_rea_commitment_type">
         <field name="name">Commitment Types</field>
         <field name="parent_id" ref="menu_structure"/>
         <field name="action" ref="rea_commitment_type_act_window"/>
