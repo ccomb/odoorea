@@ -10,8 +10,10 @@ class TestREA(SharedSetupTransactionCase):
     def initTestData(cls):
         super(TestREA, cls).initTestData()
         cls.ref = classmethod(lambda cls, xid: cls.env.ref(xid).id)
+        cls.agent_type = cls.env['rea.agent.type']
 
     def test_event_duality(self):
         """
         """
-        self.assertEqual(self.ref('agent_type_company').name, 'Company')
+        company = self.agent_type.browse(self.ref('rea.agent_type_company'))
+        self.assertEqual(company.name, 'Company')

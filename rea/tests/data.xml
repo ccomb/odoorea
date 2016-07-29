@@ -1,9 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <openerp>
   <data>
     <!-- modeling business 1 -->
     <record model="rea.resource.type" id="res_type_usbkey">
       <!-- FIXME 'product' instead of USB Key ?
-        And USB Key as a product group ? -->
+        And USB Key as a rea.resource.group ? -->
       <field name="name">USB Key</field>
     </record>
     <record model="rea.resource.type" id="res_type_euro">
