@@ -14,6 +14,7 @@
                     <group>
                         <field name="type"/>
                         <field name="name"/>
+                        <field name="groups" widget="many2many_tags"/>
                     </group>
                 </sheet>
                 <div class="oe_chatter"></div>
@@ -28,6 +29,7 @@
             <search>
                 <field name="name"/>
                 <field name="type"/>
+                <field name="groups"/>
                 <group expand="0" string="Group By">
                     <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
                 </group>
@@ -56,9 +58,9 @@
 
     <record model="ir.ui.menu" id="menu_rea_resource">
         <field name="name">Resources</field>
-        <field name="parent_id" ref="menu_operational"/>
+        <field name="parent_id" ref="menu_resources"/>
         <field name="action" ref="rea_resource_act_window"/>
-        <field name="sequence" eval="10"/>
+        <field name="sequence" eval="30"/>
     </record>
 
 
@@ -110,10 +112,65 @@
 
     <record model="ir.ui.menu" id="menu_rea_resource_type">
         <field name="name">Resource Types</field>
-        <field name="parent_id" ref="menu_modeling"/>
+        <field name="parent_id" ref="menu_resources"/>
         <field name="action" ref="rea_resource_type_act_window"/>
         <field name="sequence" eval="10"/>
     </record>
 
+
+    <!-- RESOURCE GROUP -->
+    <record model="ir.ui.view" id="rea_resource_group_form_view">
+        <field name="name">rea.resource.group.form</field>
+        <field name="model">rea.resource.group</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="groups"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter"></div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_resource_group_search_view">
+        <field name="name">rea.resource.group.search</field>
+        <field name="model">rea.resource.group</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="groups"/>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_resource_group_tree_view">
+        <field name="name">rea.resource.group.tree</field>
+        <field name="model">rea.resource.group</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="rea_resource_group_act_window">
+        <field name="name">Resource Groups</field>
+        <field name="res_model">rea.resource.group</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record model="ir.ui.menu" id="menu_rea_resource_group">
+        <field name="name">Resource Groups</field>
+        <field name="parent_id" ref="menu_resources"/>
+        <field name="action" ref="rea_resource_group_act_window"/>
+        <field name="sequence" eval="20"/>
+    </record>
 </data>
 </openerp>

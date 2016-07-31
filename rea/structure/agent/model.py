@@ -15,6 +15,9 @@ class Agent(models.Model):
     type = fields.Many2one(
         'rea.agent.type',
         string="Type")
+    groups = fields.Many2many(
+        'rea.agent.group',
+        string="Groups")
 
 
 class AgentType(models.Model):
@@ -27,3 +30,18 @@ class AgentType(models.Model):
         string="name",
         required=True,
         index=True)
+
+
+class AgentGroup(models.Model):
+    """ Group of agents
+    """
+    _name = 'rea.agent.group'
+    _description = "Agent Group"
+
+    name = fields.Char(
+        string="name",
+        required=True,
+        index=True)
+    groups = fields.Many2one(
+        'rea.agent.group',
+        string="Group")

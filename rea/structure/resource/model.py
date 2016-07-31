@@ -15,6 +15,9 @@ class Resource(models.Model):
     type = fields.Many2one(
         'rea.resource.type',
         string="Type")
+    groups = fields.Many2many(
+        'rea.resource.group',
+        string="Groups")
 
 
 class ResourceType(models.Model):
@@ -28,3 +31,18 @@ class ResourceType(models.Model):
         required=True,
         index=True)
     # TODO recursive with parent?
+
+
+class ResourceGroup(models.Model):
+    """ Group of resources
+    """
+    _name = 'rea.resource.group'
+    _description = "Resource Group"
+
+    name = fields.Char(
+        string="name",
+        required=True,
+        index=True)
+    groups = fields.Many2one(
+        'rea.resource.group',
+        string="Group")

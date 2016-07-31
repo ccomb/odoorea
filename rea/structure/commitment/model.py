@@ -14,6 +14,9 @@ class Commitment(models.Model):
     type = fields.Many2one(
         'rea.commitment.type',
         string="Type")
+    groups = fields.Many2many(
+        'rea.commitment.group',
+        string="Groups")
     date = fields.Date(
         "Expected date")
     events = fields.Many2many(
@@ -55,3 +58,18 @@ class CommitmentType(models.Model):
         ('increment', 'Increment'),
         ('decrement', 'Decrement')],
         string="Kind")
+
+
+class CommitmentGroup(models.Model):
+    """ Group of commitments
+    """
+    _name = 'rea.commitment.group'
+    _description = "Commitment Group"
+
+    name = fields.Char(
+        string="name",
+        required=True,
+        index=True)
+    groups = fields.Many2one(
+        'rea.commitment.group',
+        string="Group")

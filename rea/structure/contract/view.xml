@@ -65,9 +65,9 @@
 
     <record model="ir.ui.menu" id="menu_rea_contract">
         <field name="name">Contracts</field>
-        <field name="parent_id" ref="menu_operational"/>
+        <field name="parent_id" ref="menu_contracts"/>
         <field name="action" ref="rea_contract_act_window"/>
-        <field name="sequence" eval="40"/>
+        <field name="sequence" eval="30"/>
     </record>
 
 
@@ -121,9 +121,9 @@
 
     <record model="ir.ui.menu" id="menu_rea_contract_type">
         <field name="name">Contract Types</field>
-        <field name="parent_id" ref="menu_modeling"/>
+        <field name="parent_id" ref="menu_contracts"/>
         <field name="action" ref="rea_contract_type_act_window"/>
-        <field name="sequence" eval="40"/>
+        <field name="sequence" eval="10"/>
     </record>
 
 
@@ -154,6 +154,62 @@
                 <field name="name"/>
             </tree>
         </field>
+    </record>
+
+
+    <!-- CONTRACT GROUP -->
+    <record model="ir.ui.view" id="rea_contract_group_form_view">
+        <field name="name">rea.contract.group.form</field>
+        <field name="model">rea.contract.group</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="groups"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter"></div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_contract_group_search_view">
+        <field name="name">rea.contract.group.search</field>
+        <field name="model">rea.contract.group</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="groups"/>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_contract_group_tree_view">
+        <field name="name">rea.contract.group.tree</field>
+        <field name="model">rea.contract.group</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="rea_contract_group_act_window">
+        <field name="name">Contract Groups</field>
+        <field name="res_model">rea.contract.group</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record model="ir.ui.menu" id="menu_rea_contract_group">
+        <field name="name">Contract Groups</field>
+        <field name="parent_id" ref="menu_contracts"/>
+        <field name="action" ref="rea_contract_group_act_window"/>
+        <field name="sequence" eval="20"/>
     </record>
 
 </data>

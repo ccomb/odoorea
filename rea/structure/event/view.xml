@@ -12,8 +12,9 @@
                 </header>
                 <sheet>
                     <group>
-                    <field name="type"/>
                     <field name="name"/>
+                    <field name="type"/>
+                    <field name="groups"/>
                     <field name="provider"/>
                     <field name="receiver"/>
                     <field name="quantity"/>
@@ -73,9 +74,9 @@
 
     <record model="ir.ui.menu" id="menu_rea_event">
         <field name="name">Events</field>
-        <field name="parent_id" ref="menu_operational"/>
+        <field name="parent_id" ref="menu_events"/>
         <field name="action" ref="rea_event_act_window"/>
-        <field name="sequence" eval="20"/>
+        <field name="sequence" eval="30"/>
     </record>
 
 
@@ -139,8 +140,64 @@
 
     <record model="ir.ui.menu" id="menu_rea_event_type">
         <field name="name">Event Types</field>
-        <field name="parent_id" ref="menu_modeling"/>
+        <field name="parent_id" ref="menu_events"/>
         <field name="action" ref="rea_event_type_act_window"/>
+        <field name="sequence" eval="10"/>
+    </record>
+
+
+    <!-- EVENT GROUP -->
+    <record model="ir.ui.view" id="rea_event_group_form_view">
+        <field name="name">rea.event.group.form</field>
+        <field name="model">rea.event.group</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="groups"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter"></div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_event_group_search_view">
+        <field name="name">rea.event.group.search</field>
+        <field name="model">rea.event.group</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="groups"/>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_event_group_tree_view">
+        <field name="name">rea.event.group.tree</field>
+        <field name="model">rea.event.group</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="rea_event_group_act_window">
+        <field name="name">Event Groups</field>
+        <field name="res_model">rea.event.group</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record model="ir.ui.menu" id="menu_rea_event_group">
+        <field name="name">Event Groups</field>
+        <field name="parent_id" ref="menu_events"/>
+        <field name="action" ref="rea_event_group_act_window"/>
         <field name="sequence" eval="20"/>
     </record>
 

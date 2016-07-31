@@ -14,6 +14,9 @@ class Event(models.Model):
     type = fields.Many2one(
         'rea.event.type',
         string="Type")
+    groups = fields.Many2many(
+        'rea.event.group',
+        string="Groups")
     date = fields.Date(
         "Actual date")
     commitments = fields.Many2many(
@@ -45,9 +48,12 @@ class Event(models.Model):
         string="Process",
         help="The process this event is part of")
 
-    def reconcile(events):
-        pass
+    def create(self):
+        """ During the create we run the hooks of the aspects that modify the
+        features corresponding to the exchange or conversion.
+        For example an 'owner' property during an exchange process"""
         # TODO
+        return super(Event, self).create()
 
 
 class EventType(models.Model):
@@ -73,3 +79,18 @@ class EventType(models.Model):
     resource_type = fields.Many2one(
         'rea.resource.type',
         string="Resource Type")
+
+
+class EventGroup(models.Model):
+    """ Group of events
+    """
+    _name = 'rea.event.group'
+    _description = "Event Group"
+
+    name = fields.Char(
+        string="name",
+        required=True,
+        index=True)
+    groups = fields.Many2one(
+        'rea.event.group',
+        string="Group")

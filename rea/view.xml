@@ -5,18 +5,30 @@
         <menuitem id="menu_rea"
                   name="REA"
                   sequence="12"/>
-        <menuitem id="menu_operational"
-                  name="Operational"
+        <menuitem id="menu_resources"
+                  name="Resources"
                   parent="menu_rea"
                   sequence="0"/>
-        <menuitem id="menu_behaviour"
-                  name="Behaviour"
+        <menuitem id="menu_events"
+                  name="Events"
                   parent="menu_rea"
                   sequence="1000"/>
-        <menuitem id="menu_modeling"
-                  name="Modeling"
+        <menuitem id="menu_agents"
+                  name="Agents"
                   parent="menu_rea"
                   sequence="2000"/>
+        <menuitem id="menu_commitments"
+                  name="Commitments"
+                  parent="menu_rea"
+                  sequence="3000"/>
+        <menuitem id="menu_contracts"
+                  name="Contracts"
+                  parent="menu_rea"
+                  sequence="4000"/>
+        <menuitem id="menu_processes"
+                  name="Process"
+                  parent="menu_rea"
+                  sequence="10000"/>
 
     </data>
 </openerp>

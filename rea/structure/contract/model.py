@@ -14,6 +14,9 @@ class Contract(models.Model):
     type = fields.Many2one(
         'rea.contract.type',
         string="Type")
+    groups = fields.Many2many(
+        'rea.commitment.group',
+        string="Groups")
     agents = fields.Many2many(
         'rea.agent',
         string="Agents",
@@ -50,6 +53,21 @@ class ContractType(models.Model):
     commitment_types = fields.Many2many(
         'rea.commitment.type',
         string="Commitment Types")
+
+
+class ContractGroup(models.Model):
+    """ Group of contracts
+    """
+    _name = 'rea.contract.group'
+    _description = "Contract Group"
+
+    name = fields.Char(
+        string="name",
+        required=True,
+        index=True)
+    groups = fields.Many2one(
+        'rea.contract.group',
+        string="Group")
 
 
 class Clause(models.Model):

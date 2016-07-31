@@ -57,9 +57,9 @@
 
     <record model="ir.ui.menu" id="menu_rea_process">
         <field name="name">Processes</field>
-        <field name="parent_id" ref="menu_operational"/>
+        <field name="parent_id" ref="menu_processes"/>
         <field name="action" ref="rea_process_act_window"/>
-        <field name="sequence" eval="60"/>
+        <field name="sequence" eval="20"/>
     </record>
 
 
@@ -116,9 +116,9 @@
 
     <record model="ir.ui.menu" id="menu_rea_process_type">
         <field name="name">Process Types</field>
-        <field name="parent_id" ref="menu_modeling"/>
+        <field name="parent_id" ref="menu_processes"/>
         <field name="action" ref="rea_process_type_act_window"/>
-        <field name="sequence" eval="60"/>
+        <field name="sequence" eval="10"/>
     </record>
 
 </data>
