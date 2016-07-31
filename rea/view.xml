@@ -25,6 +25,10 @@
                   name="Contracts"
                   parent="menu_rea"
                   sequence="4000"/>
+        <menuitem id="menu_identifiers"
+                  name="Identifiers"
+                  parent="menu_rea"
+                  sequence="5000"/>
         <menuitem id="menu_processes"
                   name="Process"
                   parent="menu_rea"

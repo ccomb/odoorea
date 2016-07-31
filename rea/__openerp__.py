@@ -35,6 +35,7 @@
         'structure/commitment/view.xml',
         'structure/contract/security.xml',
         'structure/contract/view.xml',
+        'behaviour/identifier/view.xml',
         'process/security.xml',
         'process/view.xml',
     ],
