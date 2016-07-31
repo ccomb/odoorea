@@ -40,6 +40,14 @@ class Event(models.Model):
     outflow = fields.Many2one(
         'rea.resource',
         string="Outflow")
+    process = fields.Many2one(
+        'rea.process',
+        string="Process",
+        help="The process this event is part of")
+
+    def reconcile(events):
+        pass
+        # TODO
 
 
 class EventType(models.Model):

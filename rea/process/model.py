@@ -3,6 +3,7 @@ from openerp import fields, models
 
 class Process(models.Model):
     """ Set of events bound by a duality relationship.
+    TODO not sure it's useful
     """
     _name = 'rea.process'
     _description = 'Process'
@@ -21,7 +22,8 @@ class Process(models.Model):
 
 class ProcessType(models.Model):
     """ Set of event types bound by a duality relationship.
-    Abstract definition of actual Processes
+    Abstract definition of actual Processes.
+    It contains the rules of the process.
     """
     _name = 'rea.process.type'
     _description = 'Process Type'
@@ -37,3 +39,5 @@ class ProcessType(models.Model):
     event_types = fields.Many2many(
         'rea.event.type',
         string="Event Types")
+
+    # for each processtype, create an action button to start a new process

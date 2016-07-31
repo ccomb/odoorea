@@ -18,7 +18,7 @@
       <field name="name">Customer</field>
     </record>
 
-    <record model="rea.event.type" id="event_type_saleevent">
+    <record model="rea.event.type" id="event_type_sale">
       <field name="name">product sale</field>
       <field name="kind">decrement</field>
       <field name="provider" ref="agent_type_company"/>
@@ -54,10 +54,31 @@
       <field name="name">Sale process</field>
       <field name="kind">exchange</field>
       <field name="event_types"
-             eval="[(6,0,[ref('event_type_saleevent'), ref('event_type_payment')])]"/>
+             eval="[(6,0,[ref('event_type_sale'), ref('event_type_payment')])]"/>
     </record>
 
     <!-- actual objects -->
+    <record model="rea.resource" id="res_usbkey1">
+      <field name="type" ref="res_type_usbkey"/>
+      <field name="name">serial 001</field>
+    </record>
+    <record model="rea.resource" id="res_usbkey2">
+      <field name="type" ref="res_type_usbkey"/>
+      <field name="name">serial 002</field>
+    </record>
+    <record model="rea.resource" id="res_20_euro">
+      <field name="name">a banknote of 20 euro</field>
+      <field name="type" ref="res_type_euro"/>
+    </record>
+
+    <record model="rea.agent" id="agent_anybox">
+      <field name="type" ref="agent_type_company"/>
+      <field name="name">Anybox</field>
+    </record>
+    <record model="rea.agent" id="agent_acme">
+      <field name="type" ref="agent_type_customer"/>
+      <field name="name">ACME</field>
+    </record>
     
   </data>
 </openerp>

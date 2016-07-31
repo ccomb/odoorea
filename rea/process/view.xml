@@ -3,6 +3,7 @@
 <data>
 
     <!-- PROCESS -->
+    <!-- TODO not sure it's useful -->
     <record model="ir.ui.view" id="rea_process_form_view">
         <field name="name">rea.process.form</field>
         <field name="model">rea.process</field>
