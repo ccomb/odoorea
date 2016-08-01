@@ -59,7 +59,7 @@
     <record model="ir.ui.menu" id="menu_rea_ident_setup">
         <field name="name">Identifier Setup</field>
         <field name="parent_id" ref="menu_identifiers"/>
-        <field name="action" ref="rea_ident_act_window"/>
+        <field name="action" ref="rea_ident_setup_act_window"/>
         <field name="sequence" eval="10"/>
     </record>
 
