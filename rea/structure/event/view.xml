@@ -89,12 +89,18 @@
                 <header>
                 </header>
                 <sheet>
+                    <h1><field name="name"/></h1>
                     <group>
-                        <field name="kind"/>
-                        <field name="name"/>
-                        <field name="provider"/>
-                        <field name="receiver"/>
-                        <field name="resource_type"/>
+                        <group>
+                            <field name="kind"/>
+                            <field name="resource_type"/>
+                            <field name="provider"/>
+                            <field name="receiver"/>
+                        </group>
+                    </group>
+                    <group string="Behaviours">
+                        <notebook>
+                        </notebook>
                     </group>
                 </sheet>
                 <div class="oe_chatter"></div>

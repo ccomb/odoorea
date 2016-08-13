@@ -2,6 +2,126 @@
 <openerp>
 <data>
 
+    <!-- IDENTIFIER SETUP TYPE -->
+    <!--record model="ir.ui.view" id="rea_ident_setup_type_form_view">
+        <field name="name">rea.ident.setup.type.form</field>
+        <field name="model">rea.ident.setup.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                </header>
+                <sheet>
+                    <group>
+                        <h1><field name="name"/></h1>
+                    </group>
+                    <group>
+                        <field name="autonumber"/>
+                        <field name="unique"/>
+                        <field name="mandatory"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter"></div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_ident_setup_type_search_view">
+        <field name="name">rea.ident.setup.type.search</field>
+        <field name="model">rea.ident.setup.type</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_ident_setup_type_tree_view">
+        <field name="name">rea.ident.setup.type.tree</field>
+        <field name="model">rea.ident.setup.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="autonumber"/>
+                <field name="unique"/>
+                <field name="mandatory"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="rea_ident_setup_type_act_window">
+        <field name="name">Identifier Setup Type</field>
+        <field name="res_model">rea.ident.setup.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record model="ir.ui.menu" id="menu_rea_ident_setup_type">
+        <field name="name">Identifier Setup Type</field>
+        <field name="parent_id" ref="menu_identifiers"/>
+        <field name="action" ref="rea_ident_setup_act_window"/>
+        <field name="sequence" eval="10"/>
+    </record-->
+
+
+    <!-- IDENTIFIER TYPE -->
+    <!--record model="ir.ui.view" id="rea_ident_type_form_view">
+        <field name="name">rea.ident.type.form</field>
+        <field name="model">rea.ident.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                </header>
+                <sheet>
+                    <group>
+                        <h1><field name="name"/></h1>
+                    </group>
+                    <group>
+                        <field name="setup"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter"></div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_ident_type_search_view">
+        <field name="name">rea.ident.type.search</field>
+        <field name="model">rea.ident.type</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_ident_type_tree_view">
+        <field name="name">rea.ident.type.tree</field>
+        <field name="model">rea.ident.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="setup"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="rea_ident_type_act_window">
+        <field name="name">Identifiers</field>
+        <field name="res_model">rea.ident.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record model="ir.ui.menu" id="menu_rea_ident_type">
+        <field name="name">Identifiers</field>
+        <field name="parent_id" ref="menu_identifiers"/>
+        <field name="action" ref="rea_ident_type_act_window"/>
+        <field name="sequence" eval="20"/>
+    </record-->
+
+
     <!-- IDENTIFIER SETUP -->
     <record model="ir.ui.view" id="rea_ident_setup_form_view">
         <field name="name">rea.ident.setup.form</field>
@@ -15,9 +135,13 @@
                         <h1><field name="name"/></h1>
                     </group>
                     <group>
-                        <field name="autonumber"/>
-                        <field name="unique"/>
-                        <field name="mandatory"/>
+                        <field name="prefix"/>
+                        <field name="last_nb"/>
+                        <field name="next_nb"/>
+                        <field name="padding"/>
+                        <field name="step"/>
+                        <field name="suffix"/>
+                        <field name="date_field"/>
                     </group>
                 </sheet>
                 <div class="oe_chatter"></div>
@@ -41,9 +165,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
-                <field name="autonumber"/>
-                <field name="unique"/>
-                <field name="mandatory"/>
+                <field name="last_nb"/>
             </tree>
         </field>
     </record>
@@ -65,7 +187,7 @@
 
 
     <!-- IDENTIFIER -->
-    <record model="ir.ui.view" id="rea_ident_form_view">
+    <!--record model="ir.ui.view" id="rea_ident_form_view">
         <field name="name">rea.ident.form</field>
         <field name="model">rea.ident</field>
         <field name="arch" type="xml">
@@ -119,6 +241,24 @@
         <field name="parent_id" ref="menu_identifiers"/>
         <field name="action" ref="rea_ident_act_window"/>
         <field name="sequence" eval="20"/>
+    </record-->
+
+    <!-- add an ident page in the notebooks -->
+    <record model="ir.ui.view" id="rea_event_type_form_view_ident">
+        <field name="inherit_id" ref="rea.rea_event_type_form_view"/>
+        <field name="model">rea.event.type</field>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Identification">
+                    <group>
+                        <p>Here you can choose the numbering behaviour of the Event type you are creating.</p>
+                    </group>
+                    <group>
+                        <field name="ident_setup"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
     </record>
 
 </data>
