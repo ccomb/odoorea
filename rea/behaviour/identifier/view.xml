@@ -135,7 +135,7 @@
                         <h1><field name="name"/></h1>
                     </group>
                     <group>
-                        <field name="field"/>
+                        <field name="field" string="Applies to field"/>
                         <field name="prefix"/>
                         <field name="last_nb"/>
                         <field name="next_nb"/>
@@ -166,6 +166,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
+                <field name="field"/>
                 <field name="last_nb"/>
             </tree>
         </field>

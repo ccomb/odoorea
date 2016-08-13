@@ -37,7 +37,7 @@ class IdentifierSetup(models.Model):
         ('field', 'Date field')],
         string="Date to use",
         default='now')
-    date_field = fields.Char("Date field")  # TODO untested
+    date_field = fields.Char("Date field")
 
     def _next_nb(self):
         for s in self:
