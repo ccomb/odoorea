@@ -20,6 +20,7 @@ class IdentifierSetup(models.Model):
     _description = "Identifier Setup"
 
     name = fields.Char(string="name", required=True, index=True)
+    field = fields.Char(string="Field")
     plugin = fields.Selection([
         ('templated_sequence', "Templated sequence"),
     ])
@@ -36,7 +37,7 @@ class IdentifierSetup(models.Model):
         ('field', 'Date field')],
         string="Date to use",
         default='now')
-    date_field = fields.Char("Date field")
+    date_field = fields.Char("Date field")  # TODO untested
 
     def _next_nb(self):
         for s in self:
@@ -72,23 +73,22 @@ class IdentifierSetup(models.Model):
 class NameIdentifier(models.AbstractModel):
     """ configurable Name identifier
     """
-    _name = 'rea.ident.name'
-    _description = 'Identification with a name'
-
-    name = fields.Char(
-        string="name",
-        required=False,  # TODO configurable?
-        index=True)
+    _name = 'rea.ident'
+    _description = 'Identification behaviour'
 
     @api.model
     def create(self, vals):
-        date_field = vals.get('date_field')
+        event_type = self.env['rea.event.type'].browse(vals.get('type'))
+        ident_setup = event_type.ident_setup
+        date_field = ident_setup.date_field
         if not date_field:
             dt = datetime.now(
                 pytz.timezone(self.env.context.get('tz') or 'UTC'))
         else:
             dt = datetime.strptime(vals.get(date_field), DTFORMAT)
-        event_type = self.env['rea.event.type'].browse(vals.get('type'))
-        if event_type and event_type.ident_setup and not vals.get('name'):
-            vals['name'] = event_type.ident_setup.name_choose(dt)
+        if event_type and ident_setup and ident_setup.field:
+            if not vals.get(ident_setup.field):
+                vals[ident_setup.field] = ident_setup.name_choose(dt)
+            else:
+                pass
         return super(NameIdentifier, self).create(vals)

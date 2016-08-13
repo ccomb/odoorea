@@ -6,8 +6,13 @@ class Event(models.Model):
     """
     _name = 'rea.event'
     _description = "Event"
-    _inherit = ['rea.ident.name']
+    _inherit = ['rea.ident']
 
+    name = fields.Char(
+        string="name",
+        required=False,  # TODO configurable?
+        index=True
+    )
     type = fields.Many2one(
         'rea.event.type',
         string="Type")

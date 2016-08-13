@@ -33,7 +33,7 @@ class TestREA(SharedSetupTransactionCase):
             'process': sale_process.id,
             'provider': self.ref('rea.agent_anybox'),
             'receiver': self.ref('rea.agent_acme'),
-            'date': '2016/07/29',
+            'date': '2016-07-29 00:00:00',
             'resource': self.ref('rea.res_usbkey1'),
         })
         sale2 = self.events.create({
@@ -42,7 +42,7 @@ class TestREA(SharedSetupTransactionCase):
             'process': sale_process.id,
             'provider': self.ref('rea.agent_anybox'),
             'receiver': self.ref('rea.agent_acme'),
-            'date': '2016/07/29',
+            'date': '2016-07-29 00:00:00',
             'resource': self.ref('rea.res_usbkey2'),
         })
         # create a payment event for the usb key
@@ -51,6 +51,6 @@ class TestREA(SharedSetupTransactionCase):
             'type': self.ref('rea.event_type_payment'),
             'receiver': self.ref('rea.agent_anybox'),
             'provider': self.ref('rea.agent_acme'),
-            'date': '2016/07/29',
+            'date': '2016-07-29 00:00:00',
             'resource': self.ref('rea.res_20_euro'),
         })

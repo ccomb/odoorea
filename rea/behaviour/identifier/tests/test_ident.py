@@ -20,6 +20,7 @@ class TestIdent(SharedSetupTransactionCase):
         # we create an automatic numbering for sales
         ident_setup = self.ident_setups.create({
             'name': 'sales numbering',
+            'field': 'name',
             'plugin': 'templated_sequence',
             'last_nb': 0,
             'prefix': 'SAJ',
@@ -37,5 +38,11 @@ class TestIdent(SharedSetupTransactionCase):
         self.assertEquals(self.events.create(event.copy()).name, 'SAJ00004-')
         ident_setup.write({'step': 3})
         self.assertEquals(self.events.create(event.copy()).name, 'SAJ00007-')
-        ident_setup.write({'prefix': 'SAJ%Y%A%U'})
+        ident_setup.write({'prefix': 'SAJ%Y%m%d'})
         self.assertEquals(self.events.create(event.copy()).name[:5], 'SAJ20')
+
+        # check with a date field instead of now
+        ident_setup.write({'date_field': 'date'})
+        event = event.copy()
+        event['date'] = '2016-08-14 12:12:12'
+        self.assertEquals(self.events.create(event).name, 'SAJ2016081400013-')
