@@ -142,6 +142,13 @@
         <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Before economic events can be created, you must create a new economic event type.
+            </p><p>
+             Here are examples of economic event types : Sale, Purchase, Workday, Payment, Product assembly.
+            </p>
+        </field>
     </record>
 
     <record model="ir.ui.menu" id="menu_rea_event_type">
@@ -198,6 +205,15 @@
         <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                To be able to apply policies to similar economic Events,
+                you must first create Event Groups.
+            </p>
+            <p>
+                Groups may also be computed automatically based on criterions
+            </p>
+        </field>
     </record>
 
     <record model="ir.ui.menu" id="menu_rea_event_group">
