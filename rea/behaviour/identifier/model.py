@@ -3,7 +3,7 @@ from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFORMAT
 from datetime import datetime
 import pytz
 
-PLUGINS = {
+PLUGINS = {  # FIXME not used:
     'templated_sequence': 'openerp.addons.rea.behaviour.identifier.model.TemplatePlugin'
 }
 
@@ -13,10 +13,10 @@ class TemplatePlugin():
     """
 
 
-class IdentifierSetup(models.Model):
+class IdentifierSetup(models.Model):  # TODO rename to SequenceNumbering
     """Setup for an identifier type (ex: SSN numbering)
     """
-    _name = 'rea.ident.setup'
+    _name = 'rea.ident.setup'  # TODO rename to rea.ident.sequence
     _description = "Identifier Setup"
 
     name = fields.Char(string="name", required=True, index=True)
