@@ -142,7 +142,8 @@
                         <field name="padding"/>
                         <field name="step"/>
                         <field name="suffix"/>
-                        <field name="date_field"/>
+                        <field name="date_origin"/>
+                        <field name="date_field" attrs="{'invisible': [('date_origin','=','now')],'required': [('date_origin','=','field')]}"/>
                     </group>
                 </sheet>
                 <div class="oe_chatter"></div>
@@ -254,6 +255,22 @@
                 <page string="Identification">
                     <group>
                         <p>Here you can choose the numbering behaviour of the Event type you are creating.</p>
+                    </group>
+                    <group>
+                        <field name="ident_setup"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="rea_contract_type_form_view_ident">
+        <field name="inherit_id" ref="rea.rea_contract_type_form_view"/>
+        <field name="model">rea.contract.type</field>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Identification">
+                    <group>
+                        <p>Here you can choose the numbering behaviour of the Contracts of this type.</p>
                     </group>
                     <group>
                         <field name="ident_setup"/>

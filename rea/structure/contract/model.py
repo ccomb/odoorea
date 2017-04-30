@@ -1,4 +1,4 @@
-from openerp import fields, models
+from odoo import fields, models, _
 
 
 class Contract(models.Model):
@@ -6,10 +6,12 @@ class Contract(models.Model):
     """
     _name = 'rea.contract'
     _description = "REA Contract"
+    _inherit = ['rea.ident']
 
     name = fields.Char(
         string="name",
         required=True,
+        default=lambda self: _('New'),
         index=True)
     type = fields.Many2one(
         'rea.contract.type',
@@ -53,6 +55,9 @@ class ContractType(models.Model):
     commitment_types = fields.Many2many(
         'rea.commitment.type',
         string="Commitment Types")
+    ident_setup = fields.Many2one(
+        'rea.ident.setup',
+        string="Ident setup")
 
 
 class ContractGroup(models.Model):
