@@ -1,4 +1,4 @@
-from openerp import fields, models
+from openerp import fields, models, _
 
 
 class Event(models.Model):
@@ -10,7 +10,8 @@ class Event(models.Model):
 
     name = fields.Char(
         string="name",
-        required=False,  # TODO configurable?
+        required=True,  # TODO configurable?
+        default=lambda self: _('New'),
         index=True
     )
     type = fields.Many2one(

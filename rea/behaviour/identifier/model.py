@@ -77,16 +77,19 @@ class NameIdentifier(models.AbstractModel):
     def create(self, vals):
         event_type = self.env['rea.event.type'].browse(vals.get('type'))
         ident_setup = event_type.ident_setup
+        if not ident_setup:
+            return super(NameIdentifier, self).create(vals)
+        date_origin = ident_setup.date_origin
         date_field = ident_setup.date_field
         now = datetime.now(pytz.timezone(self.env.context.get('tz') or 'UTC'))
-        if not date_field:
-            raise UserError(u'Missing Date Field in Identifier Setup "{}"'
-                            .format(ident_setup.name))
-        if vals.get(date_field):
-            dt = datetime.strptime(vals.get(date_field), DTFORMAT)
-        else:
-            dt = now
-        if event_type and ident_setup and ident_setup.field:
+        dt = now
+        if date_origin is 'field':
+            if not date_field:
+                raise UserError(u'Missing Date Field in Identifier Setup "{}"'
+                                .format(ident_setup.name))
+            if vals.get(date_field):
+                dt = datetime.strptime(vals.get(date_field), DTFORMAT)
+        if ident_setup.field:
             if not vals.get(ident_setup.field):
                 vals[ident_setup.field] = ident_setup.name_choose(dt)
             else:
