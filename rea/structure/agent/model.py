@@ -42,6 +42,6 @@ class AgentGroup(models.Model):
         string="name",
         required=True,
         index=True)
-    groups = fields.Many2one(
+    group = fields.Many2one(
         'rea.agent.group',
         string="Group")

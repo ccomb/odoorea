@@ -80,10 +80,10 @@ class EventType(models.Model):
         string="Kind")
     provider = fields.Many2one(
         'rea.agent.type',
-        string="Provider")
+        string="Provider Type")
     receiver = fields.Many2one(
         'rea.agent.type',
-        string="Receiver")
+        string="Receiver Type")
     resource_type = fields.Many2one(
         'rea.resource.type',
         string="Resource Type")
@@ -93,6 +93,8 @@ class EventType(models.Model):
     #identifiers = fields.One2many(  # TODO move to the ident module as an inherit
     #    'rea.ident.type'
     #)
+
+# todo : l'event type est proche de la notion de journal et peut avoir une correspondance en compta
 
 
 class EventGroup(models.Model):
@@ -105,6 +107,6 @@ class EventGroup(models.Model):
         string="name",
         required=True,
         index=True)
-    groups = fields.Many2one(
+    group = fields.Many2one(
         'rea.event.group',
         string="Group")

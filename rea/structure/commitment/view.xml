@@ -16,6 +16,7 @@
                         <field name="type"/>
                         <field name="groups"/>
                         <field name="contract"/>
+                        <field name="contract_type" invisible="1"/>
                         <field name="provider"/>
                         <field name="receiver"/>
                         <field name="date"/>
@@ -93,6 +94,7 @@
                     <group>
                         <field name="name"/>
                         <field name="kind"/>
+                        <field name="contract_type"/>
                     </group>
                 </sheet>
                 <div class="oe_chatter"></div>

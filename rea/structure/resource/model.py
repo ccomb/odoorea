@@ -43,6 +43,6 @@ class ResourceGroup(models.Model):
         string="name",
         required=True,
         index=True)
-    groups = fields.Many2one(
+    group = fields.Many2one(
         'rea.resource.group',
         string="Group")

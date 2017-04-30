@@ -129,7 +129,7 @@
                 <sheet>
                     <group>
                         <field name="name"/>
-                        <field name="groups"/>
+                        <field name="group"/>
                     </group>
                 </sheet>
                 <div class="oe_chatter"></div>
@@ -143,7 +143,7 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
-                <field name="groups"/>
+                <field name="group"/>
             </search>
         </field>
     </record>

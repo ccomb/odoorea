@@ -1,4 +1,5 @@
 from openerp import fields, models
+from odoo import api
 
 
 class Commitment(models.Model):
@@ -13,6 +14,7 @@ class Commitment(models.Model):
         index=True)
     type = fields.Many2one(
         'rea.commitment.type',
+        domain="[('contract_type', '=', contract_type)]",
         string="Type")
     groups = fields.Many2many(
         'rea.commitment.group',
@@ -34,9 +36,17 @@ class Commitment(models.Model):
     contract = fields.Many2one(
         'rea.contract',
         string="Contract")
+    contract_type = fields.Many2one(
+        'rea.contract.type',
+        compute='_contract_type')
     receiver = fields.Many2one(
         'rea.agent',
         string="Receiver")
+
+    @api.depends('contract')
+    def _contract_type(self):
+        for commitment in self:
+            commitment.contract_type = commitment.contract.type
 
     def fulfill(self):
         """Create the event
@@ -58,6 +68,9 @@ class CommitmentType(models.Model):
         ('increment', 'Increment'),
         ('decrement', 'Decrement')],
         string="Kind")
+    contract_type = fields.Many2one(
+        'rea.contract.type',
+        string="Contract Type")
 
 
 class CommitmentGroup(models.Model):
