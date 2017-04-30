@@ -18,12 +18,26 @@
                     </div>
                     <group>
                         <field name="type"/>
-                        <field name="start"/>
-                        <field name="end"/>
-                        <field name="agents"/>
-                        <field name="clauses"/>
-                        <field name="commitments"/>
+                        <field name="agents" widget="many2many_tags"/>
                     </group>
+                    <group>
+                        <group>
+                            <field name="validity"/>
+                            <field name="signed" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="start"/>
+                            <field name="end"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Commitments">
+                            <field name="commitments"/>
+                        </page>
+                        <page string="Clauses">
+                            <field name="clauses"/>
+                        </page>
+                    </notebook>
                 </sheet>
                 <div class="oe_chatter"></div>
             </form>

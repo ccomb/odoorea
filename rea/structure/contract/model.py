@@ -35,9 +35,13 @@ class Contract(models.Model):
         string="Commitments",
         help="The commitments of the contract")
     start = fields.Date(
-        string="Signature date")
+        string="Starts on")
     end = fields.Date(
-        string="Expiration date")
+        string="Expires on")
+    signed = fields.Date(
+        string="Signature date")
+    validity = fields.Date(
+        string="Valid until")
 
 
 class ContractType(models.Model):
