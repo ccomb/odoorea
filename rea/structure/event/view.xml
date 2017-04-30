@@ -17,15 +17,15 @@
                         </h1>
                     </div>
                     <group>
-                    <field name="type"/>
-                    <field name="groups"/>
-                    <field name="provider"/>
-                    <field name="receiver"/>
-                    <field name="quantity"/>
-                    <field name="resource_type"/>
-                    <field name="resource"/>
-                    <field name="date"/>
-                    <field name="commitments" readonly="1"/>
+                       <field name="type"/>
+                       <field name="groups"/>
+                       <field name="provider"/>
+                       <field name="receiver"/>
+                       <field name="quantity"/>
+                       <field name="resource_type"/>
+                       <field name="resource"/>
+                       <field name="date"/>
+                       <field name="commitments" readonly="1"/>
                     </group>
                 </sheet>
                 <div class="oe_chatter"></div>

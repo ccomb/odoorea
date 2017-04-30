@@ -1,4 +1,4 @@
-from openerp import fields, models
+from openerp import fields, models, _
 from odoo import api
 
 
@@ -7,10 +7,12 @@ class Commitment(models.Model):
     """
     _name = 'rea.commitment'
     _description = "Commitment"
+    _inherit = ['rea.ident']
 
     name = fields.Char(
         string="name",
         required=True,
+        default=lambda self: _('New'),
         index=True)
     type = fields.Many2one(
         'rea.commitment.type',
