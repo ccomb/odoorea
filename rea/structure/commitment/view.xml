@@ -18,8 +18,8 @@
                     </div>
                     <group>
                         <field name="type"/>
-                        <field name="groups"/>
-                        <field name="contract"/>
+                        <field name="groups" widget="many2many_tags"/>
+                        <field name="contract" invisible="1"/>
                         <field name="contract_type" invisible="1"/>
                         <field name="provider"/>
                         <field name="receiver"/>

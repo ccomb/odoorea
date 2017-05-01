@@ -42,6 +42,16 @@ class AgentGroup(models.Model):
         string="name",
         required=True,
         index=True)
-    group = fields.Many2one(
+    groups = fields.Many2many(
         'rea.agent.group',
-        string="Group")
+        'rea_agent_group_group',
+        'group1_id', 'group2_id',
+        help=u"Groups this group is part of",
+        string=u"Groups")
+    agent = fields.Many2one(
+        'rea.agent',
+        "Related Agent",
+        help=u"Agent corresponding to this group, if any")
+    agents = fields.Many2many(
+        'rea.agent',
+        string="Members")

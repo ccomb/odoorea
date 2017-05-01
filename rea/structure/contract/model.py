@@ -8,6 +8,15 @@ class Contract(models.Model):
     _description = "REA Contract"
     _inherit = ['rea.ident']
 
+    def _default_agents(self):
+        """the relative company depends on the user
+        """
+        groups = self.env.user.agent.groups
+        if len(groups) == 1:
+            return [(6, 0, [groups[0].agent.id])]
+        else:  # TODO
+            return []
+
     name = fields.Char(
         string="name",
         required=True,
@@ -22,7 +31,7 @@ class Contract(models.Model):
     agents = fields.Many2many(
         'rea.agent',
         string="Agents",
-        default='_default_agents',
+        default=_default_agents,
         help="Agents involved in this contract.")
     clauses = fields.One2many(
         'rea.contract.clause',
@@ -44,10 +53,6 @@ class Contract(models.Model):
     validity = fields.Date(
         string="Valid until")
 
-    def _default_agents(self):
-        """the relative company depends on the user
-        """
-        self.agents = [self.usermyself.parent_id]
 
 class ContractType(models.Model):
     """ Abstract definition of actual contracts
