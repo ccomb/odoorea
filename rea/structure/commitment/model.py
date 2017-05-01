@@ -1,5 +1,4 @@
-from openerp import fields, models, _
-from odoo import api
+from odoo import fields, models, api, _
 
 
 class Commitment(models.Model):
@@ -7,7 +6,27 @@ class Commitment(models.Model):
     """
     _name = 'rea.commitment'
     _description = "Commitment"
-    _inherit = ['rea.ident']
+    _inherit = ['rea.ident.sequence']
+
+    def _default_provider(self):
+        for agent in self.contract.agents:
+            if agent.type == self.type.provider_type:
+                return agent
+
+    def _default_receiver(self):
+        for agent in self.contract.agents:
+            if agent.type == self.type.receiver_type:
+                return agent
+
+    @api.onchange('type')
+    def _change_receiver(self):
+        for commitment in self:
+            commitment.receiver = commitment._default_receiver()
+
+    @api.onchange('type')
+    def _change_provider(self):
+        for commitment in self:
+            commitment.provider = commitment._default_provider()
 
     name = fields.Char(
         string="name",
@@ -32,17 +51,19 @@ class Commitment(models.Model):
     resource_type = fields.Many2one(
         'rea.resource.type',
         string="Resource Type")
-    provider = fields.Many2one(
-        'rea.agent',
-        string="Provider")
     contract = fields.Many2one(
         'rea.contract',
         string="Contract")
-    contract_type = fields.Many2one(
+    contract_type = fields.Many2one(  # just for a domain
         'rea.contract.type',
         compute='_contract_type')
+    provider = fields.Many2one(
+        'rea.agent',
+        default=_default_provider,
+        string="Provider")
     receiver = fields.Many2one(
         'rea.agent',
+        default=_default_receiver,
         string="Receiver")
 
     @api.depends('contract')
@@ -61,6 +82,7 @@ class CommitmentType(models.Model):
     """
     _name = 'rea.commitment.type'
     _description = "Commitment Type"
+    _inherit = ['rea.ident.sequence.store']
 
     name = fields.Char(
         string="name",
@@ -73,6 +95,12 @@ class CommitmentType(models.Model):
     contract_type = fields.Many2one(
         'rea.contract.type',
         string="Contract Type")
+    provider_type = fields.Many2one(
+        'rea.agent.type',
+        string="Provider Type")
+    receiver_type = fields.Many2one(
+        'rea.agent.type',
+        string="Receiver Receiver")
 
 
 class CommitmentGroup(models.Model):

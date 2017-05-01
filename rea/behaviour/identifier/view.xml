@@ -123,9 +123,9 @@
 
 
     <!-- IDENTIFIER SETUP -->
-    <record model="ir.ui.view" id="rea_ident_setup_form_view">
-        <field name="name">rea.ident.setup.form</field>
-        <field name="model">rea.ident.setup</field>
+    <record model="ir.ui.view" id="rea_ident_sequence_setup_form_view">
+        <field name="name">rea.ident.sequence.setup.form</field>
+        <field name="model">rea.ident.sequence.setup</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -151,9 +151,9 @@
         </field>
     </record>
 
-    <record model="ir.ui.view" id="rea_ident_setup_search_view">
-        <field name="name">rea.ident.setup.search</field>
-        <field name="model">rea.ident.setup</field>
+    <record model="ir.ui.view" id="rea_ident_sequence_setup_search_view">
+        <field name="name">rea.ident.sequence_setup.search</field>
+        <field name="model">rea.ident.sequence.setup</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
@@ -161,9 +161,9 @@
         </field>
     </record>
 
-    <record model="ir.ui.view" id="rea_ident_setup_tree_view">
-        <field name="name">rea.ident.setup.tree</field>
-        <field name="model">rea.ident.setup</field>
+    <record model="ir.ui.view" id="rea_ident_sequence_setup_tree_view">
+        <field name="name">rea.ident.sequence.setup.tree</field>
+        <field name="model">rea.ident.sequence.setup</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -173,18 +173,18 @@
         </field>
     </record>
 
-    <record model="ir.actions.act_window" id="rea_ident_setup_act_window">
+    <record model="ir.actions.act_window" id="rea_ident_sequence_setup_act_window">
         <field name="name">Identifier Setup</field>
-        <field name="res_model">rea.ident.setup</field>
+        <field name="res_model">rea.ident.sequence.setup</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
     </record>
 
-    <record model="ir.ui.menu" id="menu_rea_ident_setup">
+    <record model="ir.ui.menu" id="menu_rea_ident_sequence_setup">
         <field name="name">Identifier Setup</field>
         <field name="parent_id" ref="menu_identifiers"/>
-        <field name="action" ref="rea_ident_setup_act_window"/>
+        <field name="action" ref="rea_ident_sequence_setup_act_window"/>
         <field name="sequence" eval="10"/>
     </record>
 
@@ -266,6 +266,22 @@
     <record model="ir.ui.view" id="rea_contract_type_form_view_ident">
         <field name="inherit_id" ref="rea.rea_contract_type_form_view"/>
         <field name="model">rea.contract.type</field>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Identification">
+                    <group>
+                        <p>Here you can choose the numbering behaviour of the Contracts of this type.</p>
+                    </group>
+                    <group>
+                        <field name="ident_setup"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="rea_commitment_type_form_view_ident">
+        <field name="inherit_id" ref="rea.rea_commitment_type_form_view"/>
+        <field name="model">rea.commitment.type</field>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
                 <page string="Identification">

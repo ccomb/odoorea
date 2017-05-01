@@ -6,7 +6,7 @@ class Event(models.Model):
     """
     _name = 'rea.event'
     _description = "Event"
-    _inherit = ['rea.ident']
+    _inherit = ['rea.ident.sequence']
 
     name = fields.Char(
         string="name",
@@ -70,6 +70,7 @@ class EventType(models.Model):
     """
     _name = 'rea.event.type'
     _description = "Event Type"
+    _inherit = ['rea.ident.sequence.store']
 
     name = fields.Char(
         string="name",
@@ -88,9 +89,6 @@ class EventType(models.Model):
     resource_type = fields.Many2one(
         'rea.resource.type',
         string="Resource Type")
-    ident_setup = fields.Many2one(
-        'rea.ident.setup',
-        string="Ident setup")
     #identifiers = fields.One2many(  # TODO move to the ident module as an inherit
     #    'rea.ident.type'
     #)

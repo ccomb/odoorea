@@ -98,7 +98,13 @@
                     <group>
                         <field name="name"/>
                         <field name="kind"/>
+                        <field name="provider_type"/>
+                        <field name="receiver_type"/>
                         <field name="contract_type"/>
+                    </group>
+                    <group string="Behaviours">
+                        <notebook>
+                        </notebook>
                     </group>
                 </sheet>
                 <div class="oe_chatter"></div>

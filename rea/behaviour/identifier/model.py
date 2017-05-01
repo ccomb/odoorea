@@ -10,11 +10,11 @@ class TemplatePlugin():
     """
 
 
-class IdentifierSetup(models.Model):  # TODO rename to SequenceNumbering
+class IdentSequenceSetup(models.Model):
     """Setup for an identifier type (ex: SSN numbering)
     """
-    _name = 'rea.ident.setup'  # TODO rename to rea.ident.sequence
-    _description = "Identifier Setup"
+    _name = 'rea.ident.sequence.setup'
+    _description = "Identifier Sequence Setup"
 
     name = fields.Char(string="name", required=True, index=True)
     field = fields.Char(string="Field")
@@ -67,17 +67,26 @@ class IdentifierSetup(models.Model):  # TODO rename to SequenceNumbering
         raise NotImplementedError
 
 
-class NameIdentifier(models.AbstractModel):
+class IdentifierTypeSetup(models.AbstractModel):
+    """ field to store the identifier setup
+    """
+    _name = 'rea.ident.sequence.store'
+    ident_setup = fields.Many2one(
+        'rea.ident.sequence.setup',
+        string="Ident setup")
+
+
+class SequenceIdentifier(models.AbstractModel):
     """ configurable Name identifier
     """
-    _name = 'rea.ident'
+    _name = 'rea.ident.sequence'
     _description = 'Identification behaviour'
 
     @api.model
     def create(self, vals):
         ident_setup = self.type.browse(vals.get('type')).ident_setup
         if not ident_setup:
-            return super(NameIdentifier, self).create(vals)
+            return super(SequenceIdentifier, self).create(vals)
         date_origin = ident_setup.date_origin
         date_field = ident_setup.date_field
         now = datetime.now(pytz.timezone(self.env.context.get('tz') or 'UTC'))
@@ -93,4 +102,4 @@ class NameIdentifier(models.AbstractModel):
                 vals[ident_setup.field] = ident_setup.name_choose(dt)
             else:
                 pass
-        return super(NameIdentifier, self).create(vals)
+        return super(SequenceIdentifier, self).create(vals)

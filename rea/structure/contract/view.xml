@@ -100,7 +100,7 @@
                 <sheet>
                     <group>
                         <field name="name"/>
-                        <field name="agent_types"/>
+                        <field name="agent_types" widget="many2many_tags"/>
                         <field name="commitment_types"/>
                     </group>
                     <group string="Behaviours">

@@ -6,7 +6,7 @@ class Contract(models.Model):
     """
     _name = 'rea.contract'
     _description = "REA Contract"
-    _inherit = ['rea.ident']
+    _inherit = ['rea.ident.sequence']
 
     def _default_agents(self):
         """the relative company depends on the user
@@ -59,9 +59,10 @@ class ContractType(models.Model):
     """
     _name = 'rea.contract.type'
     _description = "Contract Type"
+    _inherit = ['rea.ident.sequence.store']
 
     name = fields.Char(
-        string="name",
+        string="Contract Type",
         required=True,
         index=True)
     agent_types = fields.Many2many(
@@ -70,9 +71,6 @@ class ContractType(models.Model):
     commitment_types = fields.Many2many(
         'rea.commitment.type',
         string="Commitment Types")
-    ident_setup = fields.Many2one(
-        'rea.ident.setup',
-        string="Ident setup")
 
 
 class ContractGroup(models.Model):
