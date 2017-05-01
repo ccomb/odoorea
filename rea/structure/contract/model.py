@@ -22,6 +22,7 @@ class Contract(models.Model):
     agents = fields.Many2many(
         'rea.agent',
         string="Agents",
+        default='_default_agents',
         help="Agents involved in this contract.")
     clauses = fields.One2many(
         'rea.contract.clause',
@@ -43,9 +44,14 @@ class Contract(models.Model):
     validity = fields.Date(
         string="Valid until")
 
+    def _default_agents(self):
+        """the relative company depends on the user
+        """
+        self.agents = [self.usermyself.parent_id]
 
 class ContractType(models.Model):
-    """ Abstract definition of actual contracts"""
+    """ Abstract definition of actual contracts
+    """
     _name = 'rea.contract.type'
     _description = "Contract Type"
 

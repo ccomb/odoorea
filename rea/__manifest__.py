@@ -38,6 +38,7 @@
         'behaviour/identifier/view.xml',
         'process/security.xml',
         'process/view.xml',
+        'base/res_users.xml',
     ],
     'demo': [
         'tests/data.xml',
