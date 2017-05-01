@@ -75,8 +75,7 @@ class NameIdentifier(models.AbstractModel):
 
     @api.model
     def create(self, vals):
-        event_type = self.env['rea.event.type'].browse(vals.get('type'))
-        ident_setup = event_type.ident_setup
+        ident_setup = self.type.browse(vals.get('type')).ident_setup
         if not ident_setup:
             return super(NameIdentifier, self).create(vals)
         date_origin = ident_setup.date_origin
