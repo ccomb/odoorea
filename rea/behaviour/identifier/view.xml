@@ -254,7 +254,7 @@
             <xpath expr="//notebook" position="inside">
                 <page string="Identification">
                     <group>
-                        <p>Here you can choose the numbering behaviour of the Event type you are creating.</p>
+                        <p>Here you can choose the numbering behaviour of the Events you are creating.</p>
                     </group>
                     <group>
                         <field name="ident_setup"/>
@@ -286,7 +286,7 @@
             <xpath expr="//notebook" position="inside">
                 <page string="Identification">
                     <group>
-                        <p>Here you can choose the numbering behaviour of the Contracts of this type.</p>
+                        <p>Here you can choose the numbering behaviour of the Commitments of this type.</p>
                     </group>
                     <group>
                         <field name="ident_setup"/>

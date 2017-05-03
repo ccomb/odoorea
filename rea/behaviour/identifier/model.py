@@ -103,3 +103,12 @@ class SequenceIdentifier(models.AbstractModel):
             else:
                 pass
         return super(SequenceIdentifier, self).create(vals)
+
+    @api.depends('type')
+    def _get_ident_setup(self):
+        for obj in self:
+            obj.type_ident_setup = self.type.ident_setup
+
+    type_ident_setup = fields.Many2one(
+        'rea.ident.sequence.setup',
+        compute='_get_ident_setup')  # for js
