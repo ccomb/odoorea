@@ -101,10 +101,15 @@
                 <header>
                 </header>
                 <sheet>
+                    <field name="name"/>
                     <group>
-                        <field name="name"/>
+                        <group>
                         <field name="agent_types" widget="many2many_tags"/>
+                        <field name="max_agents"/>
+                        </group>
+                        <group>
                         <field name="commitment_types"/>
+                        </group>
                     </group>
                     <group string="Behaviours">
                         <notebook>

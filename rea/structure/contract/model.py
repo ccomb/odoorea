@@ -1,4 +1,5 @@
-from odoo import fields, models, _
+from odoo import fields, models, api, _
+from odoo.exceptions import UserError
 
 
 class Contract(models.Model):
@@ -16,6 +17,16 @@ class Contract(models.Model):
             return [(6, 0, [groups[0].agent.id])]
         else:  # TODO
             return []
+
+    @api.onchange('agents')  # TODO add a _constraint
+    def _change_agents(self):
+        for c in self:
+            agents = c.agents
+            if len(agents) > c.type.max_agents:
+                c.agents = agents[:c.type.max_agents-1]
+                raise UserError(
+                    u"This contract type cannot have more than {} agents"
+                    .format(c.type.max_agents))
 
     name = fields.Char(
         string="name",
@@ -68,6 +79,8 @@ class ContractType(models.Model):
     agent_types = fields.Many2many(
         'rea.agent.type',
         string="Agent Types")
+    max_agents = fields.Integer(
+        "Max nb of agents")
     commitment_types = fields.Many2many(
         'rea.commitment.type',
         string="Commitment Types")
