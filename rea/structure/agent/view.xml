@@ -11,9 +11,13 @@
                 <header>
                 </header>
                 <sheet>
-                    <h1><field name="name"/></h1>
+                    <div class="oe_title">
+                        <field name="type" placeholder="Agent Type"/>
+                        <h1>
+                            <field name="name" placeholder="Name"/>
+                        </h1>
+                    </div>
                     <group>
-                        <field name="type"/>
                         <field name="groups" widget="many2many_tags"/>
                     </group>
                 </sheet>
@@ -71,8 +75,12 @@
                 <header>
                 </header>
                 <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Agent Type Name"/>
+                        </h1>
+                    </div>
                     <group>
-                        <field name="name"/>
                     </group>
                 </sheet>
                 <div class="oe_chatter"></div>
@@ -125,12 +133,20 @@
                 <header>
                 </header>
                 <sheet>
-                    <h1><field name="name"/></h1>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Agent Group Name"/>
+                        </h1>
+                    </div>
                     <group>
                         <field name="agent"/>
                         <field name="groups" widget="many2many_tags"/>
-                        <field name="agents"/>
                     </group>
+                    <notebook>
+                        <page string="Members">
+                            <field name="agents"/>
+                        </page>
+                    </notebook>
                 </sheet>
                 <div class="oe_chatter"></div>
             </form>

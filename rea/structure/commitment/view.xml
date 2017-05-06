@@ -106,8 +106,12 @@
                 <header>
                 </header>
                 <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Name"/>
+                        </h1>
+                    </div>
                     <group>
-                        <field name="name"/>
                         <field name="kind"/>
                         <field name="provider_type"/>
                         <field name="receiver_type"/>
@@ -170,8 +174,12 @@
                 <header>
                 </header>
                 <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Commitment Group Name"/>
+                        </h1>
+                    </div>
                     <group>
-                        <field name="name"/>
                         <field name="groups"/>
                     </group>
                 </sheet>

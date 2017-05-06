@@ -101,7 +101,7 @@
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            <field name="name"/>
+                            <field name="name" placeholder="Contract Type Name"/>
                         </h1>
                     </div>
                     <group>
@@ -168,8 +168,12 @@
                 <header>
                 </header>
                 <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Contract Clause Name"/>
+                        </h1>
+                    </div>
                     <group>
-                        <field name="name"/>
                         <field name="conditions"/>
                     </group>
                 </sheet>
@@ -198,8 +202,12 @@
                 <header>
                 </header>
                 <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Contract Group Name"/>
+                        </h1>
+                    </div>
                     <group>
-                        <field name="name"/>
                         <field name="groups"/>
                     </group>
                 </sheet>

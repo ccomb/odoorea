@@ -12,21 +12,29 @@
                 </header>
                 <sheet>
                     <div class="oe_title">
+                       <field name="type"/>
                         <h1>
                             <field name="name" readonly="1"/>
                         </h1>
                     </div>
                     <group>
-                       <field name="type"/>
-                       <field name="groups"/>
-                       <field name="provider"/>
-                       <field name="receiver"/>
-                       <field name="quantity"/>
-                       <field name="resource_type"/>
-                       <field name="resource"/>
-                       <field name="date"/>
-                       <field name="commitments" readonly="1"/>
+                        <group>
+                           <field name="provider"/>
+                           <field name="quantity"/>
+                           <field name="resource_type"/>
+                           <field name="resource"/>
+                           <field name="receiver"/>
+                        </group>
+                        <group>
+                           <field name="date"/>
+                           <field name="groups" widget="many2many_tags"/>
+                        </group>
                     </group>
+                    <notebook>
+                        <page string="Origin">
+                            <field name="commitments" readonly="1"/>
+                        </page>
+                    </notebook>
                 </sheet>
                 <div class="oe_chatter"></div>
             </form>
@@ -93,7 +101,11 @@
                 <header>
                 </header>
                 <sheet>
-                    <h1><field name="name"/></h1>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Event Type Name"/>
+                        </h1>
+                    </div>
                     <group>
                         <group>
                             <field name="kind"/>
@@ -172,8 +184,12 @@
                 <header>
                 </header>
                 <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Event Group Name"/>
+                        </h1>
+                    </div>
                     <group>
-                        <field name="name"/>
                         <field name="group"/>
                     </group>
                 </sheet>

@@ -12,9 +12,9 @@
                 </header>
                 <sheet>
                     <div class="oe_title">
-                        <field name="type"/>
+                        <field name="type" placeholder="Resource Type"/>
                         <h1>
-                            <field name="name"/>
+                            <field name="name" placeholder="Resource Name"/>
                         </h1>
                     </div>
                     <group>
@@ -84,7 +84,7 @@
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            <field name="name"/>
+                            <field name="name" placeholder="Resource Type Name"/>
                         </h1>
                     </div>
                     <group>
@@ -141,8 +141,12 @@
                 <header>
                 </header>
                 <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Resource Group Name"/>
+                        </h1>
+                    </div>
                     <group>
-                        <field name="name"/>
                         <field name="group"/>
                     </group>
                 </sheet>

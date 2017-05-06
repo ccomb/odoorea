@@ -17,7 +17,9 @@ class IdentSequenceSetup(models.Model):
     _description = "Identifier Sequence Setup"
 
     name = fields.Char(string="name", required=True, index=True)
-    field = fields.Char(string="Field")
+    field = fields.Char(
+        string="Applied to field",
+        default='name')
     plugin = fields.Selection([
         ('templated_sequence', "Templated sequence"),
     ])
