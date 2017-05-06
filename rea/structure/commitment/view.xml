@@ -26,8 +26,15 @@
                         <field name="date"/>
                         <field name="quantity"/>
                         <field name="resource_type"/>
-                        <field name="events"/>
                     </group>
+                    <notebook>
+                        <page string="Reservations">
+                            <field name="reserved_resources"/>
+                        </page>
+                        <page string="Fullfilments">
+                            <field name="events"/>
+                        </page>
+                    </notebook>
                 </sheet>
                 <div class="oe_chatter"></div>
             </form>

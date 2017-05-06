@@ -18,6 +18,9 @@ class Resource(models.Model):
     groups = fields.Many2many(
         'rea.resource.group',
         string="Groups")
+    reserved = fields.Many2many(
+        'rea.commitment',
+        string=u"Reserved by")
 
 
 class ResourceType(models.Model):
@@ -30,6 +33,9 @@ class ResourceType(models.Model):
         string="name",
         required=True,
         index=True)
+    max_reservations = fields.Integer(
+        u"Max reservations",
+        default=1)
     # TODO recursive with parent?
 
 

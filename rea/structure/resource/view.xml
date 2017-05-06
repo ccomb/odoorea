@@ -13,9 +13,20 @@
                 <sheet>
                     <group>
                         <field name="type"/>
-                        <field name="name"/>
+                    </group>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
                         <field name="groups" widget="many2many_tags"/>
                     </group>
+                    <notebook>
+                        <page string="Reserved by">
+                            <field name="reserved" readonly="1"/>
+                        </page>
+                    </notebook>
                 </sheet>
                 <div class="oe_chatter"></div>
             </form>
@@ -73,8 +84,13 @@
                 <header>
                 </header>
                 <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
                     <group>
-                        <field name="name"/>
+                        <field name="max_reservations"/>
                     </group>
                 </sheet>
                 <div class="oe_chatter"></div>

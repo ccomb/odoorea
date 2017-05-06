@@ -1,4 +1,5 @@
 from odoo import fields, models, api, _
+from odoo.exceptions import ValidationError
 
 
 class Commitment(models.Model):
@@ -28,6 +29,16 @@ class Commitment(models.Model):
         for commitment in self:
             commitment.provider = commitment._default_provider()
 
+    @api.constrains('reserved_resources')
+    def _check_reserved_resources(self):
+        for commitment in self:
+            for resource in commitment.reserved_resources:
+                nb_reservations = len(resource.reserved)
+                max_reservations = resource.type.max_reservations
+                if nb_reservations > max_reservations:
+                    raise ValidationError(
+                        "Selected resource is not available")
+
     name = fields.Char(
         string="name",
         required=True,
@@ -51,6 +62,10 @@ class Commitment(models.Model):
     resource_type = fields.Many2one(
         'rea.resource.type',
         string="Resource Type")
+    reserved_resources = fields.Many2many(
+        'rea.resource',
+        domain="[('type', '=', resource_type)]",
+        string="Reserved Resources")
     contract = fields.Many2one(
         'rea.contract',
         string="Contract")
@@ -101,6 +116,12 @@ class CommitmentType(models.Model):
     receiver_type = fields.Many2one(
         'rea.agent.type',
         string="Receiver Receiver")
+    resource_types = fields.Many2many(
+        'rea.resource.type',
+        string="Resource Types permitted for this commitment type")
+    resource_groups = fields.Many2one(
+        'rea.resource.group',
+        string="Resource Groups permitted for this commitment type")
 
 
 class CommitmentGroup(models.Model):
