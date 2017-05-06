@@ -13,16 +13,16 @@ class Contract(models.Model):
         """the relative company depends on the user
         """
         groups = self.env.user.agent.groups
-        if len(groups) == 1:
-            return [(6, 0, [groups[0].agent.id])]
-        else:  # TODO
-            return []
+        for group in groups:  # FIXME coz it returns the 1st group with agent
+            if group.agent.id:
+                return [(6, 0, [group.agent.id])]
+        return []
 
     @api.onchange('agents')  # TODO add a _constraint
     def _change_agents(self):
         for c in self:
             agents = c.agents
-            if len(agents) > c.type.max_agents:
+            if len(agents) > c.type.max_agents > 0:
                 c.agents = agents[:c.type.max_agents-1]
                 raise UserError(
                     u"This contract type cannot have more than {} agents"
