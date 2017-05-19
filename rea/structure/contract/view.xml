@@ -19,7 +19,7 @@
                         </h1>
                     </div>
                     <group>
-                        <field name="agents" widget="many2many_tags"/>
+                        <field name="parties" widget="many2many_tags"/>
                     </group>
                     <group>
                         <group>
@@ -32,11 +32,11 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Commitments">
-                            <field name="commitments"/>
-                        </page>
                         <page string="Clauses">
                             <field name="clauses"/>
+                        </page>
+                        <page string="Term">
+                            <field name="terms"/>
                         </page>
                     </notebook>
                 </sheet>
@@ -52,10 +52,10 @@
             <search>
                 <field name="name"/>
                 <field name="type"/>
-                <field name="agents"/>
+                <field name="parties"/>
                 <group expand="0" string="Group By">
                     <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
-                    <filter string="Agent" domain="[]" context="{'group_by':'agents'}"/>
+                    <filter string="Party" domain="[]" context="{'group_by':'party'}"/>
                 </group>
             </search>
         </field>
@@ -106,8 +106,8 @@
                     </div>
                     <group>
                         <group>
-                        <field name="agent_types" widget="many2many_tags"/>
-                        <field name="max_agents"/>
+                        <field name="party_types" widget="many2many_tags"/>
+                        <field name="max_parties"/>
                         </group>
                         <group>
                         <field name="commitment_types"/>
@@ -160,9 +160,9 @@
 
 
     <!-- CONTRACT CLAUSE -->
-    <record model="ir.ui.view" id="rea_contract_clause_form_view">
-        <field name="name">rea.contract.clause.form</field>
-        <field name="model">rea.contract.clause</field>
+    <record model="ir.ui.view" id="rea_contract_term_form_view">
+        <field name="name">rea.contract.term.form</field>
+        <field name="model">rea.contract.term</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -170,7 +170,7 @@
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            <field name="name" placeholder="Contract Clause Name"/>
+                            <field name="name" placeholder="Contract Term Name"/>
                         </h1>
                     </div>
                     <group>
@@ -182,9 +182,9 @@
         </field>
     </record>
 
-    <record model="ir.ui.view" id="rea_contract_clause_tree_view">
-        <field name="name">rea.contract.clause.tree</field>
-        <field name="model">rea.contract.clause</field>
+    <record model="ir.ui.view" id="rea_contract_term_tree_view">
+        <field name="name">rea.contract.term.tree</field>
+        <field name="model">rea.contract.term</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>

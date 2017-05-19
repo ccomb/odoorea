@@ -9,7 +9,7 @@ class Contract(models.Model):
     _description = "REA Contract"
     _inherit = ['rea.ident.sequence']
 
-    def _default_agents(self):
+    def _default_parties(self):
         """the relative company depends on the user
         """
         groups = self.env.user.agent.groups
@@ -18,15 +18,15 @@ class Contract(models.Model):
                 return [(6, 0, [group.agent.id])]
         return []
 
-    @api.onchange('agents')  # TODO add a _constraint
-    def _change_agents(self):
+    @api.onchange('parties')  # TODO add a _constraint
+    def _change_parties(self):
         for c in self:
-            agents = c.agents
-            if len(agents) > c.type.max_agents > 0:
-                c.agents = agents[:c.type.max_agents-1]
+            parties = c.parties
+            if len(parties) > c.type.max_parties > 0:
+                c.parties = parties[:c.type.max_parties-1]
                 raise UserError(
-                    u"This contract type cannot have more than {} agents"
-                    .format(c.type.max_agents))
+                    u"This contract type cannot have more than {} parties"
+                    .format(c.type.max_parties))
 
     name = fields.Char(
         string="name",
@@ -39,22 +39,22 @@ class Contract(models.Model):
     groups = fields.Many2many(
         'rea.commitment.group',
         string="Groups")
-    agents = fields.Many2many(
+    parties = fields.Many2many(
         'rea.agent',
         string="Agents",
-        default=_default_agents,
+        default=_default_parties,
         help="Agents involved in this contract.")
     clauses = fields.One2many(
-        'rea.contract.clause',
+        'rea.commitment',  # rea.contract.clause?
+        'contract',
+        string="Commitments",
+        help="The commitments of the contract")
+    terms = fields.One2many(
+        'rea.contract.term',
         'contract',
         string="Clauses",
         help=("Clauses contain the text of the contract and allow to generate"
               " commitments, possibly depending on other commitments"))
-    commitments = fields.One2many(
-        'rea.commitment',
-        'contract',
-        string="Commitments",
-        help="The commitments of the contract")
     start = fields.Date(
         string="Starts on")
     end = fields.Date(
@@ -76,11 +76,11 @@ class ContractType(models.Model):
         string="Contract Type",
         required=True,
         index=True)
-    agent_types = fields.Many2many(
+    party_types = fields.Many2many(
         'rea.agent.type',
         string="Agent Types")
-    max_agents = fields.Integer(
-        "Max nb of agents")
+    max_parties = fields.Integer(
+        "Max nb of parties")
     commitment_types = fields.Many2many(
         'rea.commitment.type',
         string="Commitment Types")
@@ -101,11 +101,12 @@ class ContractGroup(models.Model):
         string="Group")
 
 
-class Clause(models.Model):
-    """ Piece of contract generating commitments
+class Term(models.Model):
+    """ What happens if clauses are not fullfilled
+    (generate additional commitments)
     """
-    _name = 'rea.contract.clause'
-    _description = "REA Contract clause"
+    _name = 'rea.contract.term'
+    _description = "REA Contract term"
 
     name = fields.Char(
         string="name",
