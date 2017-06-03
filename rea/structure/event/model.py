@@ -1,4 +1,5 @@
-from openerp import fields, models, _
+from odoo import fields, models, _
+from odoo.exceptions import UserError
 
 
 class Event(models.Model):
@@ -11,6 +12,7 @@ class Event(models.Model):
     name = fields.Char(
         string="name",
         required=True,  # TODO configurable?
+        # TODO unique?
         default=lambda self: _('New'),
         index=True
     )
@@ -50,6 +52,28 @@ class Event(models.Model):
         'rea.process',
         string="Process",
         help="The process this event is part of")
+    kind = fields.Selection(
+        [('increment', 'Increment'),
+         ('decrement', 'Decrement'),
+         ('external', 'External'),
+         ('internal', 'Internal')],
+        compute='_kind',
+        string="Kind")
+
+    def _kind(self):
+        if not self.env.user.company:
+            raise UserError('No REA company configured for current user')
+        for event in self:
+            if event.provider == self.env.user.company:
+                if event.receiver != self.env.user.company:
+                    event.kind = 'decrement'
+                else:
+                    event.kind = 'internal'
+            else:
+                if event.receiver == self.env.user.company:
+                    event.kind = 'increment'
+                else:
+                    event.kind = 'external'
 
     #def create(self):
     #    """ During the create we run the hooks of the aspects that modify the

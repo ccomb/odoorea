@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
 <data>
 
     <!-- EVENT -->
@@ -27,6 +27,7 @@
                         </group>
                         <group>
                            <field name="date"/>
+                           <field name="kind"/>
                            <field name="groups" widget="many2many_tags"/>
                         </group>
                     </group>
@@ -244,4 +245,4 @@
     </record>
 
 </data>
-</openerp>
+</odoo>
