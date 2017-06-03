@@ -12,11 +12,7 @@ class Contract(models.Model):
     def _default_parties(self):
         """the relative company depends on the user
         """
-        groups = self.env.user.agent.groups
-        for group in groups:  # FIXME coz it returns the 1st group with agent
-            if group.agent.id:
-                return [(6, 0, [group.agent.id])]
-        return []
+        return [(6, 0, [self.env.user.company.id])]
 
     @api.onchange('parties')  # TODO add a _constraint
     def _change_parties(self):

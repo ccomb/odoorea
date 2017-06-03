@@ -5,11 +5,6 @@ from datetime import datetime
 import pytz
 
 
-class TemplatePlugin():
-    """Allows to create a configuration for identifiers
-    """
-
-
 class IdentSequenceSetup(models.Model):
     """Setup for an identifier type (ex: SSN numbering)
     """
@@ -105,6 +100,8 @@ class SequenceIdentifier(models.AbstractModel):
             else:
                 pass
         return super(SequenceIdentifier, self).create(vals)
+
+    # TODO def duplicate?
 
     @api.depends('type')
     def _get_ident_setup(self):

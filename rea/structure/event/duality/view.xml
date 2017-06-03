@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+<!-- Add a tab in the event form -->
+<record id="rea_event_form_view_with_reconcile" model="ir.ui.view">
+    <field name="model">rea.event</field>
+    <field name="inherit_id" ref="rea_event_form_view" />
+    <field name="arch" type="xml">
+        <xpath expr="//notebook" position="inside">
+            <page string="Reconciliation">
+                <group>
+                    <field name="is_reconciled"/>
+                </group>
+                <group>
+                    <p>Here you can associate related events</p>
+                </group>
+                <group>
+                    <field name="terminators">
+                        <p>Events that reconcile this event</p>
+                        <tree editable="bottom">
+                            <field name="initiator" invisible="1"/>
+                            <field name="initiator_quantity"/>
+                            <field name="initiator_resource_type"/>
+                            <field name="terminator"/>
+                            <field name="terminator_quantity"/>
+                            <field name="terminator_resource_type"/>
+                        </tree>
+                    </field>
+                    <field name="initiators" readonly="1">
+                        <p>Events reconciled by this event:</p>
+                        <tree editable="bottom">
+                            <field name="terminator" invisible="1"/>
+                            <field name="terminator_quantity"/>
+                            <field name="terminator_resource_type"/>
+                            <field name="initiator"/>
+                            <field name="initiator_quantity"/>
+                            <field name="initiator_resource_type"/>
+                        </tree>
+                    </field>
+                </group>
+            </page>
+        </xpath>
+    </field>
+</record>
+
+<!-- add a column in the list view -->
+<record id="rea_event_tree_view_with_reconcile" model="ir.ui.view">
+    <field name="model">rea.event</field>
+    <field name="inherit_id" ref="rea_event_tree_view" />
+    <field name="arch" type="xml">
+        <xpath expr="//tree" position="inside">
+            <field name="is_reconciled"/>
+        </xpath>
+    </field>
+</record>
+
+<!-- search (un)reconciled events -->
+<record id="rea_event_unreconciled_search_view" model="ir.ui.view">
+    <field name="model">rea.event</field>
+    <field name="inherit_id" ref="rea_event_search_view"/>
+    <field name="arch" type="xml">
+        <xpath expr="//search/group[1]" position="inside">
+            <filter name="unreconciled_events"
+                    string="Unreconciled"
+                    domain="[('is_reconciled','=',False)]"
+                    help="Show unreconciled events"/>
+        </xpath>
+    </field>
+</record>
+
+</data>
+</odoo>

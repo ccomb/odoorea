@@ -29,6 +29,7 @@
         'structure/resource/view.xml',
         'structure/event/security.xml',
         'structure/event/view.xml',
+        'structure/event/duality/view.xml',
         'structure/agent/security.xml',
         'structure/agent/view.xml',
         'structure/commitment/security.xml',

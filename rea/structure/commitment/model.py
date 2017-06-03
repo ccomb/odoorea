@@ -10,12 +10,12 @@ class Commitment(models.Model):
     _inherit = ['rea.ident.sequence']
 
     def _default_provider(self):
-        for agent in self.contract.agents:
+        for agent in self.contract.parties:
             if agent.type == self.type.provider_type:
                 return agent
 
     def _default_receiver(self):
-        for agent in self.contract.agents:
+        for agent in self.contract.parties:
             if agent.type == self.type.receiver_type:
                 return agent
 
