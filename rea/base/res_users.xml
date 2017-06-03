@@ -10,6 +10,9 @@
             <field name="agent"
                     string="Related Agent"
                     help="Link to the REA Agent"/>
+            <field name="company"
+                    string="Related Company"
+                    help="Link to the Company"/>
         </xpath>
 
     </field>
