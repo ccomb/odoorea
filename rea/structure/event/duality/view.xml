@@ -63,7 +63,7 @@
         <xpath expr="//search/group[1]" position="inside">
             <filter name="unreconciled_events"
                     string="Unreconciled"
-                    domain="[('balance','=',0)]"
+                    domain="[('balance','!=',0)]"
                     help="Show unreconciled events"/>
         </xpath>
     </field>
