@@ -44,6 +44,14 @@ class EventDuality(models.Model):
         for d in self:
             d.terminator_quantity = d.terminator.balance
 
+    @api.constrains('initiator', 'terminator')
+    def constrain_opposite_directions(self):
+        for duality in self:
+            i, t = duality.initiator, duality.terminator
+            if i.provider != t.receiver or i.receiver != t.provider:
+                raise ValidationError(
+                    "Events should have opposite provider and receiver")
+
     @api.constrains('initiator_quantity', 'terminator_quantity')
     def constrain_quantity(self):
         for duality in self:
@@ -98,11 +106,17 @@ class ReconcileWizard(models.TransientModel):
     _inherit = 'rea.event.duality'
     _name = 'rea.event.wizard.reconcile'
 
+    def check_agents(self, i, t):
+        if i.provider != t.receiver or i.receiver != t.provider:
+            raise ValidationError(
+                "Events should have opposite provider and receiver")
+
     def _initiator(self):
         ids = self.env.context['active_ids']
         if len(ids) != 2:
             raise UserError('You can select only two events')
         initiator, terminator = self.env['rea.event'].browse(ids)
+        self.check_agents(initiator, terminator)
         return initiator.id
 
     def _terminator(self):
