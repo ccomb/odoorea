@@ -1,5 +1,5 @@
 from odoo import fields, models, api
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
 
 class EventDuality(models.Model):
@@ -37,12 +37,12 @@ class EventDuality(models.Model):
     @api.onchange('initiator')
     def onchange_initiator(self):
         for d in self:
-            d.initiator_quantity = d.initiator.quantity
+            d.initiator_quantity = d.initiator.balance
 
     @api.onchange('terminator')
     def onchange_terminator(self):
         for d in self:
-            d.terminator_quantity = d.terminator.quantity
+            d.terminator_quantity = d.terminator.balance
 
     @api.constrains('initiator_quantity', 'terminator_quantity')
     def constrain_quantity(self):
@@ -78,18 +78,54 @@ class Event(models.Model):
         'initiator',
         string="Terminators",
         help="Other events that reconcile the current event")
-    is_reconciled = fields.Boolean(
-        "Reconciled",
-        compute='_is_reconciled',
+    balance = fields.Float(
+        "Balance",
+        compute='_balance',
         store=True)
 
     @api.depends('initiators', 'terminators')
-    def _is_reconciled(self):
+    def _balance(self):
         for event in self:
             # check that the initiator event is reconciled
             sum_t = sum(i.terminator_quantity for i in event.initiators)
             sum_i = sum(t.initiator_quantity for t in event.terminators)
-            if sum_i + sum_t == event.quantity:
-                event.is_reconciled = True
-            else:
-                event.is_reconciled = False
+            event.balance = event.quantity - sum_i - sum_t
+
+
+class ReconcileWizard(models.TransientModel):
+    """Wizard used to reconcile events
+    """
+    _inherit = 'rea.event.duality'
+    _name = 'rea.event.wizard.reconcile'
+
+    def _initiator(self):
+        ids = self.env.context['active_ids']
+        if len(ids) != 2:
+            raise UserError('You can select only two events')
+        initiator, terminator = self.env['rea.event'].browse(ids)
+        return initiator.id
+
+    def _terminator(self):
+        ids = self.env.context['active_ids']
+        if len(ids) != 2:
+            raise UserError('You can select only two events')
+        initiator, terminator = self.env['rea.event'].browse(ids)
+        return terminator.id
+
+    initiator = fields.Many2one(
+        'rea.event',
+        default=_initiator,
+        string="Initiator Event")
+    terminator = fields.Many2one(
+        'rea.event',
+        default=_terminator,
+        string="Terminator Event")
+
+    def save_reconciliation(self):
+        # TODO use balance
+        for e in self:
+            records = self.read(load='_classic_write')
+            if len(records) != 1:
+                raise UserError("Wizard bug, shouldn't happen")
+            record = records[0]
+            self.env['rea.event.duality'].create(record)

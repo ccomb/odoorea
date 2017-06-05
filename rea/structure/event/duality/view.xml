@@ -10,7 +10,7 @@
         <xpath expr="//notebook" position="inside">
             <page string="Reconciliation">
                 <group>
-                    <field name="is_reconciled"/>
+                    <field name="balance"/>
                 </group>
                 <group>
                     <p>Here you can associate related events</p>
@@ -50,7 +50,7 @@
     <field name="inherit_id" ref="rea_event_tree_view" />
     <field name="arch" type="xml">
         <xpath expr="//tree" position="inside">
-            <field name="is_reconciled"/>
+            <field name="balance"/>
         </xpath>
     </field>
 </record>
@@ -63,11 +63,62 @@
         <xpath expr="//search/group[1]" position="inside">
             <filter name="unreconciled_events"
                     string="Unreconciled"
-                    domain="[('is_reconciled','=',False)]"
+                    domain="[('balance','=',0)]"
                     help="Show unreconciled events"/>
         </xpath>
     </field>
 </record>
+
+        <!-- Wizard to reconcile events -->
+        <record id="rea_event_reconcile_wizard_view" model="ir.ui.view">
+            <field name="name">Reconcile...</field>
+            <field name="model">rea.event.wizard.reconcile</field>
+            <field name="arch" type="xml">
+                <form string="Reconciling events">
+                    <label string="Choose the quantity to affect to each event so that they are partially or fully reconciled. By default the full balance is selected so that events are fully reconciled."/>
+                    <group string="First event">
+                        <div>
+                            <field name="initiator" readonly="1" nolabel="1" style="margin: 0.5em"/>
+                            : <field name="initiator_quantity" class="oe_inline" style="margin: 0.5em"/>
+                            <field name="initiator_resource_type" readonly="1" class="oe_inline" nolabel="1" style="margin: 0.5em"/>
+                        </div>
+                    </group>
+                    <group string="Second event">
+                        <div>
+                            <field name="terminator" class="oe_inline" readonly="1" nolabel="1" style="margin: 0.5em"/>
+                            : <field name="terminator_quantity" class="oe_inline" nolabel="1" style="margin: 0.5em"/>
+                            <field name="terminator_resource_type" readonly="1" class="oe_inline" nolabel="1" style="margin: 0.5em"/>
+                        </div>
+                    </group>
+                    <footer>
+                        <button string="Confirm" name="save_reconciliation" type="object" default_focus="1" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="rea_event_reconcile_wizard_action" model="ir.actions.act_window">
+            <field name="name">Reconcile two events...</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">rea.event.wizard.reconcile</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="rea_event_reconcile_wizard_view"/>
+            <field name="context">{}</field>
+            <field name="target">new</field>
+            <field name="help">This wizard will save the proposed reconciliation.</field>
+        </record>
+
+        <record model="ir.values" id="rea_event_reconcile_wizard_irvalues">
+            <field name="model_id" ref="model_rea_event" />
+            <field name="name">Reconcile two events...</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('rea_event_reconcile_wizard_action'))" />
+            <field name="key">action</field>
+            <field name="model">rea.event</field>
+        </record>
 
 </data>
 </odoo>
