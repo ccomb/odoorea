@@ -2,124 +2,137 @@
 <openerp>
 <data>
 
-    <!-- PROCESS -->
-    <!-- TODO not sure it's useful -->
-    <record model="ir.ui.view" id="rea_process_form_view">
-        <field name="name">rea.process.form</field>
-        <field name="model">rea.process</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                </header>
-                <sheet>
-                    <group>
-                        <field name="type"/>
-                        <field name="name"/>
-                        <field name="events"/>
-                    </group>
-                </sheet>
-                <div class="oe_chatter"></div>
-            </form>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="rea_process_search_view">
-        <field name="name">rea.process.search</field>
-        <field name="model">rea.process</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <group expand="0" string="Group By">
-                    <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
+<!-- PROCESS -->
+<record model="ir.ui.view" id="rea_process_form_view">
+    <field name="name">rea.process.form</field>
+    <field name="model">rea.process</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+            </header>
+            <sheet>
+                <group>
+                    <field name="type"/>
+                    <field name="name"/>
+                    <field name="reconciliations">
+                        <tree>
+                            <field name="event"/>
+                            <field name="quantity"/>
+                            <field name="resource_type"/>
+                        </tree>
+                    </field>
                 </group>
-            </search>
-        </field>
-    </record>
+            </sheet>
+            <div class="oe_chatter"></div>
+        </form>
+    </field>
+</record>
 
-    <record model="ir.ui.view" id="rea_process_tree_view">
-        <field name="name">rea.process.tree</field>
-        <field name="model">rea.process</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="type"/>
-            </tree>
-        </field>
-    </record>
+<record model="ir.ui.view" id="rea_process_search_view">
+    <field name="name">rea.process.search</field>
+    <field name="model">rea.process</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+            <group expand="0" string="Group By">
+                <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
+            </group>
+        </search>
+    </field>
+</record>
 
-    <record model="ir.actions.act_window" id="rea_process_act_window">
-        <field name="name">Processes</field>
-        <field name="res_model">rea.process</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-    </record>
+<record model="ir.ui.view" id="rea_process_tree_view">
+    <field name="name">rea.process.tree</field>
+    <field name="model">rea.process</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="type"/>
+        </tree>
+    </field>
+</record>
 
-    <record model="ir.ui.menu" id="menu_rea_process">
-        <field name="name">Processes</field>
-        <field name="parent_id" ref="menu_processes"/>
-        <field name="action" ref="rea_process_act_window"/>
-        <field name="sequence" eval="20"/>
-    </record>
+<record model="ir.actions.act_window" id="rea_process_act_window">
+    <field name="name">Processes</field>
+    <field name="res_model">rea.process</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+</record>
+
+<record model="ir.ui.menu" id="menu_rea_process">
+    <field name="name">Processes</field>
+    <field name="parent_id" ref="menu_processes"/>
+    <field name="action" ref="rea_process_act_window"/>
+    <field name="sequence" eval="20"/>
+</record>
 
 
-    <!-- PROCESS TYPE -->
-    <record model="ir.ui.view" id="rea_process_type_form_view">
-        <field name="name">rea.process.type.form</field>
-        <field name="model">rea.process.type</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                </header>
-                <sheet>
-                    <group>
-                        <field name="kind"/>
-                        <field name="name"/>
-                        <field name="event_types"/>
-                    </group>
-                </sheet>
-                <div class="oe_chatter"></div>
-            </form>
-        </field>
-    </record>
+<!-- PROCESS TYPE -->
+<record model="ir.ui.view" id="rea_process_type_form_view">
+    <field name="name">rea.process.type.form</field>
+    <field name="model">rea.process.type</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+            </header>
+            <sheet>
+                <div class="oe_title">
+                    <field name="kind"/>
+                    <h1>
+                        <field name="name" placeholder="Event Group Name"/>
+                    </h1>
+                </div>
+                <group>
+                    <field name="event_types"/>
+                </group>
+                <group string="Behaviours">
+                    <notebook>
+                    </notebook>
+                </group>
+            </sheet>
+            <div class="oe_chatter"></div>
+        </form>
+    </field>
+</record>
 
-    <record model="ir.ui.view" id="rea_process_type_search_view">
-        <field name="name">rea.process.type.search</field>
-        <field name="model">rea.process.type</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <field name="kind"/>
-                <field name="event_types"/>
-            </search>
-        </field>
-    </record>
+<record model="ir.ui.view" id="rea_process_type_search_view">
+    <field name="name">rea.process.type.search</field>
+    <field name="model">rea.process.type</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+            <field name="kind"/>
+            <field name="event_types"/>
+        </search>
+    </field>
+</record>
 
-    <record model="ir.ui.view" id="rea_process_type_tree_view">
-        <field name="name">rea.process.type.tree</field>
-        <field name="model">rea.process.type</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="kind"/>
-            </tree>
-        </field>
-    </record>
+<record model="ir.ui.view" id="rea_process_type_tree_view">
+    <field name="name">rea.process.type.tree</field>
+    <field name="model">rea.process.type</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="kind"/>
+        </tree>
+    </field>
+</record>
 
-    <record model="ir.actions.act_window" id="rea_process_type_act_window">
-        <field name="name">Process Types</field>
-        <field name="res_model">rea.process.type</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-    </record>
+<record model="ir.actions.act_window" id="rea_process_type_act_window">
+    <field name="name">Process Types</field>
+    <field name="res_model">rea.process.type</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+</record>
 
-    <record model="ir.ui.menu" id="menu_rea_process_type">
-        <field name="name">Process Types</field>
-        <field name="parent_id" ref="menu_processes"/>
-        <field name="action" ref="rea_process_type_act_window"/>
-        <field name="sequence" eval="10"/>
-    </record>
+<record model="ir.ui.menu" id="menu_rea_process_type">
+    <field name="name">Process Types</field>
+    <field name="parent_id" ref="menu_processes"/>
+    <field name="action" ref="rea_process_type_act_window"/>
+    <field name="sequence" eval="10"/>
+</record>
 
 </data>
 </openerp>

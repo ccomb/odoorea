@@ -1,12 +1,14 @@
 from openerp import fields, models
 
 
-class Process(models.Model):
-    """ Set of events bound by a duality relationship.
-    TODO not sure it's useful
+class Process(models.Model):  # TODO ProcessInstance?
+    """ Set of partial events bound by a duality relationship.
+    (partial events are reconciliations)
+    This can be compared to an enhanced letter of reconciliation
     """
     _name = 'rea.process'
     _description = 'Process'
+    _inherit = ['rea.ident.sequence']
 
     name = fields.Char(
         string="name",
@@ -15,9 +17,20 @@ class Process(models.Model):
     type = fields.Many2one(
         'rea.process.type',
         string="Process Type")
-    events = fields.Many2many(
-        'rea.event',
-        string="Events")
+    reconciliations = fields.One2many(
+        'rea.event.reconciliation',
+        'process',
+        string="Reconciliations")
+
+    def unlink(self):
+        for p in self:
+            events = [r.event for r in p.reconciliations]
+            super(Process, p).unlink()
+            for event in events:
+                # force recompute as it is not triggered
+                event.write(
+                    {'balance':
+                        event.quantity - sum(r.quantity for r in event.reconciliations)})
 
 
 class ProcessType(models.Model):
@@ -27,6 +40,7 @@ class ProcessType(models.Model):
     """
     _name = 'rea.process.type'
     _description = 'Process Type'
+    _inherit = ['rea.ident.sequence.store']
 
     name = fields.Char(
         string="name",

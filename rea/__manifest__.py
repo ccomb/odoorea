@@ -42,7 +42,6 @@
         'base/res_users.xml',
     ],
     'demo': [
-        'tests/data.xml',
     ],
     'auto_install': False,
     'web': False,

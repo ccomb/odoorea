@@ -2,144 +2,149 @@ from odoo import fields, models, api
 from odoo.exceptions import ValidationError, UserError
 
 
-class EventDuality(models.Model):
-    """Reconciliation between two Events
-    Events should be in opposite directions
-    (one increment and one decrement)
+class Reconciliation(models.Model):
+    """Reconciliation between two or more Events
     """
-    _name = 'rea.event.duality'
-    _description = "Event Duality"
+    _name = 'rea.event.reconciliation'
+    _description = "Event Reconciliation"
 
-    initiator = fields.Many2one(
-        'rea.event',
-        string="Initiator Event")
-    initiator_quantity = fields.Float(
-        required=True,
-        string="Quantity")
-    initiator_resource_type = fields.Many2one(
-        'rea.resource.type',
-        related='initiator.resource_type',
-        readonly=True,
-        string="Resource Type")
-    terminator = fields.Many2one(
+    process = fields.Many2one(
+        'rea.process',
+        ondelete='cascade')
+    event = fields.Many2one(
         'rea.event',
         required=True,
-        string="Terminator Event")
-    terminator_quantity = fields.Float(
+        string="Event")
+    quantity = fields.Float(
         required=True,
         string="Quantity")
-    terminator_resource_type = fields.Many2one(
+    resource_type = fields.Many2one(
         'rea.resource.type',
-        related='terminator.resource_type',
+        related='event.resource_type',
         readonly=True,
         string="Resource Type")
 
-    @api.onchange('initiator')
-    def onchange_initiator(self):
+    def unlink(self):
+        events = self.env['rea.event'].browse([r.event.id for r in self])
+        for r in self:
+            process = r.process
+            super(Reconciliation, r).unlink()
+            if len(process.reconciliations) == 0:
+                process.unlink()
+        events.check_agents()
+
+    @api.onchange('event')
+    def onchange_event(self):
         for d in self:
-            d.initiator_quantity = d.initiator.balance
+            d.quantity = d.event.balance
 
-    @api.onchange('terminator')
-    def onchange_terminator(self):
-        for d in self:
-            d.terminator_quantity = d.terminator.balance
-
-    @api.constrains('initiator', 'terminator')
-    def constrain_opposite_directions(self):
-        for duality in self:
-            i, t = duality.initiator, duality.terminator
-            if i.provider != t.receiver or i.receiver != t.provider:
-                raise ValidationError(
-                    "Events should have opposite provider and receiver")
-
-    @api.constrains('initiator_quantity', 'terminator_quantity')
+    @api.constrains('quantity')
     def constrain_quantity(self):
-        for duality in self:
-            if duality.initiator_quantity > duality.initiator.quantity:
+        for r in self:
+            if r.quantity > r.event.quantity:
                 raise ValidationError(
                     'Assigned quantity higher than related event %s',
-                    duality.initiator.name)
-            if duality.terminator_quantity > duality.terminator.quantity:
-                raise ValidationError(
-                    'Assigned quantity higher than related event %s',
-                    duality.terminator.name)
-            if duality.initiator_quantity <= 0:
-                raise ValidationError(
-                    'Assigned quantity cannot be zero or negative')
-            if duality.terminator_quantity <= 0:
+                    r.event.name)
+            if r.quantity <= 0:
                 raise ValidationError(
                     'Assigned quantity cannot be zero or negative')
 
 
 class Event(models.Model):
-    """add duality info on the event
+    """add reconciliation info on the event
     """
     _inherit = 'rea.event'
 
-    initiators = fields.One2many(
-        'rea.event.duality',
-        'terminator',
-        string="Initiators",
-        help="Other events reconciled with the current event")
-    terminators = fields.One2many(
-        'rea.event.duality',
-        'initiator',
-        string="Terminators",
-        help="Other events that reconcile the current event")
+    reconciliations = fields.One2many(
+        'rea.event.reconciliation',
+        'event',
+        string="Reconciliations",
+        help="Partial quantities reconciled and assigned to a process")
     balance = fields.Float(
-        "Balance",
+        "Unreconciled",
         compute='_balance',
         store=True)
 
-    @api.depends('initiators', 'terminators')
+    @api.depends('reconciliations')
     def _balance(self):
         for event in self:
-            # check that the initiator event is reconciled
-            sum_t = sum(i.terminator_quantity for i in event.initiators)
-            sum_i = sum(t.initiator_quantity for t in event.terminators)
-            event.balance = event.quantity - sum_i - sum_t
+            # check that the event is reconciled
+            assigned = sum(r.quantity for r in event.reconciliations)
+            event.balance = event.quantity - assigned
+
+    def check_agents(self):
+        agents = {}
+        for e in self:
+            agents.setdefault(e.provider.id, {'r': 0, 'p': 0})
+            agents.setdefault(e.receiver.id, {'r': 0, 'p': 0})
+            agents[e.provider.id]['p'] += 1
+            agents[e.receiver.id]['r'] += 1
+        if any(any([i['r'] == 0, i['p'] == 0]) for i in agents.values()):
+            raise ValidationError(
+                u"Invalid reconciliation: "
+                u"at least one agent is not both a receiver and a provider")
+        if len(self) < 2:
+            raise ValidationError(
+                u"Invalid reconciliation: "
+                u"two events or more should be selected")
 
 
 class ReconcileWizard(models.TransientModel):
     """Wizard used to reconcile events
     """
-    _inherit = 'rea.event.duality'
-    _name = 'rea.event.wizard.reconcile'
+    _name = 'rea.event.reconciliation.wizard'
 
-    def check_agents(self, i, t):
-        if i.provider != t.receiver or i.receiver != t.provider:
-            raise ValidationError(
-                "Events should have opposite provider and receiver")
+    def _reconciliations(self):
+        ids = self.env.context.get('active_ids')
+        if not ids or self.env.context.get('norecs'):
+            return []
+        events = self.env['rea.event'].browse(ids)
+        events.check_agents()
+        rec_ids = []
+        for e in events:
+            if e.balance <= 0:
+                continue
+            rec = self.with_context(
+                {'norecs': True}
+            ).create(
+                {'event': e.id, 'quantity': e.balance})
+            rec_ids.append(rec.id)
+        if not rec_ids:
+            raise UserError(u"Nothing to reconcile")
+        return [(6, 0, rec_ids)]
 
-    def _initiator(self):
-        ids = self.env.context['active_ids']
-        if len(ids) != 2:
-            raise UserError('You can select only two events')
-        initiator, terminator = self.env['rea.event'].browse(ids)
-        self.check_agents(initiator, terminator)
-        return initiator.id
-
-    def _terminator(self):
-        ids = self.env.context['active_ids']
-        if len(ids) != 2:
-            raise UserError('You can select only two events')
-        initiator, terminator = self.env['rea.event'].browse(ids)
-        return terminator.id
-
-    initiator = fields.Many2one(
+    process_type = fields.Many2one(
+        'rea.process.type')
+    event = fields.Many2one(
         'rea.event',
-        default=_initiator,
-        string="Initiator Event")
-    terminator = fields.Many2one(
-        'rea.event',
-        default=_terminator,
-        string="Terminator Event")
+        string="Event")
+    quantity = fields.Float(
+        string="Quantity")
+    resource_type = fields.Many2one(
+        'rea.resource.type',
+        related='event.resource_type',
+        readonly=True,
+        string="Resource Type")
+
+    reconciliation = fields.Many2one(
+        'rea.event.reconciliation.wizard',
+        string="Reconciliation")
+    reconciliations = fields.One2many(
+        'rea.event.reconciliation.wizard',
+        'reconciliation',
+        default=_reconciliations,
+        string="Reconciliations")
 
     def save_reconciliation(self):
-        # TODO use balance
-        for e in self:
-            records = self.read(load='_classic_write')
+        process = self.env['rea.process'].create(
+            {'type': self.process_type.id})
+        if not process.name:
+            raise UserError(u"Please configure "
+                            u"an automatic numbering for processes")
+        for r in self.reconciliations:
+            records = r.read(load='_classic_write')
             if len(records) != 1:
                 raise UserError("Wizard bug, shouldn't happen")
             record = records[0]
-            self.env['rea.event.duality'].create(record)
+            record['process'] = process.id
+            self.env['rea.event.reconciliation'].create(record)
