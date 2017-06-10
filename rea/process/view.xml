@@ -11,9 +11,13 @@
             <header>
             </header>
             <sheet>
-                <group>
+                <div class="oe_title">
                     <field name="type"/>
-                    <field name="name"/>
+                    <h1>
+                        <field name="name" placeholder="Event Group Name"/>
+                    </h1>
+                </div>
+                <group>
                     <field name="reconciliations">
                         <tree>
                             <field name="event"/>

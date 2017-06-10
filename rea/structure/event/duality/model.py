@@ -25,13 +25,14 @@ class Reconciliation(models.Model):
         string="Resource Type")
 
     def unlink(self):
-        events = self.env['rea.event'].browse([r.event.id for r in self])
         for r in self:
             process = r.process
             super(Reconciliation, r).unlink()
             if len(process.reconciliations) == 0:
                 process.unlink()
-        events.check_agents()
+            events = self.env['rea.event'].browse(
+                [r.event.id for r in process.reconciliations])
+            events.check_agents()
 
     @api.onchange('event')
     def onchange_event(self):
@@ -148,3 +149,6 @@ class ReconcileWizard(models.TransientModel):
             record = records[0]
             record['process'] = process.id
             self.env['rea.event.reconciliation'].create(record)
+        events = self.env['rea.event'].browse(
+            [r.event.id for r in process.reconciliations])
+        events.check_agents()
