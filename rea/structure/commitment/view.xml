@@ -115,6 +115,7 @@
                         <field name="kind"/>
                         <field name="provider_type"/>
                         <field name="receiver_type"/>
+                        <field name="resource_types" widget="many2many_tags"/>
                         <field name="contract_type"/>
                     </group>
                     <group string="Behaviours">

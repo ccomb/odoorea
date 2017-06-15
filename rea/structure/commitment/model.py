@@ -20,14 +20,12 @@ class Commitment(models.Model):
                 return agent
 
     @api.onchange('type')
-    def _change_receiver(self):
+    def _change_type(self):
         for commitment in self:
             commitment.receiver = commitment._default_receiver()
-
-    @api.onchange('type')
-    def _change_provider(self):
-        for commitment in self:
             commitment.provider = commitment._default_provider()
+        return {'domain': {'resource_type':
+                [('id', 'in', [t.id for t in self.type.resource_types])]}}
 
     @api.constrains('reserved_resources')
     def _check_reserved_resources(self):
@@ -100,25 +98,26 @@ class CommitmentType(models.Model):
     _inherit = ['rea.ident.sequence.store']
 
     name = fields.Char(
-        string="name",
+        string=u"name",
         required=True,
         index=True)
     kind = fields.Selection([
         ('increment', 'Increment'),
         ('decrement', 'Decrement')],
-        string="Kind")
+        string=u"Kind")
     contract_type = fields.Many2one(
         'rea.contract.type',
-        string="Contract Type")
+        string=u"Contract Type")
     provider_type = fields.Many2one(
         'rea.agent.type',
-        string="Provider Type")
+        string=u"Provider Type")
     receiver_type = fields.Many2one(
         'rea.agent.type',
-        string="Receiver Receiver")
+        string=u"Receiver Receiver")
     resource_types = fields.Many2many(
         'rea.resource.type',
-        string="Resource Types permitted for this commitment type")
+        string=u"Resource types",
+        help=u"Resource Types permitted for this commitment type")
     resource_groups = fields.Many2one(
         'rea.resource.group',
         string="Resource Groups permitted for this commitment type")
