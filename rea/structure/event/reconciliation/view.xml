@@ -10,7 +10,7 @@
         <xpath expr="//notebook" position="inside">
             <page string="Reconciliations">
                 <group>
-                    <div class="oe_inline"><p><span>Unreconciled quantity: </span><field name="balance" style="margin: 0.5em"/><field name="resource_type" readonly="1"/></p>
+                    <div class="oe_inline"><p><span>Unreconciled quantity: </span><field name="balance" style="margin: 0.5em"/></p>
                     <p>Below are quantities assigned to processes.
                     Processes are used to link related events.
                     To reconcile events, select and reconcile them in the list view</p>
