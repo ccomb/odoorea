@@ -119,6 +119,14 @@ class ReconcileWizard(models.TransientModel):
     event = fields.Many2one(
         'rea.event',
         string="Event")
+    provider = fields.Many2one(
+        'rea.agent',
+        related='event.provider',
+        readonly=True)
+    receiver = fields.Many2one(
+        'rea.agent',
+        related='event.receiver',
+        readonly=True)
     quantity = fields.Float(
         string="Quantity")
     resource_type = fields.Many2one(

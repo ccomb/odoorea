@@ -69,8 +69,10 @@
             <field name="reconciliations">
                 <tree editable="bottom">
                     <field name="event"/>
+                    <field name="provider"/>
                     <field name="quantity"/>
                     <field name="resource_type" readonly="1"/>
+                    <field name="receiver"/>
                 </tree>
             </field>
             <footer>
