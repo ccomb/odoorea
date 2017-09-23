@@ -79,11 +79,13 @@ class SequenceIdentifier(models.AbstractModel):
     _name = 'rea.ident.sequence'
     _description = 'Identification behaviour'
 
-    @api.model
-    def create(self, vals):
-        ident_setup = self.type.browse(vals.get('type')).ident_setup
-        if not ident_setup:
-            return super(SequenceIdentifier, self).create(vals)
+    def update_vals(self, vals):
+        if vals.get('type'):
+            ident_setup = self.type.browse(vals.get('type')).ident_setup
+        elif self.type.ident_setup:
+            ident_setup = self.type.ident_setup
+        else:
+            return
         date_origin = ident_setup.date_origin
         date_field = ident_setup.date_field
         now = datetime.now(pytz.timezone(self.env.context.get('tz') or 'UTC'))
@@ -99,9 +101,16 @@ class SequenceIdentifier(models.AbstractModel):
                 vals[ident_setup.field] = ident_setup.name_choose(dt)
             else:
                 pass
+
+    @api.model
+    def create(self, vals):
+        self.update_vals(vals)
         return super(SequenceIdentifier, self).create(vals)
 
-    # TODO def duplicate?
+    def copy_data(self, default=None):
+        vals = {}
+        self.update_vals(vals)
+        return super(SequenceIdentifier, self).copy_data(default=vals)
 
     @api.depends('type')
     def _get_ident_setup(self):
