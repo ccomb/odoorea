@@ -1,5 +1,5 @@
 from odoo import fields, models, api, _
-from odoo.exceptions import UserError
+from odoo.exceptions import ValidationError
 
 
 class Contract(models.Model):
@@ -20,7 +20,7 @@ class Contract(models.Model):
             parties = c.parties
             if len(parties) > c.type.max_parties > 0:
                 c.parties = parties[:c.type.max_parties-1]
-                raise UserError(
+                raise ValidationError(
                     u"This contract type cannot have more than {} parties"
                     .format(c.type.max_parties))
 
@@ -32,6 +32,9 @@ class Contract(models.Model):
     type = fields.Many2one(
         'rea.contract.type',
         string="Type")
+    state = fields.Many2one(
+        'rea.contract.state',
+        string="State")
     groups = fields.Many2many(
         'rea.commitment.group',
         string="Groups")
@@ -43,6 +46,7 @@ class Contract(models.Model):
     clauses = fields.One2many(
         'rea.commitment',  # rea.contract.clause?
         'contract',
+        copy=True,
         string="Commitments",
         help="The commitments of the contract")
     terms = fields.One2many(
@@ -59,6 +63,40 @@ class Contract(models.Model):
         string="Signature date")
     validity = fields.Date(
         string="Valid until")
+    state = fields.Selection([
+        ('draft', u"Draft"),
+        ('confirmed', u"Confirmed"),
+        ('canceled', u"Canceled")],
+        default='draft',
+        string=u"state")
+
+    # state  TODO: merge with commitments?
+    def confirm(self):
+        for c in self:
+            if c.state == 'draft':
+                c.write({'state': 'confirmed'})
+                c.clauses.confirm()
+            else:
+                raise ValidationError(
+                    u"Contract {} cannot be confirmed".format(c.name))
+
+    def cancel(self):
+        for c in self:
+            if c.state == 'confirmed':
+                c.write({'state': 'canceled'})
+                c.clauses.cancel()
+            else:
+                raise ValidationError(
+                    u"Contract {} cannot be canceled".format(c.name))
+
+    def unlink(self):
+        for c in self:
+            if (c.state == 'draft'
+                    or c.state == 'canceled' and c.type.allow_delete):
+                super(Contract, c).unlink()
+            else:
+                raise ValidationError(
+                    u"Contract {} cannot be deleted".format(c.name))
 
 
 class ContractType(models.Model):
@@ -80,6 +118,9 @@ class ContractType(models.Model):
     commitment_types = fields.Many2many(
         'rea.commitment.type',
         string="Commitment Types")
+    allow_delete = fields.Boolean(
+        u"Allow to delete",
+        help=u"Allow to delete draft or canceled contracts")
 
 
 class ContractGroup(models.Model):
@@ -97,7 +138,7 @@ class ContractGroup(models.Model):
         string="Group")
 
 
-class Term(models.Model):
+class ContractTerm(models.Model):
     """ What happens if clauses are not fullfilled
     (generate additional commitments)
     """
@@ -116,3 +157,15 @@ class Term(models.Model):
 
 
 # TODO ClauseType ??
+
+
+class ContractState(models.Model):
+    """State of contracts
+    """
+    _name = 'rea.contract.state'
+
+    code = fields.Char(u"Code")
+    name = fields.Char(u"Name")
+    type = fields.Many2one(
+        'rea.contract.type',
+        string=u"Contract type")

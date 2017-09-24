@@ -9,6 +9,12 @@
         <field name="arch" type="xml">
             <form>
                 <header>
+                    <button name="confirm" string="Confirm" type="object" states="draft" class="btn-primary"/>
+                    <button name="fulfill" string="Fulfill..." type="object" states="confirmed" class="btn-primary"/>
+                    <button name="cancel" string="Cancel" type="object" states="confirmed" class="btn-primary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
+
+
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -28,7 +34,7 @@
                         </group>
                         <group>
                             <field name="date"/>
-                            <field name="groups" widget="many2many_tags"/>
+                            <field name="autofulfill"/>
                         </group>
                     </group>
                     <notebook>
@@ -77,6 +83,7 @@
                 <field name="receiver"/>
                 <field name="quantity"/>
                 <field name="resource_type"/>
+                <field name="state"/>
             </tree>
         </field>
     </record>
@@ -112,11 +119,19 @@
                         </h1>
                     </div>
                     <group>
-                        <field name="kind"/>
-                        <field name="provider_type"/>
-                        <field name="receiver_type"/>
-                        <field name="resource_types" widget="many2many_tags"/>
-                        <field name="contract_type"/>
+                        <group>
+                            <field name="kind"/>
+                            <field name="provider_type"/>
+                            <field name="resource_types" widget="many2many_tags"/>
+                            <field name="receiver_type"/>
+                            <field name="contract_type"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="autofulfill"/>
+                            <field name="allow_delete"/>
+                        </group>
                     </group>
                     <group string="Behaviours">
                         <notebook>
@@ -181,7 +196,6 @@
                         </h1>
                     </div>
                     <group>
-                        <field name="groups"/>
                     </group>
                 </sheet>
                 <div class="oe_chatter"></div>
@@ -195,7 +209,6 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
-                <field name="groups"/>
             </search>
         </field>
     </record>

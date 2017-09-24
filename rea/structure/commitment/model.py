@@ -19,24 +19,6 @@ class Commitment(models.Model):
             if agent.type == self.type.receiver_type:
                 return agent
 
-    @api.onchange('type')
-    def _change_type(self):
-        for commitment in self:
-            commitment.receiver = commitment._default_receiver()
-            commitment.provider = commitment._default_provider()
-        return {'domain': {'resource_type':
-                [('id', 'in', [t.id for t in self.type.resource_types])]}}
-
-    @api.constrains('reserved_resources')
-    def _check_reserved_resources(self):
-        for commitment in self:
-            for resource in commitment.reserved_resources:
-                nb_reservations = len(resource.reserved)
-                max_reservations = resource.type.max_reservations
-                if nb_reservations > max_reservations:
-                    raise ValidationError(
-                        "Selected resource is not available")
-
     name = fields.Char(
         string="name",
         required=True,
@@ -46,6 +28,12 @@ class Commitment(models.Model):
         'rea.commitment.type',
         domain="[('contract_type', '=', contract_type)]",
         string="Type")
+    state = fields.Selection([
+        ('draft', u"Draft"),
+        ('confirmed', u"Confirmed"),
+        ('canceled', u"Canceled")],
+        default='draft',
+        string=u"state")
     groups = fields.Many2many(
         'rea.commitment.group',
         string="Groups")
@@ -66,7 +54,9 @@ class Commitment(models.Model):
         string="Reserved Resources")
     contract = fields.Many2one(
         'rea.contract',
-        string="Contract")
+        string="Contract",
+        copy=False,
+        ondelete='cascade')
     contract_type = fields.Many2one(  # just for a domain
         'rea.contract.type',
         compute='_contract_type')
@@ -78,16 +68,65 @@ class Commitment(models.Model):
         'rea.agent',
         default=_default_receiver,
         string="Receiver")
+    autofulfill = fields.Boolean(  # TODO
+        u"Automatic",
+        help=u"Automatically fulfill to an event at due date")
+
+    @api.onchange('type')
+    def _change_type(self):
+        for commitment in self:
+            commitment.receiver = commitment._default_receiver()
+            commitment.provider = commitment._default_provider()
+        return {'domain': {'resource_type':
+                [('id', 'in', [t.id for t in self.type.resource_types])]}}
+
+    @api.constrains('reserved_resources')
+    def _check_reserved_resources(self):
+        for commitment in self:
+            for resource in commitment.reserved_resources:
+                nb_reservations = len(resource.reserved)
+                max_reservations = resource.type.max_reservations
+                if nb_reservations > max_reservations:
+                    raise ValidationError(
+                        "Selected resource is not available")
 
     @api.depends('contract')
     def _contract_type(self):
         for commitment in self:
             commitment.contract_type = commitment.contract.type
 
-    def fulfill(self):
-        """Create the event
+    def fulfill(self, amount=None, ratio=None):
+        """Create the full event if no args are given
+        Otherwise create a partial event corresponding to the amount or ratio
         """
-        raise NotImplementedError
+        raise NotImplementedError  # TODO
+        for c in self:
+            commitment = c.read()
+            self.env['rea.event'].create(commitment)
+
+    # state
+    def confirm(self):
+        for c in self:
+            if c.state == 'draft':
+                c.write({'state': 'confirmed'})
+            else:
+                raise ValidationError(
+                    u"Commitment {} cannot be confirmed".format(c.name))
+
+    def cancel(self):
+        for c in self:
+            # TODO cannot cancel a commitment linked to a signed contract
+            if c.state == 'confirmed':
+                c.write({'state': 'canceled'})
+
+    def unlink(self):
+        for c in self:
+            if (c.state == 'draft'
+                    or (c.state == 'canceled' and c.type.allow_delete)):
+                super(Commitment, c).unlink()
+            else:
+                raise ValidationError(
+                    u"Commitment {} cannot be deleted".format(c.name))
 
 
 class CommitmentType(models.Model):
@@ -113,7 +152,7 @@ class CommitmentType(models.Model):
         string=u"Provider Type")
     receiver_type = fields.Many2one(
         'rea.agent.type',
-        string=u"Receiver Receiver")
+        string=u"Receiver Type")
     resource_types = fields.Many2many(
         'rea.resource.type',
         string=u"Resource types",
@@ -121,6 +160,12 @@ class CommitmentType(models.Model):
     resource_groups = fields.Many2one(
         'rea.resource.group',
         string="Resource Groups permitted for this commitment type")
+    autofulfill = fields.Boolean(  # TODO
+        u"Automatic",
+        help=u"Automatically fulfill to events at due date")
+    allow_delete = fields.Boolean(
+        u"Allow to delete",
+        help=u"Allow to delete canceled commitments")
 
 
 class CommitmentGroup(models.Model):
@@ -133,6 +178,3 @@ class CommitmentGroup(models.Model):
         string="name",
         required=True,
         index=True)
-    groups = fields.Many2one(
-        'rea.commitment.group',
-        string="Group")

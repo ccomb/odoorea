@@ -9,6 +9,9 @@
         <field name="arch" type="xml">
             <form>
                 <header>
+                    <button name="confirm" string="Confirm" type="object" states="draft" class="btn-primary"/>
+                    <button name="cancel" string="Cancel" type="object" states="confirmed" class="btn-primary"/>
+                    <field name="state" widget="statusbar" />
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -70,6 +73,7 @@
                 <field name="type"/>
                 <field name="start"/>
                 <field name="end"/>
+                <field name="state"/>
             </tree>
         </field>
     </record>
@@ -106,11 +110,12 @@
                     </div>
                     <group>
                         <group>
-                        <field name="party_types" widget="many2many_tags"/>
-                        <field name="max_parties"/>
+                            <field name="party_types" widget="many2many_tags"/>
+                            <field name="commitment_types" widget="many2many_tags"/>
                         </group>
                         <group>
-                        <field name="commitment_types"/>
+                            <field name="max_parties"/>
+                            <field name="allow_delete"/>
                         </group>
                     </group>
                     <group string="Behaviours">
