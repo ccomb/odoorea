@@ -9,9 +9,9 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="confirm" string="Confirm" type="object" states="draft" class="btn-primary"/>
-                    <button name="cancel" string="Cancel" type="object" states="confirmed" class="btn-primary"/>
-                    <field name="state" widget="statusbar" />
+                    <!--button name="confirm" string="Confirm" type="object" states="draft" class="btn-primary"/>
+                    <button name="cancel" string="Cancel" type="object" states="confirmed" class="btn-primary"/-->
+                    <field name="step" widget="statusbar" />
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -73,7 +73,7 @@
                 <field name="type"/>
                 <field name="start"/>
                 <field name="end"/>
-                <field name="state"/>
+                <field name="step"/>
             </tree>
         </field>
     </record>
@@ -257,7 +257,7 @@
         <field name="sequence" eval="20"/>
     </record>
 
-    <!-- add an ident page in the notebooks -->
+    <!-- add an ident page in the notebook -->
     <record model="ir.ui.view" id="rea_contract_type_form_view_ident">
         <field name="inherit_id" ref="rea.rea_contract_type_form_view"/>
         <field name="model">rea.contract.type</field>
@@ -274,5 +274,6 @@
             </xpath>
         </field>
     </record>
+    <!-- add a lifecycle page in the notebook -->
 </data>
 </openerp>

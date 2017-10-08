@@ -73,7 +73,7 @@ class IdentifierTypeSetup(models.AbstractModel):
         string="Ident setup")
 
 
-class SequenceIdentifier(models.AbstractModel):
+class SequenceIdentifiable(models.AbstractModel):
     """ configurable Name identifier
     """
     _name = 'rea.ident.sequence'
@@ -105,12 +105,12 @@ class SequenceIdentifier(models.AbstractModel):
     @api.model
     def create(self, vals):
         self.update_vals(vals)
-        return super(SequenceIdentifier, self).create(vals)
+        return super(SequenceIdentifiable, self).create(vals)
 
     def copy_data(self, default=None):
         vals = {}
         self.update_vals(vals)
-        return super(SequenceIdentifier, self).copy_data(default=vals)
+        return super(SequenceIdentifiable, self).copy_data(default=vals)
 
     @api.depends('type')
     def _get_ident_setup(self):

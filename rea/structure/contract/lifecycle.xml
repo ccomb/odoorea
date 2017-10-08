@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+<!-- Step form -->
+<record id="rea_contract_step_form_view" model="ir.ui.view">
+    <field name="name">Step</field>
+    <field name="model">rea.contract.step</field>
+    <field name="priority" eval="8"/>
+    <field name="arch" type="xml">
+    <form string="Contract step">
+        <div class="oe_title">
+            <h1><field name="name" select="1"/></h1>
+        </div>
+        <group>
+            <group>
+                <field name="state"/>
+                <field name="progress" string="Progress"/>
+                <field name="sequence" invisible="1" />
+            </group>
+        </group>
+        <notebook>
+            <page string="Description">
+                <field name="description"/>
+            </page>
+        </notebook>
+    </form>
+    </field>
+</record>
+
+<!-- Search contracts by step -->
+<record id="rea_contract_search_view_with_steps" model="ir.ui.view">
+    <field name="name">rea.contract.search</field>
+    <field name="model">rea.contract</field>
+    <field name="inherit_id" ref="rea_contract_search_view"/>
+    <field name="priority" eval="16"/>
+    <field name="arch" type="xml">
+        <xpath expr="//search" position="inside">
+                <filter name="contracts_by_step"
+                        string="Step"
+                        context="{'group_by': ['step']}"
+                        help="Group contracts by step"/>
+        </xpath>
+    </field>
+</record>
+
+<!-- Add a tab in the contract form -->
+<record id="rea_contract_form_view_with_steps" model="ir.ui.view">
+    <field name="name">Contract</field>
+    <field name="model">rea.contract</field>
+    <field name="inherit_id" ref="rea_contract_form_view" />
+    <field name="arch" type="xml">
+      <xpath expr="/form/header" position='inside'>
+        <field name="step" widget="statusbar" clickable="True"/>
+      </xpath>
+      <xpath expr="//notebook" position="inside">
+        <page string="Lifecycle">
+          <group col="9" colspan="2">
+            <button name="step_previous" string=""
+                    type="object" icon="fa-arrow-circle-o-left"/>
+            <button name="step_next" string=""
+              type="object" icon="fa-arrow-circle-o-right"/>
+            <field name="progress" string="Progress" widget="progressbar"/>
+          </group>
+        </page>
+      </xpath>
+    </field>
+</record>
+
+<!-- Add a tab in the type form -->
+<record id="rea_contract_type_form_view_with_steps" model="ir.ui.view">
+    <field name="model">rea.contract.type</field>
+    <field name="inherit_id" ref="rea.rea_contract_type_form_view" />
+    <field name="arch" type="xml">
+        <xpath expr="//notebook" position="inside">
+            <page string="Lifecycle">
+                <group>
+                    <p>Below is the list of possible steps for all contracts of this type. They also correspond to the columns of the kanban view.</p>
+                </group>
+                <field name="step_ids">
+                    <tree>
+                        <field name="sequence" widget="handle"/>
+                        <field name="name"/>
+                        <field name="state"/>
+                        <field name="progress"/>
+                    </tree>
+                </field>
+            </page>
+        </xpath>
+    </field>
+</record>
+
+<!-- Add a column in the contract list -->
+<record id="rea_contract_tree_view_with_steps" model="ir.ui.view">
+    <field name="model">rea.contract</field>
+    <field name="inherit_id" ref="rea_contract_tree_view" />
+    <field name="arch" type="xml">
+        <xpath expr="/tree" position="inside">
+            <field name="step"/>
+              <button name="step_previous" string=""
+                      type="object" icon="pager-last" />
+              <button name="step_next" string=""
+                type="object" icon="pager-next" />
+            <field name="progress" string="Progress" widget="progressbar"/>
+        </xpath>
+    </field>
+</record>
+
+</data>
+</odoo>
+
