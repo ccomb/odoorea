@@ -5,7 +5,7 @@
 <!-- Step form -->
 <record id="rea_contract_step_form_view" model="ir.ui.view">
     <field name="name">Step</field>
-    <field name="model">rea.contract.step</field>
+    <field name="model">rea.lifecycle.step</field>
     <field name="priority" eval="8"/>
     <field name="arch" type="xml">
     <form string="Contract step">
@@ -15,7 +15,6 @@
         <group>
             <group>
                 <field name="state"/>
-                <field name="progress" string="Progress"/>
                 <field name="sequence" invisible="1" />
             </group>
         </group>
@@ -60,14 +59,13 @@
                     type="object" icon="fa-arrow-circle-o-left"/>
             <button name="step_next" string=""
               type="object" icon="fa-arrow-circle-o-right"/>
-            <field name="progress" string="Progress" widget="progressbar"/>
           </group>
         </page>
       </xpath>
     </field>
 </record>
 
-<!-- Add a tab in the type form -->
+<!-- add a tab in the contract type form -->
 <record id="rea_contract_type_form_view_with_steps" model="ir.ui.view">
     <field name="model">rea.contract.type</field>
     <field name="inherit_id" ref="rea.rea_contract_type_form_view" />
@@ -82,7 +80,6 @@
                         <field name="sequence" widget="handle"/>
                         <field name="name"/>
                         <field name="state"/>
-                        <field name="progress"/>
                     </tree>
                 </field>
             </page>
@@ -98,10 +95,9 @@
         <xpath expr="/tree" position="inside">
             <field name="step"/>
               <button name="step_previous" string=""
-                      type="object" icon="pager-last" />
+                      type="object" icon="fa-arrow-circle-o-left" />
               <button name="step_next" string=""
-                type="object" icon="pager-next" />
-            <field name="progress" string="Progress" widget="progressbar"/>
+                type="object" icon="fa-arrow-circle-o-right" />
         </xpath>
     </field>
 </record>

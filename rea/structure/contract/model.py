@@ -8,8 +8,7 @@ class Contract(models.Model):
     _name = 'rea.contract'
     _description = "REA Contract"
     _inherit = ['rea.ident.sequence',
-                'rea.behaviour.lifecycle']
-    _behaviours = {'step': 'rea.contract.step'}
+                'rea.entity.lifecycleable']
 
     def _default_parties(self):
         """the relative company depends on the user
@@ -84,8 +83,8 @@ class Contract(models.Model):
 
     def unlink(self):
         for c in self:
-            if (c.state == 'draft'
-                    or c.state == 'canceled' and c.type.allow_delete):
+            if (not c.step or c.step.state == 'draft'
+                    or c.step.state == 'canceled' and c.type.allow_delete):
                 super(Contract, c).unlink()
             else:
                 raise ValidationError(
@@ -97,7 +96,8 @@ class ContractType(models.Model):
     """
     _name = 'rea.contract.type'
     _description = "Contract Type"
-    _inherit = ['rea.ident.sequence.store']
+    _inherit = ['rea.ident.sequence.store',
+                'rea.type.lifecycleable']
 
     name = fields.Char(
         string="Contract Type",
@@ -151,54 +151,3 @@ class ContractTerm(models.Model):
 
 # TODO ClauseType ??
 
-
-class ContractStep(models.Model):
-    """State of contracts
-    """
-    # TODO: make it dynamically optional
-    _inherit = 'rea.lifecycle.step'
-    _name = 'rea.contract.step'
-    type = fields.Many2one(
-        'rea.contract.type',
-        'Contract type',
-        required=True,
-        ondelete='cascade')
-
-
-class ContractWithStep(models.Model):
-    _inherit = 'rea.contract'
-
-    @api.model
-    def create(self, values):
-        """select the default step if parent is selected lately
-        """
-        if not values.get('step'):
-            type = self.type.browse(values['type'])
-            values['step'] = type.get_first_step()
-        values['progress'] = (self.step.browse(values['step']).progress
-                              if values['step'] else 0.0)
-        return super(ContractWithStep, self).create(values)
-
-    step = fields.Many2one(
-        'rea.contract.step',
-        'Step',
-        select=True,
-        domain="[('type','=',type)]")
-
-
-class ContractTypeWithStep(models.Model):
-    _inherit = 'rea.contract.type'
-
-    def get_first_step(self):
-        """ Return the id of the first step of a type"""
-        if len(self) == 0:
-            return False
-        steps = [(s.progress, s.id) for s in self.step_ids]
-        return sorted(steps)[0][1] if len(steps) else False
-
-    step_ids = fields.One2many(
-        'rea.contract.step',
-        'type',
-        'Steps',
-        copy=True,
-        help="The steps associated to this type")

@@ -73,7 +73,6 @@
                 <field name="type"/>
                 <field name="start"/>
                 <field name="end"/>
-                <field name="step"/>
             </tree>
         </field>
     </record>
@@ -274,6 +273,5 @@
             </xpath>
         </field>
     </record>
-    <!-- add a lifecycle page in the notebook -->
 </data>
 </openerp>
