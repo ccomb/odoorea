@@ -2,31 +2,6 @@
 <odoo>
 <data>
 
-<!-- Step form -->
-<record id="rea_contract_step_form_view" model="ir.ui.view">
-    <field name="name">Step</field>
-    <field name="model">rea.lifecycle.step</field>
-    <field name="priority" eval="8"/>
-    <field name="arch" type="xml">
-    <form string="Contract step">
-        <div class="oe_title">
-            <h1><field name="name" select="1"/></h1>
-        </div>
-        <group>
-            <group>
-                <field name="state"/>
-                <field name="sequence" invisible="1" />
-            </group>
-        </group>
-        <notebook>
-            <page string="Description">
-                <field name="description"/>
-            </page>
-        </notebook>
-    </form>
-    </field>
-</record>
-
 <!-- Search contracts by step -->
 <record id="rea_contract_search_view_with_steps" model="ir.ui.view">
     <field name="name">rea.contract.search</field>
@@ -73,15 +48,17 @@
         <xpath expr="//notebook" position="inside">
             <page string="Lifecycle">
                 <group>
-                    <p>Below is the list of possible steps for all contracts of this type. They also correspond to the columns of the kanban view.</p>
+                    <p>List of possible steps for contracts of this type. Steps correspond to the columns of the kanban view</p>
                 </group>
-                <field name="step_ids">
-                    <tree>
-                        <field name="sequence" widget="handle"/>
-                        <field name="name"/>
-                        <field name="state"/>
-                    </tree>
-                </field>
+                <group>
+                    <field name="steps"/>
+                </group>
+                <group>
+                    <p>List of transition buttons between steps for contracts of this type. Buttons appear in the form view of the contracts</p>
+                </group>
+                <group>
+                    <field name="transitions" context="{'model': 'rea.contract.type'}"/>
+                </group>
             </page>
         </xpath>
     </field>

@@ -38,6 +38,7 @@
         'structure/contract/view.xml',
         'structure/contract/lifecycle.xml',
         'behaviour/identifier/view.xml',
+        'behaviour/lifecycle/view.xml',
         'process/security.xml',
         'process/view.xml',
         'base/res_users.xml',

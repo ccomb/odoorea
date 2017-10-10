@@ -76,6 +76,7 @@
                 </header>
                 <sheet>
                     <div class="oe_title">
+                        <label for="name" string="Agent type"/>
                         <h1>
                             <field name="name" placeholder="Agent Type Name"/>
                         </h1>

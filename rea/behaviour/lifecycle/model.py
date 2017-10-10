@@ -46,6 +46,49 @@ class Step(models.Model):
     # - group of the user, etc...
 
 
+class Transition(models.Model):
+    """Transition between two steps
+    Allow to add dynamic transition buttons
+    """
+    _name = 'rea.lifecycle.transition'
+
+    def _get_entity_types(self):
+        if 'base_model_name' not in self.env.context:
+            return self.search([]).ids
+        model = self.env.context['base_model_name']
+        return self.search([
+            ('type', 'like', '%s,%%' % model)]).ids
+
+    def _domain(self):
+        model = (self.env.context.get('base_model_name')
+                 or self.env.context.get('model'))
+        return "[('type', 'like', '%s,%%')]" % model
+
+    type = fields.Reference(
+        selection=_get_entity_types,
+        string='Entity type',
+        required=True)
+    name = fields.Char(
+        'Name',
+        required=True,
+        translate=True,
+        help="Used for the transition button")
+    description = fields.Text(
+        'Description',
+        help="Add more information on the transition")
+    origin = fields.Many2one(
+        'rea.lifecycle.step',
+        'Origin',
+        domain=_domain)
+    target = fields.Many2one(
+        'rea.lifecycle.step',
+        'Target',
+        domain=_domain)
+    button = fields.Boolean(
+        "Add a button",
+        help="Add a transition button on entities of this type")
+
+
 class Lifecycleable(models.AbstractModel):
     """ Add lifecycle features to entities
     """
@@ -133,7 +176,7 @@ class Lifecycleable(models.AbstractModel):
     step = fields.Many2one(
         'rea.lifecycle.step',
         'Step',
-        select=True,
+        index=True,
         domain=_domain)
 
 
@@ -144,19 +187,20 @@ class LifecyclableType(models.AbstractModel):
         """ Return the id of the first step of a type"""
         if len(self) == 0:
             return False
-        steps = [(s.sequence, s.id) for s in self.step_ids]
-        return sorted(steps)[0][1] if len(steps) else False
+        step_ids = [(s.sequence, s.id) for s in self.steps]
+        return sorted(step_ids)[0][1] if len(step_ids) else False
 
     def _get_steps(self):
         for etype in self:
-            etype.step_ids = self.env['rea.lifecycle.step'].search([('type', '=', ','.join((etype._name, str(etype.id))))])
+            etype.steps = self.env['rea.lifecycle.step'].search(
+                [('type', '=', ','.join((etype._name, str(etype.id))))])
 
     def _set_steps(self):
         for etype in self:
             strtype = ','.join((etype._name, str(etype.id)))
-            existing = etype.step_ids.search([('type', '=', strtype)]).ids
-            modified = etype.step_ids.ids
-            for step in etype.step_ids:
+            existing = etype.steps.search([('type', '=', strtype)])
+            modified = etype.steps
+            for step in etype.steps:
                 if step.id:
                     values = step.read(load=True)[0]
                     values['type'] = strtype
@@ -165,12 +209,40 @@ class LifecyclableType(models.AbstractModel):
                     values = dict(step._cache)
                     values['type'] = strtype
                     step.create(values)
-            etype.step_ids.browse(set(existing)-set(modified)).unlink()
+            etype.steps.browse(set(existing)-set(modified)).unlink()
 
-    step_ids = fields.One2many(
+    def _get_transitions(self):
+        for etype in self:
+            etype.transitions = self.env['rea.lifecycle.transition'].search(
+                [('type', '=', ','.join((etype._name, str(etype.id))))])
+
+    def _set_transitions(self):
+        for etype in self:
+            strtype = ','.join((etype._name, str(etype.id)))
+            existing = etype.transitions.search([('type', '=', strtype)])
+            modified = etype.transitions
+            for transition in etype.transitions:
+                if transition.id:
+                    values = transition.read(load=True)[0]
+                    values['type'] = strtype
+                    transition.write(values)
+                else:
+                    values = dict(transition._cache)
+                    values['type'] = strtype
+                    transition.create(values)
+            etype.transitions.browse(set(existing)-set(modified)).unlink()
+
+    steps = fields.One2many(
         'rea.lifecycle.step',
         compute=_get_steps,
         inverse=_set_steps,
         string='Steps',
         copy=True,
         help="The steps associated to this type")
+    transitions = fields.One2many(
+        'rea.lifecycle.transition',
+        compute=_get_transitions,
+        inverse=_set_transitions,
+        string='Transitions',
+        copy=True,
+        help="The step transitions associated to this type")

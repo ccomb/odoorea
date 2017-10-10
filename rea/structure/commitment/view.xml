@@ -114,6 +114,7 @@
                 </header>
                 <sheet>
                     <div class="oe_title">
+                        <label for="name" string="Commitment type"/>
                         <h1>
                             <field name="name" placeholder="Name"/>
                         </h1>

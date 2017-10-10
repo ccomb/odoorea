@@ -7,8 +7,9 @@ class Contract(models.Model):
     """
     _name = 'rea.contract'
     _description = "REA Contract"
-    _inherit = ['rea.ident.sequence',
-                'rea.entity.lifecycleable']
+    _inherit = [
+        'rea.ident.sequence',
+        'rea.entity.lifecycleable']
 
     def _default_parties(self):
         """the relative company depends on the user
@@ -150,4 +151,3 @@ class ContractTerm(models.Model):
 
 
 # TODO ClauseType ??
-
