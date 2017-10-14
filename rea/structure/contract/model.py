@@ -3,7 +3,7 @@ from odoo.exceptions import ValidationError
 
 
 class Contract(models.Model):
-    """ Set of Clauses applying to Agents and generating Commitments
+    """ Set of commitments and terms forming clauses
     """
     _name = 'rea.contract'
     _description = "REA Contract"
@@ -14,7 +14,9 @@ class Contract(models.Model):
     def _default_parties(self):
         """the relative company depends on the user
         """
-        return [(6, 0, [self.env.user.company.id])]
+        if self.env.user.company:
+            return [(6, 0, [self.env.user.company.id])]
+        return []
 
     @api.onchange('parties')  # TODO add a _constraint
     def _change_parties(self):

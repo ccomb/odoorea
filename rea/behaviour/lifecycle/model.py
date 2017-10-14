@@ -1,7 +1,7 @@
 # coding: utf-8
 import logging
 from lxml import etree
-from odoo import models, fields, api, _
+from odoo import models, fields, api, _, osv
 from odoo.exceptions import MissingError, UserError
 logger = logging.getLogger(__file__)
 
@@ -14,10 +14,12 @@ class Step(models.Model):
     _order = 'sequence'
 
     def _get_entity_types(self):
-        if 'base_model_name' not in self.env.context:
+        model = (self.env.context.get('base_model_name')
+                 or self.env.context.get('model'))
+        if not model:
             return self.search([]).ids
         return self.search([
-            ('type', 'like', '%s,%%' % self.env.context['base_model_name'])]).ids
+            ('type', 'like', '%s,%%' % model)]).ids
 
     type = fields.Reference(
         selection=_get_entity_types,
@@ -38,6 +40,11 @@ class Step(models.Model):
     sequence = fields.Integer(
         'Sequence',
         help='Sequence')
+    transitions = fields.One2many(
+        'rea.lifecycle.transition',
+        'origin',
+        readonly=True,
+        string='Transitions')
     #forbidden_rules = fields.Many2many(  # TODO
     #    'rea.policy...',)
     # examples:
@@ -53,9 +60,10 @@ class Transition(models.Model):
     _name = 'rea.lifecycle.transition'
 
     def _get_entity_types(self):
-        if 'base_model_name' not in self.env.context:
+        model = (self.env.context.get('base_model_name')
+                 or self.env.context.get('model'))
+        if not model:
             return self.search([]).ids
-        model = self.env.context['base_model_name']
         return self.search([
             ('type', 'like', '%s,%%' % model)]).ids
 
@@ -136,30 +144,37 @@ class Lifecycleable(models.AbstractModel):
                 next_step = steps[list(steps).index(entity.step) + 1]
             entity.write({'step': next_step.id})
 
-    #@api.model
-    #def fields_view_get(self, view_id=None, view_type='form',
-    #                    toolbar=False, submenu=False):
-    #    """ Add lifecycle action buttons
-    #    """
-    #    fvg = super(Lifecycleable, self).fields_view_get(
-    #        view_id=view_id, view_type=view_type,
-    #        toolbar=toolbar, submenu=submenu)
-    #    if view_type == 'form' and fvg['type'] == 'form':
-    #        doc = etree.fromstring(fvg['arch'])
-    #        try:
-    #            node = doc.xpath("/header")[0]
-    #        except:
-    #            logger.error("Could not find the header in the view")
-    #            return fvg
-    #        buttons = []
-    #        targets = 
-    #        for target in targets:
-    #            button = etree.Element("root", name=target.)
-    #            button.set()
-    #            buttons.append(button)
-    #        node.
-    #        fvg['arch'] = etree.tostring(doc)
-    #    return fvg
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form',
+                        toolbar=False, submenu=False):
+        """ Add lifecycle action buttons
+        """
+        fvg = super(Lifecycleable, self).fields_view_get(
+            view_id=view_id, view_type=view_type,
+            toolbar=toolbar, submenu=submenu)
+        if view_type != 'form' or fvg['type'] != 'form':
+            return fvg
+        doc = etree.fromstring(fvg['arch'])
+        header = doc.xpath("/form/header")[0]
+        context = self.env.context
+        if 'params' in context and 'model' in context['params']:
+            model = self.env.context['params']['model']
+        else:
+            model = self._name
+        transitions = self.env['rea.lifecycle.transition'].search([
+            ('type', 'like', '%s.type,%%' % model)])
+        for transition in transitions:
+            button = etree.Element(
+                "button",
+                name=transition.name,
+                string=transition.name,
+                type='object')
+            state = transition.origin.state
+            osv.orm.transfer_modifiers_to_node(
+                {'invisible': [["state", "!=", state]]}, button)
+            header.append(button)
+        fvg['arch'] = etree.tostring(doc)
+        return fvg
 
     @api.model
     def create(self, values):
@@ -173,11 +188,18 @@ class Lifecycleable(models.AbstractModel):
     def _domain(self):
         return "[('type','=', '%s,'+str(type))]" % self.type._name
 
+    def _get_state(self):
+        for e in self:
+            e.state = e.step.state
+
     step = fields.Many2one(
         'rea.lifecycle.step',
         'Step',
         index=True,
         domain=_domain)
+    state = fields.Char(
+        'state',
+        compute=_get_state)
 
 
 class LifecyclableType(models.AbstractModel):
@@ -204,6 +226,7 @@ class LifecyclableType(models.AbstractModel):
                 if step.id:
                     values = step.read(load=True)[0]
                     values['type'] = strtype
+                    del values['transitions']
                     step.write(values)
                 else:
                     values = dict(step._cache)
@@ -238,11 +261,13 @@ class LifecyclableType(models.AbstractModel):
         inverse=_set_steps,
         string='Steps',
         copy=True,
-        help="The steps associated to this type")
+        help="List of possible steps for contracts of this type. "
+             "Steps correspond to the columns of the kanban view")
     transitions = fields.One2many(
         'rea.lifecycle.transition',
         compute=_get_transitions,
         inverse=_set_transitions,
         string='Transitions',
         copy=True,
-        help="The step transitions associated to this type")
+        help="List of transition buttons between steps for contracts "
+             "of this type. Buttons appear in the form view of the contracts")

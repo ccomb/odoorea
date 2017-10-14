@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+<!-- Step form -->
+<record id="rea_lifecycle_step_form_view" model="ir.ui.view">
+    <field name="name">Step</field>
+    <field name="model">rea.lifecycle.step</field>
+    <field name="priority" eval="8"/>
+    <field name="arch" type="xml">
+    <form string="Step">
+        <div class="oe_title">
+            <label for="name" string="Step"/>
+            <h1><field name="name" select="1"/></h1>
+        </div>
+        <group>
+            <group>
+                <field name="state"/>
+                <field name="sequence" invisible="1" />
+            </group>
+        </group>
+        <notebook>
+            <page string="Description">
+                <field name="description"/>
+            </page>
+        </notebook>
+    </form>
+    </field>
+</record>
+<!-- Step tree -->
+<record model="ir.ui.view" id="rea_lifecycle_step_tree_view">
+    <field name="name">rea.lifecycle.step.tree</field>
+    <field name="model">rea.lifecycle.step</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="sequence" widget="handle"/>
+            <field name="name"/>
+            <field name="state"/>
+        </tree>
+    </field>
+</record>
+
+
+<!-- Transition form -->
+<record id="rea_lifecycle_transition_form_view" model="ir.ui.view">
+    <field name="name">Transition</field>
+    <field name="model">rea.lifecycle.transition</field>
+    <field name="priority" eval="8"/>
+    <field name="arch" type="xml">
+    <form string="Transition button">
+        <div class="oe_title">
+            <label for="name" string="Button"/>
+            <h1><field name="name" select="1"/></h1>
+        </div>
+        <p>This button will trigger the transition:</p>
+        <group>
+            <group>
+                <field name="origin" string="from"/>
+                <field name="target" string="to"/>
+            </group>
+        </group>
+        <notebook>
+            <page string="Description">
+                <field name="description"/>
+            </page>
+        </notebook>
+    </form>
+    </field>
+</record>
+<!-- Transition tree -->
+<record model="ir.ui.view" id="rea_lifecycle_transition_tree_view">
+    <field name="name">rea.lifecycle.transition.tree</field>
+    <field name="model">rea.lifecycle.transition</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="origin"/>
+            <field name="target"/>
+        </tree>
+    </field>
+</record>
+
+</data>
+</odoo>
+
+

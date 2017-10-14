@@ -34,6 +34,7 @@
                     type="object" icon="fa-arrow-circle-o-left"/>
             <button name="step_next" string=""
               type="object" icon="fa-arrow-circle-o-right"/>
+        <field name="state" invisible="1"/>
           </group>
         </page>
       </xpath>
@@ -48,13 +49,7 @@
         <xpath expr="//notebook" position="inside">
             <page string="Lifecycle">
                 <group>
-                    <p>List of possible steps for contracts of this type. Steps correspond to the columns of the kanban view</p>
-                </group>
-                <group>
                     <field name="steps"/>
-                </group>
-                <group>
-                    <p>List of transition buttons between steps for contracts of this type. Buttons appear in the form view of the contracts</p>
                 </group>
                 <group>
                     <field name="transitions" context="{'model': 'rea.contract.type'}"/>
