@@ -144,6 +144,24 @@ class Lifecycleable(models.AbstractModel):
                 next_step = steps[list(steps).index(entity.step) + 1]
             entity.write({'step': next_step.id})
 
+    def transition(self):
+        transition_id = int(self.env.context['transition'])
+        target = self.type.transitions.browse(transition_id).target
+        self.write({'step': target.id})
+
+    def write(self, values):
+        if 'step' in values:
+            for entity in self:
+                model = self._name
+                valid_transitions = entity.type.transitions.search([
+                    ('origin', '=', entity.step.id),
+                    ('target', '=', values['step']),
+                    ('type', 'like', '%s.type,%%' % model)])
+                if not valid_transitions:
+                    raise UserError(_("Warning: there is no transition "
+                                      "allowing to go to this step"))
+        super(Lifecycleable, self).write(values)
+
     @api.model
     def fields_view_get(self, view_id=None, view_type='form',
                         toolbar=False, submenu=False):
@@ -166,7 +184,8 @@ class Lifecycleable(models.AbstractModel):
         for transition in transitions:
             button = etree.Element(
                 "button",
-                name=transition.name,
+                name='transition',
+                context="{'transition': '%s'}" % transition.id,
                 string=transition.name,
                 type='object')
             state = transition.origin.state
