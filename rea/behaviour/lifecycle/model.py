@@ -229,10 +229,12 @@ class LifecyclableType(models.AbstractModel):
                     del values['transitions']
                     step.write(values)
                 else:
+                    cache = step._cache
                     values = dict(step._cache)
                     values['type'] = strtype
                     step.create(values)
-            etype.steps.browse(set(existing)-set(modified)).unlink()
+                    step._cache = cache
+            (existing-modified).unlink()
 
     def _get_transitions(self):
         for etype in self:
@@ -253,7 +255,7 @@ class LifecyclableType(models.AbstractModel):
                     values = dict(transition._cache)
                     values['type'] = strtype
                     transition.create(values)
-            etype.transitions.browse(set(existing)-set(modified)).unlink()
+            (existing-modified).unlink()
 
     steps = fields.One2many(
         'rea.lifecycle.step',
