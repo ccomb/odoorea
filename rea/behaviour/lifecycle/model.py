@@ -6,6 +6,35 @@ from odoo.exceptions import MissingError, UserError
 logger = logging.getLogger(__file__)
 
 
+class Lifecycle(models.Model):
+    """Lifecycle containing steps and transitions
+    """
+    _name = 'rea.lifecycle'
+
+    name = fields.Char(
+        'Name',
+        required=True,
+        translate=True,
+        help="Name of the lifecycle")
+    description = fields.Text(
+        'Description',
+        translate=True)
+    steps = fields.One2many(
+        'rea.lifecycle.step',
+        'lifecycle',
+        string='Steps',
+        copy=True,
+        help="List of possible steps for contracts of this type. "
+             "Steps correspond to the columns of the kanban view")
+    transitions = fields.One2many(
+        'rea.lifecycle.transition',
+        'lifecycle',
+        string='Transitions',
+        copy=True,
+        help="List of transition buttons between steps for contracts "
+             "of this type. Buttons appear in the form view of the contracts")
+
+
 class Step(models.Model):
     """Lifecycle step of an entity
     Correspond to kanban columns
@@ -13,17 +42,9 @@ class Step(models.Model):
     _name = 'rea.lifecycle.step'
     _order = 'sequence'
 
-    def _get_entity_types(self):
-        model = (self.env.context.get('base_model_name')
-                 or self.env.context.get('model'))
-        if not model:
-            return self.search([]).ids
-        return self.search([
-            ('type', 'like', '%s,%%' % model)]).ids
-
-    type = fields.Reference(
-        selection=_get_entity_types,
-        string='Entity type',
+    lifecycle = fields.Many2one(
+        'rea.lifecycle',
+        string='Lifecycle',
         required=True)
     name = fields.Char(
         'name',
@@ -59,22 +80,9 @@ class Transition(models.Model):
     """
     _name = 'rea.lifecycle.transition'
 
-    def _get_entity_types(self):
-        model = (self.env.context.get('base_model_name')
-                 or self.env.context.get('model'))
-        if not model:
-            return self.search([]).ids
-        return self.search([
-            ('type', 'like', '%s,%%' % model)]).ids
-
-    def _domain(self):
-        model = (self.env.context.get('base_model_name')
-                 or self.env.context.get('model'))
-        return "[('type', 'like', '%s,%%')]" % model
-
-    type = fields.Reference(
-        selection=_get_entity_types,
-        string='Entity type',
+    lifecycle = fields.Many2one(
+        'rea.lifecycle',
+        string='Lifecycle',
         required=True)
     name = fields.Char(
         'Name',
@@ -87,34 +95,45 @@ class Transition(models.Model):
     origin = fields.Many2one(
         'rea.lifecycle.step',
         'Origin',
-        domain=_domain)
+        domain="[('lifecycle','=',lifecycle)]")
     target = fields.Many2one(
         'rea.lifecycle.step',
         'Target',
-        domain=_domain)
+        domain="[('lifecycle','=',lifecycle)]")
     button = fields.Boolean(
         "Add a button",
         help="Add a transition button on entities of this type")
+    primary = fields.Boolean(
+        'Primary button',
+        help="Primary buttons are highlighted and correspond "
+             "to the logical next action")
 
 
 class Lifecycleable(models.AbstractModel):
-    """ Add lifecycle features to entities
+    """ Add lifecycle behaviour to entities
     """
-    _name = 'rea.entity.lifecycleable'
+    _name = 'rea.lifecycleable.entity'
+
+    @api.one
+    def get_steps(self):
+        if not self.type:
+            raise MissingError(
+                _("Warning: No type defined"))
+        if not self.type.lifecycle:
+            raise MissingError(
+                _("Warning: No lifecycle defined in the type"))
+        steps = self.type.lifecycle.steps
+        if not steps:
+            raise MissingError(
+                _("Warning: No steps defined in the lifecycle of the type"))
+        return steps
 
     @api.multi
     def step_previous(self):
         """move the entity to the previous step
         """
         for entity in self:
-            if not entity.type:
-                raise MissingError(
-                    _("Warning: No type defined in the project."))
-            etype = ','.join((entity.type._name, str(entity.type.id)))
-            steps = entity.step.search([('type', '=', etype)])
-            if not steps:
-                raise MissingError(
-                    _('Warning: No steps defined for this entity'))
+            steps = entity.get_steps()
             if entity.step == steps[0]:  # first step
                 raise UserError(_("Warning: You're already in the first step"))
             elif entity.step not in steps:  # no step
@@ -128,14 +147,7 @@ class Lifecycleable(models.AbstractModel):
         """move the entity to the next step
         """
         for entity in self:
-            if not entity.type:
-                raise MissingError(
-                    _("Warning: No type defined in the project."))
-            etype = ','.join((entity.type._name, str(entity.type.id)))
-            steps = entity.step.search([('type', '=', etype)])
-            if not steps:
-                raise MissingError(
-                    _('Warning: No steps defined for this entity'))
+            steps = entity.get_steps()
             if entity.step == steps[-1]:  # last step
                 raise UserError(_("Warning: You're already in the last step"))
             elif entity.step not in steps:  # no step
@@ -146,17 +158,16 @@ class Lifecycleable(models.AbstractModel):
 
     def transition(self):
         transition_id = int(self.env.context['transition'])
-        target = self.type.transitions.browse(transition_id).target
+        target = self.type.lifecycle.transitions.browse(transition_id).target
         self.write({'step': target.id})
 
     def write(self, values):
         if 'step' in values:
             for entity in self:
-                model = self._name
-                valid_transitions = entity.type.transitions.search([
+                valid_transitions = entity.type.lifecycle.transitions.search([
                     ('origin', '=', entity.step.id),
                     ('target', '=', values['step']),
-                    ('type', 'like', '%s.type,%%' % model)])
+                    ('lifecycle', '=', entity.type.lifecycle.id)])
                 if not valid_transitions:
                     raise UserError(_("Warning: there is no transition "
                                       "allowing to go to this step"))
@@ -170,17 +181,19 @@ class Lifecycleable(models.AbstractModel):
         fvg = super(Lifecycleable, self).fields_view_get(
             view_id=view_id, view_type=view_type,
             toolbar=toolbar, submenu=submenu)
-        if view_type != 'form' or fvg['type'] != 'form':
+        params = self.env.context.get('params')
+        if not params or view_type != 'form':
             return fvg
         doc = etree.fromstring(fvg['arch'])
         header = doc.xpath("/form/header")[0]
-        context = self.env.context
-        if 'params' in context and 'model' in context['params']:
-            model = self.env.context['params']['model']
-        else:
-            model = self._name
-        transitions = self.env['rea.lifecycle.transition'].search([
-            ('type', 'like', '%s.type,%%' % model)])
+        model = params.get('model', self._name) + '.type'
+        table = self.env[model]._table
+        self.env.cr.execute('''
+            select distinct transition.id
+            from rea_lifecycle_transition transition, rea_contract_type %s
+            where transition.lifecycle = %s.lifecycle''' % (table, table))
+        trans_ids = [t[0] for t in self.env.cr.fetchall()]
+        transitions = self.env['rea.lifecycle.transition'].browse(trans_ids)
         for transition in transitions:
             button = etree.Element(
                 "button",
@@ -188,9 +201,14 @@ class Lifecycleable(models.AbstractModel):
                 context="{'transition': '%s'}" % transition.id,
                 string=transition.name,
                 type='object')
+            button.set('class',
+                       "btn btn-primary" if transition.primary else "btn")
             state = transition.origin.state
             osv.orm.transfer_modifiers_to_node(
-                {'invisible': [["state", "!=", state]]}, button)
+                {'invisible': [
+                    '|',
+                    ('lifecycle', '!=', transition.lifecycle.id),
+                    ('state', '!=', state)]}, button)
             header.append(button)
         fvg['arch'] = etree.tostring(doc)
         return fvg
@@ -204,91 +222,41 @@ class Lifecycleable(models.AbstractModel):
             values['step'] = type.get_first_step()
         return super(Lifecycleable, self).create(values)
 
-    def _domain(self):
-        return "[('type','=', '%s,'+str(type))]" % self.type._name
-
     def _get_state(self):
         for e in self:
             e.state = e.step.state
 
+    def _get_lifecycle(self):
+        for entity in self:
+            entity.lifecycle = entity.type.lifecycle
+
+    lifecycle = fields.Many2one(
+        'rea.lifecycle',
+        'Lifecycle',
+        compute=_get_lifecycle)
     step = fields.Many2one(
         'rea.lifecycle.step',
         'Step',
         index=True,
-        domain=_domain)
+        copy=False,
+        domain="[('lifecycle','=',lifecycle)]")
     state = fields.Char(
         'state',
         compute=_get_state)
 
 
 class LifecyclableType(models.AbstractModel):
-    _name = 'rea.type.lifecycleable'
+    """Abstract class adding lifecycle behaviour on entity types
+    """
+    _name = 'rea.lifecycleable.type'
 
     def get_first_step(self):
         """ Return the id of the first step of a type"""
         if len(self) == 0:
             return False
-        step_ids = [(s.sequence, s.id) for s in self.steps]
+        step_ids = [(s.sequence, s.id) for s in self.lifecycle.steps]
         return sorted(step_ids)[0][1] if len(step_ids) else False
 
-    def _get_steps(self):
-        for etype in self:
-            etype.steps = self.env['rea.lifecycle.step'].search(
-                [('type', '=', ','.join((etype._name, str(etype.id))))])
-
-    def _set_steps(self):
-        for etype in self:
-            strtype = ','.join((etype._name, str(etype.id)))
-            existing = etype.steps.search([('type', '=', strtype)])
-            modified = etype.steps
-            for step in etype.steps:
-                if step.id:
-                    values = step.read(load=True)[0]
-                    values['type'] = strtype
-                    del values['transitions']
-                    step.write(values)
-                else:
-                    cache = step._cache
-                    values = dict(step._cache)
-                    values['type'] = strtype
-                    step.create(values)
-                    step._cache = cache
-            (existing-modified).unlink()
-
-    def _get_transitions(self):
-        for etype in self:
-            etype.transitions = self.env['rea.lifecycle.transition'].search(
-                [('type', '=', ','.join((etype._name, str(etype.id))))])
-
-    def _set_transitions(self):
-        for etype in self:
-            strtype = ','.join((etype._name, str(etype.id)))
-            existing = etype.transitions.search([('type', '=', strtype)])
-            modified = etype.transitions
-            for transition in etype.transitions:
-                if transition.id:
-                    values = transition.read(load=True)[0]
-                    values['type'] = strtype
-                    transition.write(values)
-                else:
-                    values = dict(transition._cache)
-                    values['type'] = strtype
-                    transition.create(values)
-            (existing-modified).unlink()
-
-    steps = fields.One2many(
-        'rea.lifecycle.step',
-        compute=_get_steps,
-        inverse=_set_steps,
-        string='Steps',
-        copy=True,
-        help="List of possible steps for contracts of this type. "
-             "Steps correspond to the columns of the kanban view")
-    transitions = fields.One2many(
-        'rea.lifecycle.transition',
-        compute=_get_transitions,
-        inverse=_set_transitions,
-        string='Transitions',
-        copy=True,
-        help="List of transition buttons between steps for contracts "
-             "of this type. Buttons appear in the form view of the contracts")
+    lifecycle = fields.Many2one(
+        'rea.lifecycle',
+        "Lifecycle")

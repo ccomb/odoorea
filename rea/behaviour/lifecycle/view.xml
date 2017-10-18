@@ -2,6 +2,30 @@
 <odoo>
 <data>
 
+<!-- Lifecycle form -->
+<record id="rea_lifecycle_form_view" model="ir.ui.view">
+    <field name="name">Lifecycle</field>
+    <field name="model">rea.lifecycle</field>
+    <field name="priority" eval="8"/>
+    <field name="arch" type="xml">
+    <form string="Lifecycle">
+        <div class="oe_title">
+            <label for="name" string="Lifecycle"/>
+            <h1><field name="name" select="1"/></h1>
+        </div>
+        <p>A lifecycle is made of steps and transitions between steps. A transition correspond to an action done and can have a corresponding button on the form view</p>
+        <group>
+            <field name="steps" context="{'default_lifecycle': active_id}"/>
+            <field name="transitions" context="{'default_lifecycle': active_id}"/>
+        </group>
+        <notebook>
+            <page string="Description">
+                <field name="description"/>
+            </page>
+        </notebook>
+    </form>
+    </field>
+</record>
 <!-- Step form -->
 <record id="rea_lifecycle_step_form_view" model="ir.ui.view">
     <field name="name">Step</field>
@@ -55,8 +79,12 @@
         <p>This button will trigger the transition:</p>
         <group>
             <group>
+                <field name="lifecycle" invisible="1"/>
                 <field name="origin" string="from"/>
                 <field name="target" string="to"/>
+            </group>
+            <group>
+                <field name="primary"/>
             </group>
         </group>
         <notebook>

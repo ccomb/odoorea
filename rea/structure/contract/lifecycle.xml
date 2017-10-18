@@ -30,6 +30,7 @@
       <xpath expr="//notebook" position="inside">
         <page string="Lifecycle">
           <group col="9" colspan="2">
+            <field name="lifecycle"/>
             <button name="step_previous" string=""
                     type="object" icon="fa-arrow-circle-o-left"/>
             <button name="step_next" string=""
@@ -49,10 +50,7 @@
         <xpath expr="//notebook" position="inside">
             <page string="Lifecycle">
                 <group>
-                    <field name="steps"/>
-                </group>
-                <group>
-                    <field name="transitions" context="{'model': 'rea.contract.type'}"/>
+                    <field name="lifecycle"/>
                 </group>
             </page>
         </xpath>
