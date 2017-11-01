@@ -108,6 +108,37 @@
     </field>
 </record>
 
+<record id="lifecycle_diagram" model="ir.ui.view">
+  <field name="name">rea.lifecycle.diagram</field>
+  <field name="model">rea.lifecycle</field>
+  <field name="arch" type="xml">
+    <diagram string="Lifecycle Editor">
+      <node object="rea.lifecycle.step">
+        <field name="name"/>
+        <field name="state"/>
+      </node>
+      <arrow object="rea.lifecycle.transition" source="origin" destination="target">
+        <field name="origin"/>
+        <field name="target"/>
+      </arrow>
+      <label string="Here is the representation of the possible steps and transitions of this lifecycle"/>
+    </diagram>
+  </field>
+</record>
+
+<record model="ir.actions.act_window" id="rea_lifecycle_sequence_setup_act_window">
+    <field name="name">Lifecycle Setup</field>
+    <field name="res_model">rea.lifecycle</field>
+    <field name="view_mode">tree,form,diagram</field>
+</record>
+
+<record model="ir.ui.menu" id="menu_rea_lifecycle_sequence_setup">
+    <field name="name">Lifecycle Setup</field>
+    <field name="parent_id" ref="menu_behaviours"/>
+    <field name="action" ref="rea_lifecycle_sequence_setup_act_window"/>
+    <field name="sequence" eval="10"/>
+</record>
+
 </data>
 </odoo>
 

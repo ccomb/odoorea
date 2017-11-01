@@ -45,7 +45,8 @@ class Step(models.Model):
     lifecycle = fields.Many2one(
         'rea.lifecycle',
         string='Lifecycle',
-        required=True)
+        required=True,
+        ondelete='cascade')
     name = fields.Char(
         'name',
         size=64,
@@ -65,7 +66,12 @@ class Step(models.Model):
         'rea.lifecycle.transition',
         'origin',
         readonly=True,
-        string='Transitions')
+        string='Outgoing Transitions')
+    incomings = fields.One2many(
+        'rea.lifecycle.transition',
+        'target',
+        readonly=True,
+        string='Incoming Transitions')
     #forbidden_rules = fields.Many2many(  # TODO
     #    'rea.policy...',)
     # examples:
@@ -83,7 +89,8 @@ class Transition(models.Model):
     lifecycle = fields.Many2one(
         'rea.lifecycle',
         string='Lifecycle',
-        required=True)
+        required=True,
+        ondelete='cascade')
     name = fields.Char(
         'Name',
         required=True,

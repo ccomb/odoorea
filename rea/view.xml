@@ -25,8 +25,8 @@
                   name="Contracts"
                   parent="menu_rea"
                   sequence="4000"/>
-        <menuitem id="menu_identifiers"
-                  name="Identifiers"
+        <menuitem id="menu_behaviours"
+                  name="Behaviours"
                   parent="menu_rea"
                   sequence="5000"/>
         <menuitem id="menu_processes"

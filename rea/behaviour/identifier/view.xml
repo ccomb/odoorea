@@ -58,7 +58,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_ident_setup_type">
         <field name="name">Identifier Setup Type</field>
-        <field name="parent_id" ref="menu_identifiers"/>
+        <field name="parent_id" ref="menu_behaviours"/>
         <field name="action" ref="rea_ident_setup_act_window"/>
         <field name="sequence" eval="10"/>
     </record-->
@@ -116,7 +116,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_ident_type">
         <field name="name">Identifiers</field>
-        <field name="parent_id" ref="menu_identifiers"/>
+        <field name="parent_id" ref="menu_behaviours"/>
         <field name="action" ref="rea_ident_type_act_window"/>
         <field name="sequence" eval="20"/>
     </record-->
@@ -183,7 +183,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_ident_sequence_setup">
         <field name="name">Identifier Setup</field>
-        <field name="parent_id" ref="menu_identifiers"/>
+        <field name="parent_id" ref="menu_behaviours"/>
         <field name="action" ref="rea_ident_sequence_setup_act_window"/>
         <field name="sequence" eval="10"/>
     </record>
@@ -241,7 +241,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_ident">
         <field name="name">Identifiers</field>
-        <field name="parent_id" ref="menu_identifiers"/>
+        <field name="parent_id" ref="menu_behaviours"/>
         <field name="action" ref="rea_ident_act_window"/>
         <field name="sequence" eval="20"/>
     </record-->
