@@ -156,4 +156,64 @@
         </field>
     </record>
 </data>
+
+<!-- PROCESS GROUP -->
+<record model="ir.ui.view" id="rea_process_group_form_view">
+    <field name="name">rea.process.group.form</field>
+    <field name="model">rea.process.group</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+            </header>
+            <sheet>
+                <div class="oe_title">
+                    <h1>
+                        <field name="name" placeholder="Process Group Name"/>
+                    </h1>
+                </div>
+                <group>
+                    <field name="groups"/>
+                </group>
+            </sheet>
+            <div class="oe_chatter"></div>
+        </form>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="rea_process_group_search_view">
+    <field name="name">rea.process.group.search</field>
+    <field name="model">rea.process.group</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+            <field name="groups"/>
+        </search>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="rea_process_group_tree_view">
+    <field name="name">rea.process.group.tree</field>
+    <field name="model">rea.process.group</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+        </tree>
+    </field>
+</record>
+
+<record model="ir.actions.act_window" id="rea_process_group_act_window">
+    <field name="name">Process Groups</field>
+    <field name="res_model">rea.process.group</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+</record>
+
+<record model="ir.ui.menu" id="menu_rea_process_group">
+    <field name="name">Process Groups</field>
+    <field name="parent_id" ref="menu_processes"/>
+    <field name="action" ref="rea_process_group_act_window"/>
+    <field name="sequence" eval="20"/>
+</record>
+
 </openerp>

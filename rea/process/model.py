@@ -55,3 +55,19 @@ class ProcessType(models.Model):
         string="Event Types")
 
     # for each processtype, create an action button to start a new process
+
+
+class ProcessGroup(models.Model):
+    """ Group of processes of different types.
+    Allows to gather processes as a business unit
+    """
+    _name = 'rea.process.group'
+    _description = "Process Group"
+
+    name = fields.Char(
+        string="name",
+        required=True,
+        index=True)
+    groups = fields.Many2one(
+        'rea.process.group',
+        string="Group")
