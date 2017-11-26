@@ -121,7 +121,6 @@ class Lifecycleable(models.AbstractModel):
     """
     _name = 'rea.lifecycleable.entity'
 
-    @api.one
     def get_steps(self):
         if not self.type:
             raise MissingError(
@@ -178,7 +177,7 @@ class Lifecycleable(models.AbstractModel):
                 if not valid_transitions:
                     raise UserError(_("Warning: there is no transition "
                                       "allowing to go to this step"))
-        super(Lifecycleable, self).write(values)
+        return super(Lifecycleable, self).write(values)
 
     @api.model
     def fields_view_get(self, view_id=None, view_type='form',
@@ -197,8 +196,8 @@ class Lifecycleable(models.AbstractModel):
         table = self.env[model]._table
         self.env.cr.execute('''
             select distinct transition.id
-            from rea_lifecycle_transition transition, rea_contract_type %s
-            where transition.lifecycle = %s.lifecycle''' % (table, table))
+            from rea_lifecycle_transition transition, %s type
+            where transition.lifecycle = type.lifecycle''' % table)
         trans_ids = [t[0] for t in self.env.cr.fetchall()]
         transitions = self.env['rea.lifecycle.transition'].browse(trans_ids)
         for transition in transitions:

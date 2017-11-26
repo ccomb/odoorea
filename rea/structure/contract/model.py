@@ -8,7 +8,7 @@ class Contract(models.Model):
     _name = 'rea.contract'
     _description = "REA Contract"
     _inherit = [
-        'rea.ident.sequence',
+        'rea.identifiable.entity',
         'rea.lifecycleable.entity']
 
     def _default_parties(self):
@@ -99,7 +99,7 @@ class ContractType(models.Model):
     """
     _name = 'rea.contract.type'
     _description = "Contract Type"
-    _inherit = ['rea.ident.sequence.store',
+    _inherit = ['rea.identifiable.type',
                 'rea.lifecycleable.type']
 
     name = fields.Char(

@@ -255,7 +255,7 @@
                         <p>Here you can choose the numbering behaviour of the Events you are creating.</p>
                     </group>
                     <group>
-                        <field name="ident_setup"/>
+                        <field name="identification"/>
                     </group>
                 </page>
             </xpath>

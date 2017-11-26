@@ -7,7 +7,7 @@ class Event(models.Model):
     """
     _name = 'rea.event'
     _description = "Event"
-    _inherit = ['rea.ident.sequence']
+    _inherit = ['rea.identifiable.entity']
 
     name = fields.Char(
         string="name",
@@ -97,7 +97,7 @@ class EventType(models.Model):
     """
     _name = 'rea.event.type'
     _description = "Event Type"
-    _inherit = ['rea.ident.sequence.store']
+    _inherit = ['rea.identifiable.type']
 
     name = fields.Char(
         string="name",

@@ -262,14 +262,35 @@
             <xpath expr="//notebook" position="inside">
                 <page string="Identification">
                     <group>
-                        <p>Here you can choose the numbering behaviour of the Contracts of this type.</p>
+                        <p>Here you can choose the identification of the Contracts of this type.</p>
                     </group>
                     <group>
-                        <field name="ident_setup"/>
+                        <field name="identification"
+                               context="{'model': 'rea.contract', 'type_id': active_id}"/>
                     </group>
                 </page>
             </xpath>
         </field>
     </record>
+
+    <!-- Add a tab in the contract form -->
+    <record id="rea_contract_form_view_with_identifiers" model="ir.ui.view">
+        <field name="name">Contract</field>
+        <field name="model">rea.contract</field>
+        <field name="inherit_id" ref="rea_contract_form_view" />
+        <field name="arch" type="xml">
+          <xpath expr="/form/header" position='inside'>
+            <field name="step" widget="statusbar" clickable="True"/>
+          </xpath>
+          <xpath expr="//notebook" position="inside">
+            <page string="Identifiers">
+              <group>
+                <field name="identification" invisible="1"/>
+              </group>
+            </page>
+          </xpath>
+        </field>
+    </record>
+
 </data>
 </openerp>

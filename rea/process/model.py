@@ -1,14 +1,14 @@
 from openerp import fields, models
 
 
-class Process(models.Model):  # TODO ProcessInstance?
+class Process(models.Model):
     """ Set of partial events bound by a duality relationship.
     (partial events are reconciliations)
     This can be compared to an enhanced letter of reconciliation
     """
     _name = 'rea.process'
     _description = 'Process'
-    _inherit = ['rea.ident.sequence']
+    _inherit = ['rea.identifiable.entity']
 
     name = fields.Char(
         string="name",
@@ -40,7 +40,7 @@ class ProcessType(models.Model):
     """
     _name = 'rea.process.type'
     _description = 'Process Type'
-    _inherit = ['rea.ident.sequence.store']
+    _inherit = ['rea.identifiable.type']
 
     name = fields.Char(
         string="name",

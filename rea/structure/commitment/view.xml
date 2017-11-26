@@ -250,7 +250,7 @@
                         <p>Here you can choose the numbering behaviour of the Commitments of this type.</p>
                     </group>
                     <group>
-                        <field name="ident_setup"/>
+                        <field name="identification"/>
                     </group>
                 </page>
             </xpath>

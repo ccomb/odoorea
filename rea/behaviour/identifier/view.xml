@@ -1,141 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 <data>
-
-    <!-- IDENTIFIER SETUP TYPE -->
-    <!--record model="ir.ui.view" id="rea_ident_setup_type_form_view">
-        <field name="name">rea.ident.setup.type.form</field>
-        <field name="model">rea.ident.setup.type</field>
+    <!-- IDENTICATION FIELD SETUP -->
+    <record model="ir.ui.view" id="rea_identification_field_form_view">
+        <field name="name">rea.identification.field.form</field>
+        <field name="model">rea.identification.field</field>
         <field name="arch" type="xml">
             <form>
                 <header>
                 </header>
                 <sheet>
+                    <h1><field name="name"/></h1>
                     <group>
-                        <h1><field name="name"/></h1>
+                        <field name="field_name"/>
                     </group>
                     <group>
-                        <field name="autonumber"/>
                         <field name="unique"/>
                         <field name="mandatory"/>
+                        <field name="generated"/>
                     </group>
-                </sheet>
-                <div class="oe_chatter"></div>
-            </form>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="rea_ident_setup_type_search_view">
-        <field name="name">rea.ident.setup.type.search</field>
-        <field name="model">rea.ident.setup.type</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-            </search>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="rea_ident_setup_type_tree_view">
-        <field name="name">rea.ident.setup.type.tree</field>
-        <field name="model">rea.ident.setup.type</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="autonumber"/>
-                <field name="unique"/>
-                <field name="mandatory"/>
-            </tree>
-        </field>
-    </record>
-
-    <record model="ir.actions.act_window" id="rea_ident_setup_type_act_window">
-        <field name="name">Identifier Setup Type</field>
-        <field name="res_model">rea.ident.setup.type</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-    </record>
-
-    <record model="ir.ui.menu" id="menu_rea_ident_setup_type">
-        <field name="name">Identifier Setup Type</field>
-        <field name="parent_id" ref="menu_behaviours"/>
-        <field name="action" ref="rea_ident_setup_act_window"/>
-        <field name="sequence" eval="10"/>
-    </record-->
-
-
-    <!-- IDENTIFIER TYPE -->
-    <!--record model="ir.ui.view" id="rea_ident_type_form_view">
-        <field name="name">rea.ident.type.form</field>
-        <field name="model">rea.ident.type</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                </header>
-                <sheet>
-                    <group>
-                        <h1><field name="name"/></h1>
-                    </group>
-                    <group>
-                        <field name="setup"/>
-                    </group>
-                </sheet>
-                <div class="oe_chatter"></div>
-            </form>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="rea_ident_type_search_view">
-        <field name="name">rea.ident.type.search</field>
-        <field name="model">rea.ident.type</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-            </search>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="rea_ident_type_tree_view">
-        <field name="name">rea.ident.type.tree</field>
-        <field name="model">rea.ident.type</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="setup"/>
-            </tree>
-        </field>
-    </record>
-
-    <record model="ir.actions.act_window" id="rea_ident_type_act_window">
-        <field name="name">Identifiers</field>
-        <field name="res_model">rea.ident.type</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-    </record>
-
-    <record model="ir.ui.menu" id="menu_rea_ident_type">
-        <field name="name">Identifiers</field>
-        <field name="parent_id" ref="menu_behaviours"/>
-        <field name="action" ref="rea_ident_type_act_window"/>
-        <field name="sequence" eval="20"/>
-    </record-->
-
-
-    <!-- IDENTIFIER SETUP -->
-    <record model="ir.ui.view" id="rea_ident_sequence_setup_form_view">
-        <field name="name">rea.ident.sequence.setup.form</field>
-        <field name="model">rea.ident.sequence.setup</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                </header>
-                <sheet>
-                    <group>
-                        <h1><field name="name"/></h1>
-                    </group>
-                    <group>
-                        <field name="field"/>
+                    <group attrs="{'invisible': [('generated','=',False)]}">
                         <field name="prefix"/>
                         <field name="last_nb"/>
                         <field name="next_nb"/>
@@ -151,9 +35,9 @@
         </field>
     </record>
 
-    <record model="ir.ui.view" id="rea_ident_sequence_setup_search_view">
-        <field name="name">rea.ident.sequence_setup.search</field>
-        <field name="model">rea.ident.sequence.setup</field>
+    <record model="ir.ui.view" id="rea_identification_field_search_view">
+        <field name="name">rea.identification.field.search</field>
+        <field name="model">rea.identification.field</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
@@ -161,48 +45,28 @@
         </field>
     </record>
 
-    <record model="ir.ui.view" id="rea_ident_sequence_setup_tree_view">
-        <field name="name">rea.ident.sequence.setup.tree</field>
-        <field name="model">rea.ident.sequence.setup</field>
+    <record model="ir.ui.view" id="rea_identification_field_tree_view">
+        <field name="name">rea.identification.field.tree</field>
+        <field name="model">rea.identification.field</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
                 <field name="field"/>
-                <field name="last_nb"/>
             </tree>
         </field>
     </record>
 
-    <record model="ir.actions.act_window" id="rea_ident_sequence_setup_act_window">
-        <field name="name">Identifier Setup</field>
-        <field name="res_model">rea.ident.sequence.setup</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-    </record>
-
-    <record model="ir.ui.menu" id="menu_rea_ident_sequence_setup">
-        <field name="name">Identifier Setup</field>
-        <field name="parent_id" ref="menu_behaviours"/>
-        <field name="action" ref="rea_ident_sequence_setup_act_window"/>
-        <field name="sequence" eval="10"/>
-    </record>
-
-
-    <!-- IDENTIFIER -->
-    <!--record model="ir.ui.view" id="rea_ident_form_view">
-        <field name="name">rea.ident.form</field>
-        <field name="model">rea.ident</field>
+    <record model="ir.ui.view" id="rea_identification_form_view">
+        <field name="name">rea.identification.form</field>
+        <field name="model">rea.identification</field>
         <field name="arch" type="xml">
             <form>
                 <header>
                 </header>
                 <sheet>
+                    <h1><field name="name"/></h1>
                     <group>
-                        <h1><field name="name"/></h1>
-                    </group>
-                    <group>
-                        <field name="setup"/>
+                        <field name="fields"/>
                     </group>
                 </sheet>
                 <div class="oe_chatter"></div>
@@ -210,42 +74,19 @@
         </field>
     </record>
 
-    <record model="ir.ui.view" id="rea_ident_search_view">
-        <field name="name">rea.ident.search</field>
-        <field name="model">rea.ident</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-            </search>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="rea_ident_tree_view">
-        <field name="name">rea.ident.tree</field>
-        <field name="model">rea.ident</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="setup"/>
-            </tree>
-        </field>
-    </record>
-
-    <record model="ir.actions.act_window" id="rea_ident_act_window">
-        <field name="name">Identifiers</field>
-        <field name="res_model">rea.ident</field>
+    <record model="ir.actions.act_window" id="rea_identification_act_window">
+        <field name="name">Identifiers Setup</field>
+        <field name="res_model">rea.identification</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
     </record>
 
-    <record model="ir.ui.menu" id="menu_rea_ident">
-        <field name="name">Identifiers</field>
+    <record model="ir.ui.menu" id="menu_rea_identification">
+        <field name="name">Identifiers Setup</field>
         <field name="parent_id" ref="menu_behaviours"/>
-        <field name="action" ref="rea_ident_act_window"/>
-        <field name="sequence" eval="20"/>
-    </record-->
-
-
+        <field name="action" ref="rea_identification_act_window"/>
+        <field name="sequence" eval="10"/>
+    </record>
 </data>
 </openerp>

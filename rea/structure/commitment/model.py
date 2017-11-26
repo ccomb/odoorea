@@ -7,7 +7,7 @@ class Commitment(models.Model):
     """
     _name = 'rea.commitment'
     _description = "Commitment"
-    _inherit = ['rea.ident.sequence']
+    _inherit = ['rea.identifiable.entity']
 
     def _default_provider(self):
         for agent in self.contract.parties:
@@ -134,7 +134,7 @@ class CommitmentType(models.Model):
     """
     _name = 'rea.commitment.type'
     _description = "Commitment Type"
-    _inherit = ['rea.ident.sequence.store']
+    _inherit = ['rea.identifiable.type']
 
     name = fields.Char(
         string=u"name",

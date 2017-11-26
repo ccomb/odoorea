@@ -1,23 +1,25 @@
-from odoo import fields, models, api
+from odoo import fields, models, api, osv
 from odoo.exceptions import UserError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTFORMAT
 from datetime import datetime
+from lxml import etree
 import pytz
 
 
-class IdentSequenceSetup(models.Model):
-    """Setup for an identifier type (ex: SSN numbering)
+class IdentificationField(models.Model):
+    """Setup for an identification field
     """
-    _name = 'rea.ident.sequence.setup'
-    _description = "Identifier Sequence Setup"
+    _name = 'rea.identification.field'
+    _description = "Setup for an Identification field"
 
     name = fields.Char(string="name", required=True, index=True)
-    field = fields.Char(
-        string="Applied to field",
-        default='name')
-    plugin = fields.Selection([
-        ('templated_sequence', "Templated sequence"),
-    ])
+    unique = fields.Boolean("Unique")
+    mandatory = fields.Boolean("Mandatory")
+    generated = fields.Boolean("Generated number")
+    field_name = fields.Char(
+        string="Field name")
+    identification = fields.Many2one(
+        'rea.identification')
     template = fields.Char("Template String", help="TODO")
     last_id = fields.Integer('Last id')
     prefix = fields.Char('Prefix')
@@ -32,12 +34,18 @@ class IdentSequenceSetup(models.Model):
         string="Date to use",
         default='now')
     date_field = fields.Char("Date field")
+    model = fields.Many2one(
+        'ir.model',
+        string="Related model")
+    field = fields.Many2one(
+        'ir.model.fields',
+        "Created field")
 
     def _next_nb(self):
         for s in self:
             s.next_nb = s.last_nb + s.step
 
-    def name_choose(self, dt):
+    def choose_next(self, dt):
         """ Generate the next identifier value,
         possibly using the provided datetime dt
         """
@@ -63,60 +71,159 @@ class IdentSequenceSetup(models.Model):
         """
         raise NotImplementedError
 
+    @api.model
+    def create(self, vals):
+        field_name = vals.get('field_name')
+        model = self.env.context.get('model')
+        type_id = self.env.context.get('type_id')
+        if field_name == 'name':
+            raise Exception("The \"name\" field already exists by default")
+        if not field_name or not model:
+            raise Exception("Please create the field from the entity type")
+        if not type_id:
+            raise Exception(
+                "Please save the type before creating an identification")
+        field_name = 'x_ident_%s_%s' % (type_id, field_name)
+        vals['field_name'] = field_name
+        fields = self.env['ir.model.fields']
+        models = self.env['ir.model']
+        model_id = models.search([('model', '=', model)])[0].id
+        entity_model = self.env[model]
+        vals['field'] = fields.create({
+            # 'required': vals.get('mandatory', False),
+            'model': model,
+            'model_id': model_id,
+            'name': field_name,
+            'ttype': 'char'}).id
+        vals['model'] = model_id
+        if vals.get('unique'):
+            entity_model._sql_constraints += [
+                ('%s_uniq' % field_name,
+                 'unique (%s)' % field_name,
+                 "This %s already exists !" % vals.get('name', field_name))]
+            entity_model._add_sql_constraints()
+        return super(IdentificationField, self).create(vals)
 
-class IdentifierTypeSetup(models.AbstractModel):
-    """ field to store the identifier setup
+    @api.multi
+    def unlink(self):
+        for f in self:
+            f.field.unlink()
+        return super(IdentificationField, self).unlink()
+
+
+class Identification(models.Model):
+    _name = 'rea.identification'
+
+    name = fields.Char(string="name", required=True, index=True)
+    fields = fields.One2many(
+        'rea.identification.field',
+        'identification',
+        string="Identification fields")
+
+
+class IdentifiableType(models.AbstractModel):
+    """ field to choose the identification fields on the entity type
     """
-    _name = 'rea.ident.sequence.store'
-    ident_setup = fields.Many2one(
-        'rea.ident.sequence.setup',
-        string="Ident setup")
+    _name = 'rea.identifiable.type'
+
+    identification = fields.Many2one(
+        'rea.identification',
+        "Identification Type")
 
 
-class SequenceIdentifiable(models.AbstractModel):
+class Identifiable(models.AbstractModel):
     """ configurable Name identifier
     """
-    _name = 'rea.ident.sequence'
-    _description = 'Identification behaviour'
+    _name = 'rea.identifiable.entity'
+    _description = 'Identifiable entity'
+
+    @api.depends('type')
+    def _get_identification(self):
+        for obj in self:
+            obj.identification = obj.type.identification.id
+
+    type_ident_setup = fields.Many2one(
+        'rea.identification',
+        compute=_get_identification)
+
+    identification = fields.Many2one(
+        'rea.identification',
+        compute=_get_identification)
 
     def update_vals(self, vals):
+        """update the vals dict with generated fields
+        """
         if vals.get('type'):
-            ident_setup = self.type.browse(vals.get('type')).ident_setup
-        elif self.type.ident_setup:
-            ident_setup = self.type.ident_setup
+            fields = self.type.browse(vals.get('type')).identification.fields
+        elif self.type.identification.fields:
+            fields = self.type.identification.fields
         else:
             return
-        date_origin = ident_setup.date_origin
-        date_field = ident_setup.date_field
-        now = datetime.now(pytz.timezone(self.env.context.get('tz') or 'UTC'))
-        dt = now
-        if date_origin is 'field':
-            if not date_field:
-                raise UserError(u'Missing Date Field in Identifier Setup "{}"'
-                                .format(ident_setup.name))
-            if vals.get(date_field):
-                dt = datetime.strptime(vals.get(date_field), DTFORMAT)
-        if ident_setup.field:
-            if not vals.get(ident_setup.field):
-                vals[ident_setup.field] = ident_setup.name_choose(dt)
-            else:
-                pass
+        for field in fields:
+            if not field.generated:
+                continue
+            date_origin = field.date_origin
+            date_field = field.date_field
+            now = datetime.now(pytz.timezone(self.env.context.get('tz') or 'UTC'))
+            dt = now
+            if date_origin is 'field':
+                if not date_field:
+                    raise UserError(u'Missing Date Field in Identifier Setup "{}"'
+                                    .format(field.name))
+                if vals.get(date_field):
+                    dt = datetime.strptime(vals.get(date_field), DTFORMAT)
+            if field.field_name:
+                if not vals.get(field.field_name):
+                    vals[field.field_name] = field.choose_next(dt)
+                else:
+                    pass
 
     @api.model
     def create(self, vals):
         self.update_vals(vals)
-        return super(SequenceIdentifiable, self).create(vals)
+        return super(Identifiable, self).create(vals)
 
     def copy_data(self, default=None):
         vals = {}
         self.update_vals(vals)
-        return super(SequenceIdentifiable, self).copy_data(default=vals)
+        return super(Identifiable, self).copy_data(default=vals)
 
-    @api.depends('type')
-    def _get_ident_setup(self):
-        for obj in self:
-            obj.type_ident_setup = self.type.ident_setup
-
-    type_ident_setup = fields.Many2one(
-        'rea.ident.sequence.setup',
-        compute='_get_ident_setup')  # for js
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form',
+                        toolbar=False, submenu=False):
+        """ Add identification fields
+        """
+        fvg = super(Identifiable, self).fields_view_get(
+            view_id=view_id, view_type=view_type,
+            toolbar=toolbar, submenu=submenu)
+        params = self.env.context.get('params')
+        if not params or view_type != 'form':
+            return fvg
+        doc = etree.fromstring(fvg['arch'])
+        group = doc.xpath("//page[@string='Identifiers']/group")[0]
+        entity_model = params.get('model', self._name)
+        type_model = entity_model + '.type'
+        type_table = self.env[type_model]._table
+        self.env.cr.execute('''
+            select distinct field.id
+            from rea_identification_field field, %s type
+            where field.identification = type.identification''' % type_table)
+        field_ids = [t[0] for t in self.env.cr.fetchall()]
+        fields = self.env['rea.identification.field'].browse(field_ids)
+        for field in fields:
+            xmlfield = etree.Element(
+                "field",
+                name=field.field_name,
+                string=field.name,
+                required='1' if field.mandatory else '0')
+            osv.orm.transfer_modifiers_to_node(
+                {'invisible': [
+                  ('identification', '!=', field.identification.id)],
+                 'readonly': field.generated},
+                xmlfield)
+            group.append(xmlfield)
+            description = self.env[entity_model]._fields[
+                field.field_name].get_description(self.env)
+            fvg['fields'][field.field_name] = description
+        fvg['arch'] = etree.tostring(doc)
+        return fvg
