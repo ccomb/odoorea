@@ -39,7 +39,9 @@ class IdentificationField(models.Model):
         string="Related model")
     field = fields.Many2one(
         'ir.model.fields',
-        "Created field")
+        "Created field",
+        required=True,
+        ondelete='restrict')
 
     def _next_nb(self):
         for s in self:
@@ -83,18 +85,22 @@ class IdentificationField(models.Model):
         if not type_id:
             raise Exception(
                 "Please save the type before creating an identification")
-        field_name = 'x_ident_%s_%s' % (type_id, field_name)
+        field_name = 'x_ident_%s' % field_name
         vals['field_name'] = field_name
         fields = self.env['ir.model.fields']
         models = self.env['ir.model']
         model_id = models.search([('model', '=', model)])[0].id
         entity_model = self.env[model]
-        vals['field'] = fields.create({
-            # 'required': vals.get('mandatory', False),
-            'model': model,
-            'model_id': model_id,
-            'name': field_name,
-            'ttype': 'char'}).id
+        existing = fields.search([('model_id', '=', model_id),
+                                  ('name', '=', field_name)])
+        if existing:
+            vals['field'] = existing[0].id
+        else:
+            vals['field'] = fields.create({
+                'model': model,
+                'model_id': model_id,
+                'name': field_name,
+                'ttype': 'char'}).id
         vals['model'] = model_id
         if vals.get('unique'):
             entity_model._sql_constraints += [
@@ -106,9 +112,14 @@ class IdentificationField(models.Model):
 
     @api.multi
     def unlink(self):
-        for f in self:
-            f.field.unlink()
-        return super(IdentificationField, self).unlink()
+        fields = self.field
+        res = super(IdentificationField, self).unlink()
+        for f in fields:
+            # TODO prevent deleting existing data
+            if not self.search([('field_name', '=', f.name),
+                                ('model', '=', f.model_id.id)]):
+                f.unlink()
+        return res
 
 
 class Identification(models.Model):
