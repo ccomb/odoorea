@@ -19,7 +19,8 @@ class IdentificationField(models.Model):
     field_name = fields.Char(
         string="Field name")
     identification = fields.Many2one(
-        'rea.identification')
+        'rea.identification',
+        ondelete='cascade')
     template = fields.Char("Template String", help="TODO")
     last_id = fields.Integer('Last id')
     prefix = fields.Char('Prefix')
@@ -77,15 +78,10 @@ class IdentificationField(models.Model):
     def create(self, vals):
         field_name = vals.get('field_name')
         model = self.env.context.get('model')
-        type_id = self.env.context.get('type_id')
-        if field_name == 'name':
-            raise Exception("The \"name\" field already exists by default")
         if not field_name or not model:
             raise Exception("Please create the field from the entity type")
-        if not type_id:
-            raise Exception(
-                "Please save the type before creating an identification")
-        field_name = 'x_ident_%s' % field_name
+        if field_name != 'name':
+            field_name = 'x_ident_%s' % field_name
         vals['field_name'] = field_name
         fields = self.env['ir.model.fields']
         models = self.env['ir.model']
@@ -96,11 +92,12 @@ class IdentificationField(models.Model):
         if existing:
             vals['field'] = existing[0].id
         else:
-            vals['field'] = fields.create({
-                'model': model,
-                'model_id': model_id,
-                'name': field_name,
-                'ttype': 'char'}).id
+            if field_name != 'name':
+                vals['field'] = fields.create({
+                    'model': model,
+                    'model_id': model_id,
+                    'name': field_name,
+                    'ttype': 'char'}).id
         vals['model'] = model_id
         if vals.get('unique'):
             entity_model._sql_constraints += [
@@ -115,9 +112,9 @@ class IdentificationField(models.Model):
         fields = self.field
         res = super(IdentificationField, self).unlink()
         for f in fields:
-            # TODO prevent deleting existing data
             if not self.search([('field_name', '=', f.name),
                                 ('model', '=', f.model_id.id)]):
+                # TODO prevent deleting existing data
                 f.unlink()
         return res
 
@@ -130,6 +127,22 @@ class Identification(models.Model):
         'rea.identification.field',
         'identification',
         string="Identification fields")
+
+    @api.model
+    def create(self, vals):
+        model = self.env.context.get('model')
+        if not model:
+            raise Exception("Please create the identification from the "
+                            "identification tab of the entity type")
+        models = self.env['ir.model']
+        model_id = models.search([('model', '=', model)])[0].id
+        identification = super(Identification, self).create(vals)
+        field_id = self.env['ir.model.fields'].search([
+            ('name', '=', 'name'), ('model_id', '=', model_id)])
+        self.fields.create({
+            'model': model_id, 'field': field_id, 'name': 'Name',
+            'field_name': 'name', 'identification': identification.id})
+        return identification
 
 
 class IdentifiableType(models.AbstractModel):
@@ -175,12 +188,14 @@ class Identifiable(models.AbstractModel):
                 continue
             date_origin = field.date_origin
             date_field = field.date_field
-            now = datetime.now(pytz.timezone(self.env.context.get('tz') or 'UTC'))
+            now = datetime.now(
+                pytz.timezone(self.env.context.get('tz') or 'UTC'))
             dt = now
             if date_origin is 'field':
                 if not date_field:
-                    raise UserError(u'Missing Date Field in Identifier Setup "{}"'
-                                    .format(field.name))
+                    raise UserError(
+                        u'Missing Date Field in Identifier Setup "{}"'
+                        .format(field.name))
                 if vals.get(date_field):
                     dt = datetime.strptime(vals.get(date_field), DTFORMAT)
             if field.field_name:
@@ -222,19 +237,25 @@ class Identifiable(models.AbstractModel):
         field_ids = [t[0] for t in self.env.cr.fetchall()]
         fields = self.env['rea.identification.field'].browse(field_ids)
         for field in fields:
-            xmlfield = etree.Element(
-                "field",
-                name=field.field_name,
-                string=field.name,
-                required='1' if field.mandatory else '0')
-            osv.orm.transfer_modifiers_to_node(
-                {'invisible': [
-                  ('identification', '!=', field.identification.id)],
-                 'readonly': field.generated},
-                xmlfield)
-            group.append(xmlfield)
-            description = self.env[entity_model]._fields[
-                field.field_name].get_description(self.env)
-            fvg['fields'][field.field_name] = description
+            if field.field_name == 'name':
+                xmlfield = doc.xpath("//field[@name='name']")[0]
+                osv.orm.transfer_modifiers_to_node(
+                    {'readonly': field.generated},
+                    xmlfield)
+            else:
+                xmlfield = etree.Element(
+                    "field",
+                    name=field.field_name,
+                    string=field.name,
+                    required='1' if field.mandatory else '0')
+                group.append(xmlfield)
+                description = self.env[entity_model]._fields[
+                    field.field_name].get_description(self.env)
+                fvg['fields'][field.field_name] = description
+                osv.orm.transfer_modifiers_to_node(
+                    {'invisible': [
+                      ('identification', '!=', field.identification.id)],
+                     'readonly': field.generated},
+                    xmlfield)
         fvg['arch'] = etree.tostring(doc)
         return fvg
