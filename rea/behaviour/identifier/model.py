@@ -76,8 +76,11 @@ class IdentificationField(models.Model):
 
     @api.model
     def create(self, vals):
+        """ Create the real field when creating an identification field
+        """
         field_name = vals.get('field_name')
         model = self.env.context.get('model')
+        type_id = self.env.context.get('type_id')
         if not field_name or not model:
             raise Exception("Please create the field from the entity type")
         if field_name != 'name':
@@ -85,8 +88,10 @@ class IdentificationField(models.Model):
         vals['field_name'] = field_name
         fields = self.env['ir.model.fields']
         models = self.env['ir.model']
-        model_id = models.search([('model', '=', model)])[0].id
         entity_model = self.env[model]
+        entity = entity_model.browse(type_id)
+        model = model if entity.subtypes else model[:-5]
+        model_id = models.search([('model', '=', model)])[0].id
         existing = fields.search([('model_id', '=', model_id),
                                   ('name', '=', field_name)])
         if existing:
@@ -130,6 +135,8 @@ class Identification(models.Model):
 
     @api.model
     def create(self, vals):
+        """ Create by default the 'name' rea ident field
+        """
         model = self.env.context.get('model')
         if not model:
             raise Exception("Please create the identification from the "
@@ -164,13 +171,9 @@ class Identifiable(models.AbstractModel):
     @api.depends('type')
     def _get_identification(self):
         for obj in self:
-            obj.identification = obj.type.identification.id
+            obj.type_identification = obj.type.identification.id
 
-    type_ident_setup = fields.Many2one(
-        'rea.identification',
-        compute=_get_identification)
-
-    identification = fields.Many2one(
+    type_identification = fields.Many2one(
         'rea.identification',
         compute=_get_identification)
 
@@ -228,7 +231,8 @@ class Identifiable(models.AbstractModel):
         doc = etree.fromstring(fvg['arch'])
         group = doc.xpath("//page[@string='Identifiers']/group")[0]
         entity_model = params.get('model', self._name)
-        type_model = entity_model + '.type'
+        type_model = entity_model + (
+            '' if entity_model.endswith('.type') else '.type')
         type_table = self.env[type_model]._table
         self.env.cr.execute('''
             select distinct field.id
@@ -242,7 +246,7 @@ class Identifiable(models.AbstractModel):
                 osv.orm.transfer_modifiers_to_node(
                     {'readonly': field.generated},
                     xmlfield)
-            else:
+            elif field.field_name in self.env[entity_model]._fields:
                 xmlfield = etree.Element(
                     "field",
                     name=field.field_name,
@@ -254,8 +258,10 @@ class Identifiable(models.AbstractModel):
                 fvg['fields'][field.field_name] = description
                 osv.orm.transfer_modifiers_to_node(
                     {'invisible': [
-                      ('identification', '!=', field.identification.id)],
+                      ('type_identification', '!=', field.identification.id)],
                      'readonly': field.generated},
                     xmlfield)
+            else:
+                pass
         fvg['arch'] = etree.tostring(doc)
         return fvg

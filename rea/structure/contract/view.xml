@@ -13,9 +13,8 @@
                 <sheet>
                     <div class="oe_title">
                         <field name="type" placeholder="Contract type"/>
-                        <field name="type_ident_setup" invisible="1"/>
                         <h1>
-                            <field name="name" attrs="{'readonly': [('type_ident_setup','!=',False)]}"/>
+                            <field name="name"/>
                         </h1>
                     </div>
                     <group>
@@ -100,7 +99,7 @@
                 </header>
                 <sheet>
                     <div class="oe_title">
-                        <label for="name" string="Contract type"/>
+                        <field name="type" placeholder="Contract type"/>
                         <h1>
                             <field name="name" placeholder="Contract Type Name"/>
                         </h1>
@@ -262,12 +261,17 @@
             <xpath expr="//notebook" position="inside">
                 <page string="Identification">
                     <group>
-                        <p>Here you can choose the identification of the Contracts of this type.</p>
+                        <p>Here you can choose the identification of the entities of this type.</p>
                     </group>
                     <group>
                         <field name="identification"
-                               context="{'model': 'rea.contract', 'type_id': active_id}"/>
+                               context="{'model': 'rea.contract.type', 'type_id': active_id}"/>
                     </group>
+                </page>
+                <page string="Identifiers">
+                  <group>
+                    <field name="type_identification" invisible="1"/>
+                  </group>
                 </page>
             </xpath>
         </field>
@@ -285,7 +289,7 @@
           <xpath expr="//notebook" position="inside">
             <page string="Identifiers">
               <group>
-                <field name="identification" invisible="1"/>
+                <field name="type_identification" invisible="1"/>
               </group>
             </page>
           </xpath>

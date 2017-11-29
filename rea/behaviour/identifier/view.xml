@@ -13,6 +13,7 @@
                     <h1><field name="name"/></h1>
                     <group>
                         <field name="field_name"/>
+                        <field name="field" readonly="1" attrs="{'invisible': [('field', '=', False)], 'required': [('field', '!=', False)]}"/>
                     </group>
                     <group>
                         <field name="unique"/>
