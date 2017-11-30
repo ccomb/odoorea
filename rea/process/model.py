@@ -30,7 +30,8 @@ class Process(models.Model):
                 # force recompute as it is not triggered
                 event.write(
                     {'balance':
-                        event.quantity - sum(r.quantity for r in event.reconciliations)})
+                        event.quantity - sum(
+                            r.quantity for r in event.reconciliations)})
 
 
 class ProcessType(models.Model):
@@ -40,12 +41,21 @@ class ProcessType(models.Model):
     """
     _name = 'rea.process.type'
     _description = 'Process Type'
-    _inherit = ['rea.identifiable.type']
+    _inherit = ['rea.identifiable.type',
+                'rea.identifiable.entity']
 
     name = fields.Char(
         string="name",
         required=True,
         index=True)
+    type = fields.Many2one(
+        'rea.process.type',
+        string="Process Type")
+    subtypes = fields.One2many(
+        'rea.process.type',
+        'type',
+        copy=True,
+        string="Sub-types")
     kind = fields.Selection([
         ('exchange', "Exchange"),
         ('conversion', "Conversion")],
