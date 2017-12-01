@@ -36,6 +36,11 @@
                         <page string="Origin">
                             <field name="commitments" readonly="1"/>
                         </page>
+                        <page string="Identifiers">
+                            <group>
+                                <field name="type_identification"/>
+                            </group>
+                        </page>
                     </notebook>
                 </sheet>
                 <div class="oe_chatter"></div>
