@@ -59,6 +59,14 @@ def Or(cs1, cs2):
     return contract
 
 
+def Cond(obs, cs1, cs2):
+    def contract(now, provider, receiver):
+        if obs():
+            return cs1(now, provider, receiver)
+        else:
+            return cs2(now, provider, receiver)
+
+
 def Truncate(t, cs):
     def contract(now, provider, receiver):
         result = []
@@ -102,3 +110,11 @@ def Anytime(cs):
                 result.append(c)
         return result
     return contract
+
+
+def Until(obs, cs):
+    def contract(now, provider, receiver):
+        if obs():
+            return []
+        else:
+            return cs(now, provider, receiver)
