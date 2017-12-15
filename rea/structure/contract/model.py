@@ -46,7 +46,7 @@ class Contract(models.Model):
         default=_default_parties,
         help="Agents involved in this contract.")
     clauses = fields.One2many(
-        'rea.commitment',  # rea.contract.clause?
+        'rea.commitment',
         'contract',
         copy=True,
         string="Commitments",
@@ -67,6 +67,7 @@ class Contract(models.Model):
         string="Valid until")
 
     def confirm(self):
+        # TODO make it configurable in the lifecycle
         for c in self:
             if c.state == 'draft':
                 c.write({'state': 'confirmed'})
@@ -156,9 +157,6 @@ class ContractTerm(models.Model):
     contract = fields.Many2one(
         'rea.contract',
         string="Contract")
-    conditions = fields.Selection([
-        ('foobar', 'Foobar'),
-    ])
 
 
 # TODO ClauseType ??

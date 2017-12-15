@@ -34,7 +34,7 @@
                         <page string="Clauses">
                             <field name="clauses"/>
                         </page>
-                        <page string="Term">
+                        <page string="Terms">
                             <field name="terms"/>
                         </page>
                     </notebook>

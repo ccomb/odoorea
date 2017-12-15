@@ -166,6 +166,29 @@ class CommitmentType(models.Model):
     allow_delete = fields.Boolean(
         u"Allow to delete",
         help=u"Allow to delete canceled commitments")
+    parent = fields.Many2one(
+        'rea.contract.term',
+        string="Parent term")
+    children = fields.One2many(
+        'rea.contract.term',
+        'parent',
+        copy=True,
+        string="Commitments",
+        help="The commitments of the contract")
+    combinator = fields.Selection([
+        ('zero', 'Zero'),
+        ('one', 'One'),
+        ('give', 'Give'),
+        ('and', 'And'),
+        ('or', 'Or'),
+        ('cond', 'Cond'),
+        ('truncate', 'Truncate'),
+        ('then', 'Then'),
+        ('scale', 'Scale'),
+        ('get', 'Get'),
+        ('anytime', 'Anytime'),
+        ('until', 'Until')],
+        default='one')
 
 
 class CommitmentGroup(models.Model):

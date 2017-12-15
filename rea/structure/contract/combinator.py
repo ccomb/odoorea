@@ -118,3 +118,8 @@ def Until(obs, cs):
             return []
         else:
             return cs(now, provider, receiver)
+
+
+def Konst(i):
+    def obs():
+        return i
