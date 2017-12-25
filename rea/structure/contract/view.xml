@@ -35,7 +35,12 @@
                             <field name="clauses"/>
                         </page>
                         <page string="Terms">
-                            <field name="terms"/>
+                            <field name="terms">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="expression"/>
+                                </tree>
+                            </field>
                         </page>
                     </notebook>
                 </sheet>
@@ -167,15 +172,20 @@
         <field name="arch" type="xml">
             <form>
                 <header>
+                    <button type="object" name="execute" string="Execute"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            <field name="name" placeholder="Contract Term Name"/>
+                            <field name="name" placeholder="Name of the contract term"/>
                         </h1>
                     </div>
                     <group>
-                        <field name="conditions"/>
+                        <field name="observables" editable="bottom"/>
+                        <field name="expression"/>
+                        <field name="commitments"/>
+                        <field name="resource_type"/>
+                        <field name="commitment_type"/>
                     </group>
                 </sheet>
                 <div class="oe_chatter"></div>

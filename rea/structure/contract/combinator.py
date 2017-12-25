@@ -1,22 +1,17 @@
-
-def create_commitment(c):
-    print(c)
-    return c
+# coding: utf-8
 
 
 def Zero():
     def contract(now, provider, receiver):
-        print("zero")
         return []
     return contract
 
 
-def One(ressource_type):
+def One(resource_type):
     def contract(now, provider, receiver):
         return [{
-            'action': 'create',
-            'ressource_type': ressource_type,
-            'qty': 1,
+            'resource_type': resource_type,
+            'quantity': 1,
             'acquisition_date': now,
             'horizon': 0,
             'provider': provider,
@@ -41,7 +36,18 @@ def Scale(obs, cs):
     def contract(now, provider, receiver):
         result = []
         for c in cs(now, provider, receiver):
-            c['qty'] *= obs()
+            c['quantity'] *= obs()
+            result.append(c)
+        return result
+    return contract
+
+
+def When(obs, cs):
+    def contract(now, provider, receiver):
+        result = []
+        for c in cs(now, provider, receiver):
+            if not obs():
+                continue
             result.append(c)
         return result
     return contract
@@ -67,11 +73,11 @@ def Cond(obs, cs1, cs2):
             return cs2(now, provider, receiver)
 
 
-def Truncate(t, cs):
+def Truncate(obs, cs):
     def contract(now, provider, receiver):
         result = []
         for c in cs(now, provider, receiver):
-            c['horizon'] = min(t, c['horizon'])
+            c['horizon'] = min(obs(), c['horizon'])
             result.append(c)
         return result
     return contract
@@ -123,3 +129,4 @@ def Until(obs, cs):
 def Konst(i):
     def obs():
         return i
+    return obs
