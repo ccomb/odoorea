@@ -172,7 +172,8 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button type="object" name="execute" string="Execute"/>
+                    <button type="object" name="execute_all_terms" string="Execute"
+                            help="Execute for all commitments of the contract"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -181,12 +182,28 @@
                         </h1>
                     </div>
                     <group>
-                        <field name="observables" editable="bottom"/>
-                        <field name="expression"/>
-                        <field name="commitments"/>
-                        <field name="resource_type"/>
-                        <field name="commitment_type"/>
+                        <field name="globalscope"/>
                     </group>
+                    <notebook>
+                        <page string="Observables">
+                            <field name="observables" editable="bottom"/>
+                        </page>
+                        <page string="Conditions">
+                            <group>
+                                <field name="resource_groups" widget="many2many_tags"/>
+                            </group>
+                        </page>
+                        <page string="Action">
+                            <group>
+                                <field name="expression"/>
+                                <field name="resource_type"/>
+                                <field name="commitment_type"/>
+                            </group>
+                        </page>
+                        <page string="Commitments">
+                            <field name="commitments"/>
+                        </page>
+                    </notebook>
                 </sheet>
                 <div class="oe_chatter"></div>
             </form>

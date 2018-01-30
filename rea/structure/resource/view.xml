@@ -89,6 +89,7 @@
                         </h1>
                     </div>
                     <group>
+                        <field name="groups" widget="many2many_tags"/>
                         <field name="max_reservations"/>
                     </group>
                 </sheet>
@@ -103,6 +104,7 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
+                <field name="groups"/>
             </search>
         </field>
     </record>
@@ -148,6 +150,7 @@
                         </h1>
                     </div>
                     <group>
+                        <field name="code"/>
                         <field name="group"/>
                     </group>
                 </sheet>
@@ -162,6 +165,7 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
+                <field name="code"/>
                 <field name="group"/>
             </search>
         </field>
@@ -173,6 +177,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
+                <field name="code"/>
             </tree>
         </field>
     </record>

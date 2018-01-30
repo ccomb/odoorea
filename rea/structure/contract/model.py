@@ -1,3 +1,4 @@
+# coding: utf-8
 from odoo import fields, models, api, _
 from odoo.exceptions import ValidationError
 from time import strftime
@@ -55,7 +56,7 @@ class Contract(models.Model):
     terms = fields.One2many(
         'rea.contract.term',
         'contract',
-        string="Clauses",
+        string="Terms",
         help=("Clauses contain the text of the contract and allow to generate"
               " commitments, possibly depending on other commitments"))
     start = fields.Date(
@@ -154,18 +155,20 @@ class Observable(models.Model):
     type = fields.Selection([
         ('konst', 'Constant'),
         ('days', 'Days after'),
-        ('time', 'Current Time')])
+        ('time', 'Current Time'),
+        ('field', 'Commitment Field')])
     konst = fields.Float("Value")
     date = fields.Date("Date")
+    field = fields.Char("Field name")
     term = fields.Many2one(
         'rea.contract.term',
         "Contract Term")
 
-    def value(self):
+    def value(self, commitment):
         if self.type == 'konst':
-            def konst():
-                return self.konst
-            return konst
+            return self.konst
+        if self.type == 'field':
+            return getattr(commitment, self.field)
         raise NotImplementedError
 
 
@@ -183,7 +186,19 @@ class ContractTerm(models.Model):
         'rea.contract',
         string="Contract")
     expression = fields.Char(
-        "Expression")
+        "Expression",
+        help=("Zero()\n"
+              "One(resource_type)\n"
+              "Give(cs)\n"
+              "And(cs1, cs2)\n"
+              "Scale(obs, cs)\n"
+              "When(obs, cs)\n"
+              "Or(cs1, cs2)\n"
+              "Cond(obs, cs1, cs2)\n"
+              "Truncate(obs, cs)\n"
+              "Then(cs1, cs2)\n"
+              "Get(cs)\n"
+              "Anytime(cs)\n"))
     commitments = fields.Many2many(
         'rea.commitment',
         string="Generated commitments",
@@ -201,37 +216,69 @@ class ContractTerm(models.Model):
 
     resource_type = fields.Many2one(
         'rea.resource.type',
-        string='Resource type')
+        string='Resource type',
+        help="Resource type used in the generated commitment")
 
     commitment_type = fields.Many2one(
         'rea.commitment.type',
         string='Commitment type',
         help="Type of the generated commitment")
 
-    def execute(self):
+    #condition = fields.
+    globalscope = fields.Boolean("Global scope?")
+    resource_groups = fields.Many2many(
+        'rea.resource.group',
+        string="Resource Groups",
+        help="Restrict the term to commitments whose resource groups "
+             "are on of these")
+
+    def execute_all_terms(self):
+        for t in self:
+            for c in t.contract.clauses:
+                self.execute(c)
+
+    def execute(self, commitment):
         for t in self:
             # FIXME unsafe
-            lcls = {o.name: o.value() for o in t.observables}
+            lcls = {o.name: o.value(commitment) for o in t.observables}
             for c in [c for c in dir(combinator) if not c.startswith('_')]:
                 lcls[c] = getattr(combinator, c)
             lcls['resource_type'] = t.resource_type.id
-            function = eval(t.expression,
-                            {"__builtins__": {}},
-                            lcls)
-            commitments = function(
+            # TODO memoize and use a resolution (day, minute, etc.)
+            contract_function = eval(t.expression,
+                                     {"__builtins__": {}},
+                                     lcls)
+            commitments = contract_function(
                 strftime('%Y-%m-%d %H:%M:%S'), t.provider, t.receiver)
+            print(commitments)
             for c in commitments:
                 if not c:
                     continue
-                c['create_date'] = c['acquisition_date']
-                c['date'] = c['acquisition_date']
-                c['contract'] = t.contract.id
+                #c['date'] = c['acquisition_date']
+                c['contract'] = commitment.contract.id
                 c['type'] = t.commitment_type.id
                 c['provider'] = t.provider.id
                 c['receiver'] = t.receiver.id
-                del c['acquisition_date']
                 print c
                 c = self.env['rea.commitment'].create(c)
                 t.write({'commitments': [(4, c.id)]})
 
 # TODO ClauseType ??
+
+
+class Commitment(models.Model):
+    _inherit = 'rea.commitment'
+
+    @api.model
+    def create(self, vals):
+        """trigger the check of the current contract terms and global ones
+        """
+        c = super(Commitment, self).create(vals)
+        globalterms = c.contract.terms.search([('globalscope', '=', True)])
+        for term in c.contract.terms + globalterms:
+            if (term.resource_groups and
+                set(c.resource_type.groups
+                    ).isdisjoint(set(term.resource_groups))):
+                    continue
+            term.execute(c)
+        return c
