@@ -33,6 +33,9 @@ class ResourceType(models.Model):
     type = fields.Many2one(
         'rea.resource.type',
         string="Type")
+    structural = fields.Boolean(
+        'Structural type?',
+        help="Hide in operational choices?")
     name = fields.Char(
         string="name",
         required=True,

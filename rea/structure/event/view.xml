@@ -121,6 +121,9 @@
                             <field name="resource_type"/>
                             <field name="receiver"/>
                         </group>
+                        <group>
+                            <field name="structural"/>
+                        </group>
                     </group>
                     <group string="Behaviours">
                         <notebook>

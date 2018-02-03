@@ -27,6 +27,7 @@
                         <group>
                             <field name="contract" invisible="1"/>
                             <field name="contract_type" invisible="1"/>
+                            <field name="type_resource_types" invisible="1"/>
                             <field name="provider"/>
                             <field name="quantity"/>
                             <field name="resource_type"/>
@@ -137,6 +138,7 @@
                         <group>
                             <field name="autofulfill"/>
                             <field name="allow_delete"/>
+                            <field name="structural"/>
                         </group>
                     </group>
                     <group string="Behaviours">

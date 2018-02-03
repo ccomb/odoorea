@@ -26,7 +26,8 @@ class Commitment(models.Model):
         index=True)
     type = fields.Many2one(
         'rea.commitment.type',
-        domain="[('contract_type', 'parent_of', contract_type)]",
+        domain="[('contract_type', 'parent_of', contract_type),"
+               "('structural', '=', False)]",
         string="Type")
     state = fields.Selection([
         ('draft', u"Draft"),
@@ -47,6 +48,8 @@ class Commitment(models.Model):
         string="Quantity")
     resource_type = fields.Many2one(
         'rea.resource.type',
+        domain="[('id', 'child_of', type_resource_types[0][2]),"
+               " ('structural', '=', False)]",
         string="Resource Type")
     reserved_resources = fields.Many2many(
         'rea.resource',
@@ -60,6 +63,9 @@ class Commitment(models.Model):
     contract_type = fields.Many2one(  # just for a domain
         'rea.contract.type',
         compute='_contract_type')
+    type_resource_types = fields.Many2many(  # just for a domain
+        'rea.resource.type',
+        compute='_type_resource_types')
     provider = fields.Many2one(
         'rea.agent',
         default=_default_provider,
@@ -78,7 +84,8 @@ class Commitment(models.Model):
             commitment.receiver = commitment._default_receiver()
             commitment.provider = commitment._default_provider()
         return {'domain': {'resource_type':
-                [('id', 'child_of', [t.id for t in self.type.resource_types])]}}
+                [('id', 'child_of', [t.id for t in self.type.resource_types]),
+                 ('structural', '=', False)]}}
 
     @api.constrains('reserved_resources')
     def _check_reserved_resources(self):
@@ -94,6 +101,10 @@ class Commitment(models.Model):
     def _contract_type(self):
         for commitment in self:
             commitment.contract_type = commitment.contract.type
+
+    def _type_resource_types(self):
+        for commitment in self:
+            commitment.type_resource_types = commitment.type.resource_types
 
     def fulfill(self, amount=None, ratio=None):
         """Create the full event if no args are given
@@ -139,6 +150,9 @@ class CommitmentType(models.Model):
     type = fields.Many2one(
         'rea.commitment.type',
         string="Type")
+    structural = fields.Boolean(
+        'Structural type?',
+        help="Hide in operational choices?")
     name = fields.Char(
         string=u"name",
         required=True,

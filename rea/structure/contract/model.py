@@ -110,6 +110,9 @@ class ContractType(models.Model):
     type = fields.Many2one(
         'rea.contract.type',
         string="Type")
+    structural = fields.Boolean(
+        'Structural type?',
+        help="Hide in operational choices?")
     name = fields.Char(
         string="Contract Type",
         required=True,

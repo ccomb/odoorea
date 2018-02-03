@@ -103,6 +103,9 @@ class EventType(models.Model):
     type = fields.Many2one(
         'rea.event.type',
         string="Type")
+    structural = fields.Boolean(
+        'Structural type?',
+        help="Hide in operational choices?")
     name = fields.Char(
         string="name",
         required=True,

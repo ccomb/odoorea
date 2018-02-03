@@ -89,8 +89,13 @@
                         </h1>
                     </div>
                     <group>
-                        <field name="groups" widget="many2many_tags"/>
-                        <field name="max_reservations"/>
+                        <group>
+                            <field name="groups" widget="many2many_tags"/>
+                            <field name="max_reservations"/>
+                        </group>
+                        <group>
+                            <field name="structural"/>
+                        </group>
                     </group>
                 </sheet>
                 <div class="oe_chatter"></div>
