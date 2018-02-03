@@ -28,7 +28,11 @@ class ResourceType(models.Model):
     """
     _name = 'rea.resource.type'
     _description = "Resource Type"
+    _parent_name = 'type'
 
+    type = fields.Many2one(
+        'rea.resource.type',
+        string="Type")
     name = fields.Char(
         string="name",
         required=True,

@@ -26,7 +26,7 @@ class Commitment(models.Model):
         index=True)
     type = fields.Many2one(
         'rea.commitment.type',
-        domain="[('contract_type', '=', contract_type)]",
+        domain="[('contract_type', 'parent_of', contract_type)]",
         string="Type")
     state = fields.Selection([
         ('draft', u"Draft"),
@@ -50,7 +50,7 @@ class Commitment(models.Model):
         string="Resource Type")
     reserved_resources = fields.Many2many(
         'rea.resource',
-        domain="[('type', '=', resource_type)]",
+        domain="[('type', 'parent_of', resource_type)]",
         string="Reserved Resources")
     contract = fields.Many2one(
         'rea.contract',
@@ -78,7 +78,7 @@ class Commitment(models.Model):
             commitment.receiver = commitment._default_receiver()
             commitment.provider = commitment._default_provider()
         return {'domain': {'resource_type':
-                [('id', 'in', [t.id for t in self.type.resource_types])]}}
+                [('id', 'child_of', [t.id for t in self.type.resource_types])]}}
 
     @api.constrains('reserved_resources')
     def _check_reserved_resources(self):
@@ -136,6 +136,9 @@ class CommitmentType(models.Model):
     _description = "Commitment Type"
     _inherit = ['rea.identifiable.type']
 
+    type = fields.Many2one(
+        'rea.commitment.type',
+        string="Type")
     name = fields.Char(
         string=u"name",
         required=True,

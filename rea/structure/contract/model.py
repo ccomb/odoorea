@@ -105,14 +105,15 @@ class ContractType(models.Model):
     _inherit = ['rea.identifiable.type',
                 'rea.lifecycleable.type',
                 'rea.identifiable.entity']
+    _parent_name = 'type'
 
+    type = fields.Many2one(
+        'rea.contract.type',
+        string="Type")
     name = fields.Char(
         string="Contract Type",
         required=True,
         index=True)
-    type = fields.Many2one(
-        'rea.contract.type',
-        string="Type")
     subtypes = fields.One2many(
         'rea.contract.type',
         'type',

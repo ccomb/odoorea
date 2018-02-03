@@ -98,7 +98,11 @@ class EventType(models.Model):
     _name = 'rea.event.type'
     _description = "Event Type"
     _inherit = ['rea.identifiable.type']
+    _parent_name = 'type'
 
+    type = fields.Many2one(
+        'rea.event.type',
+        string="Type")
     name = fields.Char(
         string="name",
         required=True,

@@ -60,7 +60,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_agent">
         <field name="name">Agents</field>
-        <field name="parent_id" ref="menu_agents"/>
+        <field name="type" ref="menu_agents"/>
         <field name="action" ref="rea_agent_act_window"/>
         <field name="sequence" eval="30"/>
     </record>
@@ -76,7 +76,7 @@
                 </header>
                 <sheet>
                     <div class="oe_title">
-                        <label for="name" string="Agent type"/>
+                        <field name="type" placeholder="Parent Type"/>
                         <h1>
                             <field name="name" placeholder="Agent Type Name"/>
                         </h1>
@@ -105,6 +105,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
+                <field name="type"/>
             </tree>
         </field>
     </record>
@@ -119,7 +120,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_agent_type">
         <field name="name">Agent Types</field>
-        <field name="parent_id" ref="menu_agents"/>
+        <field name="type" ref="menu_agents"/>
         <field name="action" ref="rea_agent_type_act_window"/>
         <field name="sequence" eval="10"/>
     </record>
@@ -186,7 +187,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_agent_group">
         <field name="name">Agent Groups</field>
-        <field name="parent_id" ref="menu_agents"/>
+        <field name="type" ref="menu_agents"/>
         <field name="action" ref="rea_agent_group_act_window"/>
         <field name="sequence" eval="20"/>
     </record>

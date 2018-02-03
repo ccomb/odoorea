@@ -25,7 +25,11 @@ class AgentType(models.Model):
     """
     _name = 'rea.agent.type'
     _description = 'Agent Type'
+    _parent_name = 'type'
 
+    type = fields.Many2one(
+        'rea.agent.type',
+        string="Type")
     name = fields.Char(
         string="name",
         required=True,

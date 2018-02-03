@@ -93,7 +93,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_event">
         <field name="name">Events</field>
-        <field name="parent_id" ref="menu_events"/>
+        <field name="type" ref="menu_events"/>
         <field name="action" ref="rea_event_act_window"/>
         <field name="sequence" eval="30"/>
     </record>
@@ -109,7 +109,7 @@
                 </header>
                 <sheet>
                     <div class="oe_title">
-                        <label for="name" string="Event type"/>
+                        <field name="type" placeholder="Parent Type"/>
                         <h1>
                             <field name="name" placeholder="Event Type Name"/>
                         </h1>
@@ -152,6 +152,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
+                <field name="type"/>
                 <field name="resource_type"/>
                 <field name="provider"/>
                 <field name="receiver"/>
@@ -177,7 +178,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_event_type">
         <field name="name">Event Types</field>
-        <field name="parent_id" ref="menu_events"/>
+        <field name="type" ref="menu_events"/>
         <field name="action" ref="rea_event_type_act_window"/>
         <field name="sequence" eval="10"/>
     </record>
@@ -244,7 +245,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_event_group">
         <field name="name">Event Groups</field>
-        <field name="parent_id" ref="menu_events"/>
+        <field name="type" ref="menu_events"/>
         <field name="action" ref="rea_event_group_act_window"/>
         <field name="sequence" eval="20"/>
     </record>

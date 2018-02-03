@@ -103,7 +103,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_commitment">
         <field name="name">Commitments</field>
-        <field name="parent_id" ref="menu_commitments"/>
+        <field name="type" ref="menu_commitments"/>
         <field name="action" ref="rea_commitment_act_window"/>
         <field name="sequence" eval="30"/>
     </record>
@@ -119,7 +119,7 @@
                 </header>
                 <sheet>
                     <div class="oe_title">
-                        <label for="name" string="Commitment type"/>
+                        <field name="type" placeholder="Parent Type"/>
                         <h1>
                             <field name="name" placeholder="Name"/>
                         </h1>
@@ -166,6 +166,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
+                <field name="type"/>
                 <field name="kind"/>
             </tree>
         </field>
@@ -181,7 +182,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_commitment_type">
         <field name="name">Commitment Types</field>
-        <field name="parent_id" ref="menu_commitments"/>
+        <field name="type" ref="menu_commitments"/>
         <field name="action" ref="rea_commitment_type_act_window"/>
         <field name="sequence" eval="10"/>
     </record>
@@ -239,7 +240,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_commitment_group">
         <field name="name">Commitment Groups</field>
-        <field name="parent_id" ref="menu_commitments"/>
+        <field name="type" ref="menu_commitments"/>
         <field name="action" ref="rea_commitment_group_act_window"/>
         <field name="sequence" eval="20"/>
     </record>

@@ -88,7 +88,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_contract">
         <field name="name">Contracts</field>
-        <field name="parent_id" ref="menu_contracts"/>
+        <field name="type" ref="menu_contracts"/>
         <field name="action" ref="rea_contract_act_window"/>
         <field name="sequence" eval="30"/>
     </record>
@@ -104,7 +104,7 @@
                 </header>
                 <sheet>
                     <div class="oe_title">
-                        <field name="type" placeholder="Contract type"/>
+                        <field name="type" placeholder="Parent Type"/>
                         <h1>
                             <field name="name" placeholder="Contract Type Name"/>
                         </h1>
@@ -145,6 +145,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
+                <field name="type"/>
             </tree>
         </field>
     </record>
@@ -159,7 +160,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_contract_type">
         <field name="name">Contract Types</field>
-        <field name="parent_id" ref="menu_contracts"/>
+        <field name="type" ref="menu_contracts"/>
         <field name="action" ref="rea_contract_type_act_window"/>
         <field name="sequence" eval="10"/>
     </record>
@@ -275,7 +276,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_contract_group">
         <field name="name">Contract Groups</field>
-        <field name="parent_id" ref="menu_contracts"/>
+        <field name="type" ref="menu_contracts"/>
         <field name="action" ref="rea_contract_group_act_window"/>
         <field name="sequence" eval="20"/>
     </record>
