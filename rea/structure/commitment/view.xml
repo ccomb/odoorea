@@ -133,8 +133,6 @@
                             <field name="receiver_type"/>
                             <field name="contract_type"/>
                         </group>
-                    </group>
-                    <group>
                         <group>
                             <field name="autofulfill"/>
                             <field name="allow_delete"/>

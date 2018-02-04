@@ -11,15 +11,25 @@ class Commitment(models.Model):
 
     def _default_provider(self):
         for agent in self.contract.parties:
-            if self.type.provider_type in agent.type.search(
-                    [('id', 'parent_of', agent.type.id)]):
-                return agent
+            if self.env.user.company == agent:
+                if self.type.kind == 'decrement':
+                    return agent
+            else:
+                if (self.type.kind == 'increment'
+                        and self.type.provider_type in agent.type.search(
+                        [('id', 'parent_of', agent.type.id)])):
+                    return agent
 
     def _default_receiver(self):
         for agent in self.contract.parties:
-            if self.type.receiver_type in agent.type.search(
-                    [('id', 'parent_of', agent.type.id)]):
-                return agent
+            if self.env.user.company == agent:
+                if self.type.kind == 'increment':
+                    return agent
+            else:
+                if (self.type.kind == 'decrement'
+                        and self.type.receiver_type in agent.type.search(
+                        [('id', 'parent_of', agent.type.id)])):
+                    return agent
 
     name = fields.Char(
         string="name",

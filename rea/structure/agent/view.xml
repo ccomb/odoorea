@@ -82,7 +82,11 @@
                         </h1>
                     </div>
                     <group>
-                        <field name="structural"/>
+                        <group>
+                        </group>
+                        <group>
+                            <field name="structural"/>
+                        </group>
                     </group>
                 </sheet>
                 <div class="oe_chatter"></div>
