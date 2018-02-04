@@ -11,12 +11,14 @@ class Commitment(models.Model):
 
     def _default_provider(self):
         for agent in self.contract.parties:
-            if agent.type == self.type.provider_type:
+            if self.type.provider_type in agent.type.search(
+                    [('id', 'parent_of', agent.type.id)]):
                 return agent
 
     def _default_receiver(self):
         for agent in self.contract.parties:
-            if agent.type == self.type.receiver_type:
+            if self.type.receiver_type in agent.type.search(
+                    [('id', 'parent_of', agent.type.id)]):
                 return agent
 
     name = fields.Char(
