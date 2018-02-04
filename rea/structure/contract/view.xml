@@ -167,7 +167,7 @@
     </record>
 
 
-    <!-- CONTRACT CLAUSE -->
+    <!-- CONTRACT TERM -->
     <record model="ir.ui.view" id="rea_contract_term_form_view">
         <field name="name">rea.contract.term.form</field>
         <field name="model">rea.contract.term</field>
@@ -193,13 +193,15 @@
                         <page string="Conditions">
                             <group>
                                 <field name="resource_groups" widget="many2many_tags"/>
+                                <field name="resource_type"/>
                             </group>
                         </page>
                         <page string="Action">
                             <group>
                                 <field name="expression"/>
-                                <field name="resource_type"/>
                                 <field name="commitment_type"/>
+                                <field name="provider"/>
+                                <field name="receiver"/>
                             </group>
                         </page>
                         <page string="Commitments">

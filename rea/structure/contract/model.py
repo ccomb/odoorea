@@ -221,14 +221,13 @@ class ContractTerm(models.Model):
     resource_type = fields.Many2one(
         'rea.resource.type',
         string='Resource type',
-        help="Resource type used in the generated commitment")
+        help="This resource type must be used in the originating commitment.")
 
     commitment_type = fields.Many2one(
         'rea.commitment.type',
         string='Commitment type',
         help="Type of the generated commitment")
 
-    #condition = fields.
     globalscope = fields.Boolean("Global scope?")
     resource_groups = fields.Many2many(
         'rea.resource.group',
@@ -247,8 +246,9 @@ class ContractTerm(models.Model):
             lcls = {o.name: o.value(commitment) for o in t.observables}
             for c in [c for c in dir(combinator) if not c.startswith('_')]:
                 lcls[c] = getattr(combinator, c)
-            lcls['resource_type'] = t.resource_type.id
+            lcls['resource_type'] = commitment.resource_type.id
             # TODO memoize and use a resolution (day, minute, etc.)
+            # to avoid recreating the commitment at each term execution
             contract_function = eval(t.expression,
                                      {"__builtins__": {}},
                                      lcls)
@@ -258,13 +258,17 @@ class ContractTerm(models.Model):
             for c in commitments:
                 if not c:
                     continue
+                if self.env.context.get('term_execution') == t.id:
+                    # avoid infinite recursion
+                    continue
                 #c['date'] = c['acquisition_date']
                 c['contract'] = commitment.contract.id
                 c['type'] = t.commitment_type.id
                 c['provider'] = t.provider.id
                 c['receiver'] = t.receiver.id
-                print c
-                c = self.env['rea.commitment'].create(c)
+                print(c)
+                c = self.env['rea.commitment'].with_context(
+                    {'term_execution': t.id}).create(c)
                 t.write({'commitments': [(4, c.id)]})
 
 # TODO ClauseType ??
@@ -280,9 +284,13 @@ class Commitment(models.Model):
         c = super(Commitment, self).create(vals)
         globalterms = c.contract.terms.search([('globalscope', '=', True)])
         for term in c.contract.terms + globalterms:
+            # execute the terms if one of the resource groups
+            # belongs to the configured resource groups on the term
             if (term.resource_groups and
                 set(c.resource_type.groups
                     ).isdisjoint(set(term.resource_groups))):
                     continue
+            if term.resource_type and term.resource_type not in c.resource_type.search([('id', 'parent_of', c.resource_type.id)]):
+                continue
             term.execute(c)
         return c
