@@ -4,6 +4,7 @@ from odoo.exceptions import ValidationError
 from time import strftime
 from . import combinator
 
+
 class Contract(models.Model):
     """ Set of commitments and terms forming clauses
     """
@@ -20,14 +21,13 @@ class Contract(models.Model):
             return [(6, 0, [self.env.user.company.id])]
         return []
 
-    @api.onchange('parties')  # TODO add a _constraint
+    @api.one
+    @api.constrains('parties')
     def _change_parties(self):
         for c in self:
-            parties = c.parties
-            if len(parties) > c.type.max_parties > 0:
-                c.parties = parties[:c.type.max_parties-1]
+            if len(c.parties) > c.type.max_parties > 0:
                 raise ValidationError(
-                    u"This contract type cannot have more than {} parties"
+                    u"This type of contract cannot have more than {} parties"
                     .format(c.type.max_parties))
 
     name = fields.Char(
