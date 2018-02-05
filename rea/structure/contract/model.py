@@ -51,7 +51,7 @@ class Contract(models.Model):
         'rea.commitment',
         'contract',
         copy=True,
-        string="Commitments",
+        string="Clauses",
         help="The commitments of the contract")
     terms = fields.One2many(
         'rea.contract.term',
@@ -67,25 +67,6 @@ class Contract(models.Model):
         string="Signature date")
     validity = fields.Date(
         string="Valid until")
-
-    def confirm(self):
-        # TODO make it configurable in the lifecycle
-        for c in self:
-            if c.state == 'draft':
-                c.write({'state': 'confirmed'})
-                c.clauses.confirm()
-            else:
-                raise ValidationError(
-                    u"Contract {} cannot be confirmed".format(c.name))
-
-    def cancel(self):
-        for c in self:
-            if c.state == 'confirmed':
-                c.write({'state': 'canceled'})
-                c.clauses.cancel()
-            else:
-                raise ValidationError(
-                    u"Contract {} cannot be canceled".format(c.name))
 
     def unlink(self):
         for c in self:

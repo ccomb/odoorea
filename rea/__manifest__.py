@@ -34,6 +34,7 @@
         'structure/agent/view.xml',
         'structure/commitment/security.xml',
         'structure/commitment/view.xml',
+        'structure/commitment/lifecycle.xml',
         'structure/contract/security.xml',
         'structure/contract/view.xml',
         'structure/contract/lifecycle.xml',

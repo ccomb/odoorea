@@ -9,11 +9,7 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="confirm" string="Confirm" type="object" states="draft" class="btn-primary"/>
                     <button name="fulfill" string="Fulfill..." type="object" states="confirmed" class="btn-primary"/>
-                    <button name="cancel" string="Cancel" type="object" states="confirmed" class="btn-primary"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
-
 
                 </header>
                 <sheet>
@@ -81,15 +77,14 @@
         <field name="model">rea.commitment</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="name"/>
                 <field name="type"/>
+                <field name="name"/>
                 <field name="contract"/>
                 <field name="date"/>
                 <field name="provider"/>
                 <field name="receiver"/>
                 <field name="quantity"/>
                 <field name="resource_type"/>
-                <field name="state"/>
             </tree>
         </field>
     </record>

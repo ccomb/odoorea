@@ -7,7 +7,9 @@ class Commitment(models.Model):
     """
     _name = 'rea.commitment'
     _description = "Commitment"
-    _inherit = ['rea.identifiable.entity']
+    _inherit = [
+        'rea.identifiable.entity',
+        'rea.lifecycleable.entity']
 
     def _default_provider(self):
         for agent in self.contract.parties:
@@ -41,12 +43,6 @@ class Commitment(models.Model):
         domain="[('contract_type', 'parent_of', contract_type),"
                "('structural', '=', False)]",
         string="Type")
-    state = fields.Selection([
-        ('draft', u"Draft"),
-        ('confirmed', u"Confirmed"),
-        ('canceled', u"Canceled")],
-        default='draft',
-        string=u"state")
     groups = fields.Many2many(
         'rea.commitment.group',
         string="Groups")
@@ -127,21 +123,6 @@ class Commitment(models.Model):
             commitment = c.read()
             self.env['rea.event'].create(commitment)
 
-    # state
-    def confirm(self):
-        for c in self:
-            if c.state == 'draft':
-                c.write({'state': 'confirmed'})
-            else:
-                raise ValidationError(
-                    u"Commitment {} cannot be confirmed".format(c.name))
-
-    def cancel(self):
-        for c in self:
-            # TODO cannot cancel a commitment linked to a signed contract
-            if c.state == 'confirmed':
-                c.write({'state': 'canceled'})
-
     def unlink(self):
         for c in self:
             if (c.state == 'draft'
@@ -157,7 +138,8 @@ class CommitmentType(models.Model):
     """
     _name = 'rea.commitment.type'
     _description = "Commitment Type"
-    _inherit = ['rea.identifiable.type']
+    _inherit = ['rea.identifiable.type',
+                'rea.lifecycleable.type']
 
     type = fields.Many2one(
         'rea.commitment.type',

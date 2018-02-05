@@ -2,7 +2,7 @@
 import logging
 from lxml import etree
 from odoo import models, fields, api, _, osv
-from odoo.exceptions import MissingError, UserError
+from odoo.exceptions import MissingError, UserError, ValidationError
 logger = logging.getLogger(__file__)
 
 
@@ -141,7 +141,9 @@ class Lifecycleable(models.AbstractModel):
         for entity in self:
             steps = entity.get_steps()
             if entity.step == steps[0]:  # first step
-                raise UserError(_("Warning: You're already in the first step"))
+                raise UserError(
+                    _("Warning: {} \"{}\" is already in the first step"
+                      .format(entity._description, entity.name)))
             elif entity.step not in steps:  # no step
                 continue
             else:
@@ -155,7 +157,9 @@ class Lifecycleable(models.AbstractModel):
         for entity in self:
             steps = entity.get_steps()
             if entity.step == steps[-1]:  # last step
-                raise UserError(_("Warning: You're already in the last step"))
+                raise UserError(
+                    _("Warning: {} \"{}\" is already in the last step"
+                      .format(entity._description, entity.name)))
             elif entity.step not in steps:  # no step
                 next_step = steps[0]
             else:
@@ -174,10 +178,17 @@ class Lifecycleable(models.AbstractModel):
                     ('origin', '=', entity.step.id),
                     ('target', '=', values['step']),
                     ('lifecycle', '=', entity.type.lifecycle.id)])
-                if not valid_transitions:
-                    raise UserError(_("Warning: there is no transition "
-                                      "allowing to go to this step"))
-        return super(Lifecycleable, self).write(values)
+                if not valid_transitions and entity.step:
+                    raise UserError(
+                        _("Warning: {} \"{}\" has no transitions to this step"
+                          .format(entity._description, entity.name)))
+        result = super(Lifecycleable, self).write(values)
+        if 'step' in values:
+            for entity in self:
+                for field in entity.type.subobjects:
+                    for subobj in getattr(entity, field.name):
+                        subobj.write({'step': values['step']})
+        return result
 
     @api.model
     def fields_view_get(self, view_id=None, view_type='form',
@@ -263,6 +274,21 @@ class LifecyclableType(models.AbstractModel):
         step_ids = [(s.sequence, s.id) for s in self.lifecycle.steps]
         return sorted(step_ids)[0][1] if len(step_ids) else False
 
+    @api.one
+    @api.constrains('subobjects')
+    def check_subobject_states(self):
+        for o in self:
+            for f in o.subobjects:
+                if 'step' not in self.env[o.subobjects.relation]._fields:
+                    raise ValidationError(
+                        u"This subobjects corresponding to this field has no lifecycles: {}"
+                        .format(f.display_name))
+
     lifecycle = fields.Many2one(
         'rea.lifecycle',
         "Lifecycle")
+    subobjects = fields.Many2many(
+        'ir.model.fields',
+        domain="['|', ('ttype','=','one2many'), ('ttype','=','many2many')]",
+        help=u"When changing the step of the current object, the sub-objects "
+             u"in the specified fields will be changed as well")
