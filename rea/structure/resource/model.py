@@ -12,6 +12,9 @@ class Resource(models.Model):
         string="name",
         required=True,
         index=True)
+    quantity = fields.Float(
+        'Quantity',
+        help=u"The quantity of the specified type")
     type = fields.Many2one(
         'rea.resource.type',
         string="Type")
@@ -46,7 +49,25 @@ class ResourceType(models.Model):
     groups = fields.Many2many(
         'rea.resource.group',
         string="Groups")
+    quantity = fields.Float(
+        'Quantity',
+        help=u"The unit quantity corresponding to this resource type."
+             u"Used for conversions")
+    uom = fields.Many2one(
+        'rea.resource.uom',
+        )
     # TODO recursive with parent?
+
+
+class UnitOfMeasure(models.Model):
+    """ Unit of measure of resources
+    """
+    _name = 'rea.resource.uom'
+
+    name = fields.Char(
+        'Name')
+    code = fields.Char(
+        'Code')
 
 
 class ResourceGroup(models.Model):

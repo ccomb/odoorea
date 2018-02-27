@@ -36,8 +36,8 @@ class Reconciliation(models.Model):
 
     @api.onchange('event')
     def onchange_event(self):
-        for d in self:
-            d.quantity = d.event.balance
+        for r in self:
+            r.quantity = r.event.balance
 
     @api.constrains('quantity')
     def constrain_quantity(self):

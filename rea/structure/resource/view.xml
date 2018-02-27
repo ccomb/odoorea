@@ -12,7 +12,7 @@
                 </header>
                 <sheet>
                     <div class="oe_title">
-                        <field name="type" placeholder="Resource Type"/>
+                        <field name="quantity" style="max-width: 4em"/><span style="margin: 0 0.5em"/><field name="type" placeholder="Resource Type"/>
                         <h1>
                             <field name="name" placeholder="Resource Name"/>
                         </h1>
@@ -87,6 +87,12 @@
                         <h1>
                             <field name="name" placeholder="Resource Type Name"/>
                         </h1>
+                        <span style="margin: 0 1em">Quantity:</span>
+                        <field name="quantity" placeholder="Qty" style="max-width: 4em"
+                               attrs="{'invisible': [('structural','=',True)]}"/>
+                        <span style="margin: 0 1em"/>
+                        <field name="uom" placeholder="Unit Of Measure"
+                               attrs="{'invisible': [('structural','=',True)]}"/>
                     </div>
                     <group>
                         <group>
@@ -109,7 +115,9 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
+                <field name="type"/>
                 <field name="groups"/>
+                <field name="uom"/>
             </search>
         </field>
     </record>
@@ -120,6 +128,8 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
+                <field name="quantity"/>
+                <field name="uom"/>
                 <field name="type"/>
             </tree>
         </field>
@@ -202,5 +212,40 @@
         <field name="action" ref="rea_resource_group_act_window"/>
         <field name="sequence" eval="20"/>
     </record>
+
+    <!-- UNIT OF MEASURE -->
+    <record id="view_rea_resource_uom_tree" model="ir.ui.view">
+        <field name="name">rea.resource.uom.tree</field>
+        <field name="model">rea.resource.uom</field>
+        <field name="arch" type="xml">
+        <tree string="Unit of Measure">
+            <field name="name"/>
+        </tree>
+        </field>
+    </record>
+
+    <record id="view_rea_resource_uom_form" model="ir.ui.view">
+        <field name="name">rea.resource.uom.form</field>
+        <field name="model">rea.resource.uom</field>
+        <field name="arch" type="xml">
+        <form string="Unit of Measure">
+            <group>
+                <field name="name" select="1"/>
+                <field name="code" select="1"/>
+            </group>
+        </form>
+        </field>
+    </record>
+    <record id="view_rea_resource_uom_search" model="ir.ui.view">
+        <field name="name">rea.resource.uom.search</field>
+        <field name="model">rea.resource.uom</field>
+        <field name="arch" type="xml">
+        <search string="Unit of Measure">
+            <field name="name" select="1"/>
+            <field name="code" select="1"/>
+        </search>
+        </field>
+    </record>
+
 </data>
 </openerp>
