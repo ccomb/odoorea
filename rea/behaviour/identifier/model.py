@@ -114,14 +114,11 @@ class IdentificationField(models.Model):
 
     @api.multi
     def unlink(self):
-        fields = self.field
-        res = super(IdentificationField, self).unlink()
-        for f in fields:
-            if not self.search([('field_name', '=', f.name),
-                                ('model', '=', f.model_id.id)]):
-                # TODO prevent deleting existing data
-                f.unlink()
-        return res
+        for vf in self:
+            field = vf.field
+            super(IdentificationField, self).unlink()
+            # TODO prevent deleting existing data
+            field.unlink()
 
 
 class Identification(models.Model):
@@ -248,7 +245,7 @@ class Identifiable(models.AbstractModel):
                     xmlfield)
             elif field.field_name in self.env[entity_model]._fields:
                 xmlfield = etree.Element(
-                    "field",
+                    'field',
                     name=field.field_name,
                     string=field.name,
                     required='1' if field.mandatory else '0')

@@ -27,6 +27,7 @@ class ValuationField(models.Model):
     @api.model
     def create(self, vals):
         """ Create the real field when creating a value field
+        Also create the unit field (resource_type)
         """
         field_name = vals.get('field_name')
         model = self.env.context.get('model')
@@ -44,6 +45,7 @@ class ValuationField(models.Model):
         model_id = models.search([('model', '=', model)])[0].id
         existing = fields.search([('model_id', '=', model_id),
                                   ('name', '=', field_name)])
+        rt_field_name = 'x_valueunit_%s' % field_name[8:]
         if existing:
             vals['field'] = existing[0].id
         else:
@@ -53,25 +55,25 @@ class ValuationField(models.Model):
                     'model_id': model_id,
                     'name': field_name,
                     'ttype': 'char'}).id
+                fields.create({
+                    'model': model,
+                    'model_id': model_id,
+                    'name': rt_field_name,
+                    'ttype': 'many2one',
+                    'relation': 'rea.resource.type'}).id
         vals['model'] = model_id
-        if vals.get('unique'):
-            entity_model._sql_constraints += [
-                ('%s_uniq' % field_name,
-                 'unique (%s)' % field_name,
-                 "This %s already exists !" % vals.get('name', field_name))]
-            entity_model._add_sql_constraints()
         return super(ValuationField, self).create(vals)
 
     @api.multi
     def unlink(self):
-        fields = self.field
-        res = super(ValuationField, self).unlink()
-        for f in fields:
-            if not self.search([('field_name', '=', f.name),
-                                ('model', '=', f.model_id.id)]):
-                # TODO prevent deleting existing data
-                f.unlink()
-        return res
+        for vf in self:
+            field = vf.field
+            super(ValuationField, self).unlink()
+            # TODO prevent deleting existing data
+            field.search([('model', '=', field.model),
+                          ('name', '=', 'x_valueunit_' + field.name[8:])]
+                         ).unlink()
+            field.unlink()
 
 
 class Valuation(models.Model):
@@ -121,7 +123,7 @@ class Valuable(models.AbstractModel):
         if not params or view_type != 'form':
             return fvg
         doc = etree.fromstring(fvg['arch'])
-        group = doc.xpath("//page[@string='Values']/group")[0]
+        group = doc.xpath("//page[@string='Values']/group/group")[0]
         entity_model = params.get('model', self._name)
         type_model = entity_model + (
             '' if entity_model.endswith('.type') else '.type')
@@ -135,18 +137,34 @@ class Valuable(models.AbstractModel):
         for field in fields:
             if field.field_name in self.env[entity_model]._fields:
                 xmlfield = etree.Element(
-                    "field",
+                    'field',
                     name=field.field_name,
                     string=field.name,
                     required='1' if field.mandatory else '0')
+                field_name2 = 'x_valueunit_' + field.field_name[8:]
+                xmlfield2 = etree.Element(
+                    'field',
+                    name=field_name2,
+                    string='Unit',
+                    nolabel='1',
+                    colspan='2',
+                    required='1' if field.mandatory else '0')
                 group.append(xmlfield)
+                group.append(xmlfield2)
                 description = self.env[entity_model]._fields[
                     field.field_name].get_description(self.env)
                 fvg['fields'][field.field_name] = description
+                description2 = self.env[entity_model]._fields[
+                    field_name2].get_description(self.env)
+                fvg['fields'][field_name2] = description2
                 osv.orm.transfer_modifiers_to_node(
                     {'invisible': [
                       ('type_valuation', '!=', field.valuation.id)]},
                     xmlfield)
+                osv.orm.transfer_modifiers_to_node(
+                    {'invisible': [
+                      ('type_valuation', '!=', field.valuation.id)]},
+                    xmlfield2)
             else:
                 pass
         fvg['arch'] = etree.tostring(doc)
