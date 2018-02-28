@@ -30,6 +30,11 @@ class AgentType(models.Model):
     type = fields.Many2one(
         'rea.agent.type',
         string="Type")
+    subtypes = fields.One2many(
+        'rea.agent.type',
+        'type',
+        copy=True,
+        string="Sub-types")
     structural = fields.Boolean(
         'Structural type?',
         help="Hide in operational choices?")

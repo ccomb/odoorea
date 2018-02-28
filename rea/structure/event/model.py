@@ -103,6 +103,11 @@ class EventType(models.Model):
     type = fields.Many2one(
         'rea.event.type',
         string="Type")
+    subtypes = fields.One2many(
+        'rea.event.type',
+        'type',
+        copy=True,
+        string="Sub-types")
     structural = fields.Boolean(
         'Structural type?',
         help="Hide in operational choices?")
@@ -123,9 +128,6 @@ class EventType(models.Model):
     resource_type = fields.Many2one(
         'rea.resource.type',
         string="Resource Type")
-    #identifiers = fields.One2many(  # TODO move to the ident module as an inherit
-    #    'rea.ident.type'
-    #)
 
 # todo : l'event type est proche de la notion de journal et peut avoir une correspondance en compta
 

@@ -144,6 +144,11 @@ class CommitmentType(models.Model):
     type = fields.Many2one(
         'rea.commitment.type',
         string="Type")
+    subtypes = fields.One2many(
+        'rea.commitment.type',
+        'type',
+        copy=True,
+        string="Sub-types")
     structural = fields.Boolean(
         'Structural type?',
         help="Hide in operational choices?")
