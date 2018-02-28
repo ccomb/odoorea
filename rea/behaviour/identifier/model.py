@@ -163,7 +163,7 @@ class IdentifiableType(models.AbstractModel):
 
 
 class Identifiable(models.AbstractModel):
-    """ configurable Name identifier
+    """ entity with configurable identifiers
     """
     _name = 'rea.identifiable.entity'
     _description = 'Identifiable entity'

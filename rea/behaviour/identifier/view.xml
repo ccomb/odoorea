@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 <data>
-    <!-- IDENTICATION FIELD SETUP -->
+    <!-- IDENTIFICATION FIELD SETUP -->
     <record model="ir.ui.view" id="rea_identification_field_form_view">
         <field name="name">rea.identification.field.form</field>
         <field name="model">rea.identification.field</field>
