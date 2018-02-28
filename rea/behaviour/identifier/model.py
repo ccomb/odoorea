@@ -250,8 +250,7 @@ class Identifiable(models.AbstractModel):
                 xmlfield = etree.Element(
                     'field',
                     name=field.field_name,
-                    string=field.name,
-                    required='1' if field.mandatory else '0')
+                    string=field.name)
                 group.append(xmlfield)
                 description = self.env[entity_model]._fields[
                     field.field_name].get_description(self.env)
@@ -259,7 +258,8 @@ class Identifiable(models.AbstractModel):
                 osv.orm.transfer_modifiers_to_node(
                     {'invisible': [
                       ('type_identification', '!=', field.identification.id)],
-                     'readonly': field.generated},
+                     'readonly': field.generated,
+                     'required': field.mandatory},
                     xmlfield)
             else:
                 pass

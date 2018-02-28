@@ -142,16 +142,14 @@ class Valuable(models.AbstractModel):
                 xmlfield = etree.Element(
                     'field',
                     name=field.field_name,
-                    string=field.name,
-                    required='1' if field.mandatory else '0')
+                    string=field.name)
                 field_name2 = 'x_valueunit_' + field.field_name[8:]
                 xmlfield2 = etree.Element(
                     'field',
                     name=field_name2,
                     string='Unit',
                     nolabel='1',
-                    colspan='2',
-                    required='1' if field.mandatory else '0')
+                    colspan='2')
                 group.append(xmlfield)
                 group.append(xmlfield2)
                 description = self.env[entity_model]._fields[
@@ -162,11 +160,13 @@ class Valuable(models.AbstractModel):
                 fvg['fields'][field_name2] = description2
                 osv.orm.transfer_modifiers_to_node(
                     {'invisible': [
-                      ('type_valuation', '!=', field.valuation.id)]},
+                      ('type_valuation', '!=', field.valuation.id)],
+                     'required': field.mandatory},
                     xmlfield)
                 osv.orm.transfer_modifiers_to_node(
                     {'invisible': [
-                      ('type_valuation', '!=', field.valuation.id)]},
+                      ('type_valuation', '!=', field.valuation.id)],
+                     'required': field.mandatory},
                     xmlfield2)
             else:
                 pass
