@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+    <!-- VALUE FIELD SETUP -->
+    <record model="ir.ui.view" id="rea_valuation_field_form_view">
+        <field name="name">rea.valuation.field.form</field>
+        <field name="model">rea.valuation.field</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                </header>
+                <sheet>
+                    <h1><field name="name"/></h1>
+                    <group>
+                        <field name="field_name"/>
+                        <field name="field" readonly="1" attrs="{'invisible': [('field', '=', False)], 'required': [('field', '!=', False)]}"/>
+                    </group>
+                    <group>
+                        <field name="mandatory"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter"></div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_valuation_field_search_view">
+        <field name="name">rea.valuation.field.search</field>
+        <field name="model">rea.valuation.field</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_valuation_field_tree_view">
+        <field name="name">rea.valuation.field.tree</field>
+        <field name="model">rea.valuation.field</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="field"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rea_valuation_form_view">
+        <field name="name">rea.valuation.form</field>
+        <field name="model">rea.valuation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                </header>
+                <sheet>
+                    <h1><field name="name"/></h1>
+                    <group>
+                        <field name="fields"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter"></div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="rea_valuation_act_window">
+        <field name="name">Values Setup</field>
+        <field name="res_model">rea.valuation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record model="ir.ui.menu" id="menu_rea_valuation">
+        <field name="name">Valuation Setup</field>
+        <field name="parent_id" ref="menu_behaviours"/>
+        <field name="action" ref="rea_valuation_act_window"/>
+        <field name="sequence" eval="10"/>
+    </record>
+</data>
+</openerp>

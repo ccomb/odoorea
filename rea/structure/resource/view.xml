@@ -24,6 +24,11 @@
                         <page string="Reserved by">
                             <field name="reserved" readonly="1"/>
                         </page>
+                        <page string="Values">
+                            <group>
+                                <field name="type_valuation" invisible="1"/>
+                            </group>
+                        </page>
                     </notebook>
                 </sheet>
                 <div class="oe_chatter"></div>
@@ -102,6 +107,10 @@
                         <group>
                             <field name="structural"/>
                         </group>
+                    </group>
+                    <group string="Behaviours">
+                        <notebook>
+                        </notebook>
                     </group>
                 </sheet>
                 <div class="oe_chatter"></div>
@@ -247,5 +256,23 @@
         </field>
     </record>
 
+    <!-- add a value page in the notebooks -->
+    <record model="ir.ui.view" id="rea_resource_type_form_view_value">
+        <field name="inherit_id" ref="rea.rea_resource_type_form_view"/>
+        <field name="model">rea.resource.type</field>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Valuation">
+                    <group>
+                        <p>Here you can choose the valuation behaviour of the Resources you are creating.</p>
+                    </group>
+                    <group>
+                        <field name="valuation"
+                               context="{'model': 'rea.resource.type', 'type_id': active_id}"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
 </data>
 </openerp>
