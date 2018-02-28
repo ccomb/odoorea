@@ -38,7 +38,7 @@
                         </page>
                         <page string="Identifiers">
                             <group>
-                                <field name="type_identification"/>
+                                <field name="type_identification" invisible="1"/>
                             </group>
                         </page>
                     </notebook>
@@ -264,7 +264,8 @@
                         <p>Here you can choose the numbering behaviour of the Events you are creating.</p>
                     </group>
                     <group>
-                        <field name="identification"/>
+                        <field name="identification"
+                               context="{'model': 'rea.event.type', 'type_id': active_id}"/>
                     </group>
                 </page>
             </xpath>
