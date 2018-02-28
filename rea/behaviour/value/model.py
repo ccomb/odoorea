@@ -70,10 +70,13 @@ class ValuationField(models.Model):
             field = vf.field
             super(ValuationField, self).unlink()
             # TODO prevent deleting existing data
-            field.search([('model', '=', field.model),
-                          ('name', '=', 'x_valueunit_' + field.name[8:])]
-                         ).unlink()
-            field.unlink()
+            # delete the concrete field if there are no remaining identfields
+            if not self.search([('field_name', '=', field.name),
+                                ('model', '=', field.model_id.id)]):
+                field.search([('model', '=', field.model),
+                              ('name', '=', 'x_valueunit_' + field.name[8:])]
+                             ).unlink()
+                field.unlink()
 
 
 class Valuation(models.Model):
