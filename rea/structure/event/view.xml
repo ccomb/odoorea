@@ -253,7 +253,7 @@
         <field name="sequence" eval="20"/>
     </record>
 
-    <!-- add an ident page in the notebooks -->
+    <!-- add an ident page in the notebook -->
     <record model="ir.ui.view" id="rea_event_type_form_view_ident">
         <field name="inherit_id" ref="rea.rea_event_type_form_view"/>
         <field name="model">rea.event.type</field>

@@ -24,6 +24,11 @@
                         <page string="Reserved by">
                             <field name="reserved" readonly="1"/>
                         </page>
+                        <page string="Identifiers">
+                            <group>
+                                <field name="type_identification" invisible="1"/>
+                            </group>
+                        </page>
                         <page string="Values">
                             <field name="type_valuation" invisible="1"/>
                             <group>
@@ -258,7 +263,25 @@
         </field>
     </record>
 
-    <!-- add a value page in the notebooks -->
+    <!-- add an ident page in the notebook -->
+    <record model="ir.ui.view" id="rea_resource_type_form_view_ident">
+        <field name="inherit_id" ref="rea.rea_resource_type_form_view"/>
+        <field name="model">rea.resource.type</field>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Identification">
+                    <group>
+                        <p>Here you can choose the numbering behaviour of the Events you are creating.</p>
+                    </group>
+                    <group>
+                        <field name="identification"
+                               context="{'model': 'rea.resource.type', 'type_id': active_id}"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <!-- add a value page in the notebook -->
     <record model="ir.ui.view" id="rea_resource_type_form_view_value">
         <field name="inherit_id" ref="rea.rea_resource_type_form_view"/>
         <field name="model">rea.resource.type</field>

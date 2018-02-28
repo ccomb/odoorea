@@ -7,7 +7,8 @@ class Resource(models.Model):
     """
     _name = 'rea.resource'
     _description = "Resource"
-    _inherit = ['rea.valuable.entity']
+    _inherit = ['rea.identifiable.entity',
+                'rea.valuable.entity']
 
     name = fields.Char(
         string="name",
@@ -15,6 +16,7 @@ class Resource(models.Model):
         index=True)
     quantity = fields.Float(
         'Quantity',
+        default=1,
         help=u"The quantity of the specified type")
     type = fields.Many2one(
         'rea.resource.type',
@@ -33,7 +35,8 @@ class ResourceType(models.Model):
     _name = 'rea.resource.type'
     _description = "Resource Type"
     _parent_name = 'type'
-    _inherit = ['rea.valuable.type']
+    _inherit = ['rea.valuable.type',
+                'rea.identifiable.type']
 
     type = fields.Many2one(
         'rea.resource.type',
@@ -58,6 +61,7 @@ class ResourceType(models.Model):
         string="Groups")
     quantity = fields.Float(
         'Quantity',
+        default=1,
         help=u"The unit quantity corresponding to this resource type."
              u"Used for conversions")
     uom = fields.Many2one(
