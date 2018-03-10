@@ -1,5 +1,6 @@
 from odoo import fields, models, api, osv
 from lxml import etree
+import time
 
 
 class ValuationField(models.Model):
@@ -23,6 +24,12 @@ class ValuationField(models.Model):
         "Created field",
         required=True,
         ondelete='restrict')
+    type = fields.Selection([
+        ('konst', 'Constant'),
+        ('calc', 'Calculation')])
+    calculation = fields.Many2one(
+        'rea.value.calculation',
+        string=u"Calculation method")
 
     @api.model
     def create(self, vals):
@@ -54,7 +61,12 @@ class ValuationField(models.Model):
                     'model': model,
                     'model_id': model_id,
                     'name': field_name,
-                    'ttype': 'char'}).id
+                    #'depends': 
+                    #'compute':
+                    #    "for r in self:\n\tr['%s']=self.compute_field('%s')"
+                    #    % (field_name, field_name)
+                    #    if self.type == 'calc' else False,
+                    'ttype': 'float'}).id
                 fields.create({
                     'model': model,
                     'model_id': model_id,
@@ -106,13 +118,16 @@ class Valuable(models.AbstractModel):
     _description = 'Valuable entity'
 
     @api.depends('type')
-    def _get_value(self):
+    def _get_valuation(self):
         for obj in self:
             obj.type_valuation = obj.type.valuation.id
 
     type_valuation = fields.Many2one(
         'rea.valuation',
-        compute=_get_value)
+        compute=_get_valuation)
+
+    #def compute_field(self):
+    #    import pdb; pdb.set_trace()
 
     @api.model
     def fields_view_get(self, view_id=None, view_type='form',
@@ -166,9 +181,90 @@ class Valuable(models.AbstractModel):
                 osv.orm.transfer_modifiers_to_node(
                     {'invisible': [
                       ('type_valuation', '!=', field.valuation.id)],
-                     'required': field.mandatory},
+                     'required': field.mandatory,
+                     'readonly': field.type == 'calc'},
                     xmlfield2)
             else:
                 pass
         fvg['arch'] = etree.tostring(doc)
         return fvg
+
+
+class Observable(models.Model):
+    _name = 'rea.value.observable'
+    _description = "Observable for value calculation"
+
+    sequence = fields.Integer("Sequence")
+    name = fields.Char("Name")
+    type = fields.Selection([
+        ('konst', 'Constant'),
+        ('days', 'Days after'),
+        ('time', 'Current Time'),
+        ('field', 'Entity field')])
+    konst = fields.Float("Value")
+    date = fields.Date("Date")
+    field = fields.Many2one(
+        'ir.model.fields',
+        string="Dependent field")
+    calculation = fields.Many2one(
+        'rea.value.calculation',
+        "Calculation")
+
+    def value(self, entity):
+        """ get the value of the observable
+        """
+        if self.type == 'konst':
+            def obs():
+                return self.konst
+            return obs
+        if self.type == 'field' and self.field:
+            def obs():
+                return getattr(entity, self.field.name)
+            return obs
+        raise NotImplementedError
+
+
+class Calculation(models.Model):
+    """ Calculate value fields depending on other fields
+    """
+    _name = 'rea.value.calculation'
+    _description = u"Calculate value fields"
+
+    expression = fields.Char(
+        "Expression",
+        help=("Python expression"))
+
+    observables = fields.One2many(
+        'rea.value.observable',
+        'calculation',
+        string="Observables")
+
+    resolution = fields.Float(
+        "Period",
+        help=u"Recompute the value at every period of time")
+
+    next_valuation = fields.Date(
+        "Next valuation date")
+
+    def compute_all(self):
+        self.env.cr.execute("select r.id, f.id, c.id  from rea_resource r, rea_resource_type t, rea_valuation v, rea_valuation_field f, rea_value_calculation c where r.type = t.id and t.valuation = v.id and f.valuation = v.id and (c.next_valuation < '%s' or c.next_valuation is NULL)" % time.strftime('%Y-%m-%d %H:%M:%S'))
+        for resource_id, field_id, calculation_id in self.env.cr.fetchall():
+            field = self.env['rea.valuation.field'].browse(field_id)
+            resource = self.env['rea.resource'].browse(resource_id)
+            value = self.browse(calculation_id).compute(resource, field)
+            resource.write({field.field.name: value})
+
+    def compute(self, entity, field):
+        """given a calculation and an entity, return the new value of the field
+        """
+        for calc in self:
+            import pdb; pdb.set_trace()
+            localvars = {o.name: o.value(entity) for o in calc.observables}
+            # TODO memoize and use a resolution (day, minute, etc.)
+            # to avoid recreating the commitment at each term execution
+            # FIXME unsafe
+            value = eval(self.expression,
+                         {"__builtins__": {}},
+                         localvars)
+            return value
+            # _function(time.strftime('%Y-%m-%d %H:%M:%S'))

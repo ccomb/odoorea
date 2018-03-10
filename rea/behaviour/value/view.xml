@@ -12,11 +12,17 @@
                 <sheet>
                     <h1><field name="name"/></h1>
                     <group>
-                        <field name="field_name"/>
-                        <field name="field" readonly="1" attrs="{'invisible': [('field', '=', False)], 'required': [('field', '!=', False)]}"/>
-                    </group>
-                    <group>
-                        <field name="mandatory"/>
+                        <group>
+                            <field name="field_name"/>
+                            <field name="field" readonly="1" attrs="{'invisible': [('field', '=', False)], 'required': [('field', '!=', False)]}"/>
+                        </group>
+                        <group>
+                            <field name="mandatory"/>
+                            <field name="type"/>
+                            <field name="calculation"
+                                   attrs="{'invisible': [('type','!=','calc')],
+                                           'required': [('type','=','calc')]}"/>
+                        </group>
                     </group>
                 </sheet>
                 <div class="oe_chatter"></div>
@@ -77,5 +83,61 @@
         <field name="action" ref="rea_valuation_act_window"/>
         <field name="sequence" eval="10"/>
     </record>
-</data>
+
+    <!-- CALCULATION -->
+    <record id="view_rea_value_calculation_tree" model="ir.ui.view">
+        <field name="name">rea.value.calculation.tree</field>
+        <field name="model">rea.value.calculation</field>
+        <field name="type">tree</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+        <tree string="Calculation">
+            <field name="expression"/>
+        </tree>
+        </field>
+    </record>
+    
+    <record id="view_rea_value_calculation_form" model="ir.ui.view">
+        <field name="name">rea.value.calculation.form</field>
+        <field name="model">rea.value.calculation</field>
+        <field name="type">form</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+        <form string="Calculation">
+            <field name="expression" select="1"/>
+            <field name="observables"/>
+            <field name="resolution"/>
+            <field name="next_valuation"/>
+            <button name="compute_all" type="object" string="compute all"/>
+        </form>
+        </field>
+    </record>
+    
+    <record id="view_rea_value_calculation_search" model="ir.ui.view">
+        <field name="name">rea.value.calculation.search</field>
+        <field name="model">rea.value.calculation</field>
+        <field name="type">search</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+        <search string="Calculation">
+            <field name="expression" select="True"/>
+        </search>
+        </field>
+    </record>
+    
+    <record model="ir.actions.act_window" id="act_open_rea_value_calculation_view">
+        <field name="name">Calculation</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">rea.value.calculation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_rea_value_calculation_search"/>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+    
+    <menuitem id="menu_rea_value_calculation"
+        parent="menu_behaviours"
+        sequence="20"
+        action="act_open_rea_value_calculation_view"/>
+    </data>
 </openerp>
