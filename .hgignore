@@ -5,4 +5,5 @@ develop-eggs/
 etc/
 sandbox/
 .*\.swp$
+.*\.swo$
 .*\.pyc$

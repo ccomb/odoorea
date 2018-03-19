@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<data>
 
     <!-- EVENT -->
     <record model="ir.ui.view" id="rea_event_form_view">
@@ -100,7 +99,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_event">
         <field name="name">Events</field>
-        <field name="type" ref="menu_events"/>
+        <field name="parent_id" ref="menu_events"/>
         <field name="action" ref="rea_event_act_window"/>
         <field name="sequence" eval="30"/>
     </record>
@@ -188,7 +187,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_event_type">
         <field name="name">Event Types</field>
-        <field name="type" ref="menu_events"/>
+        <field name="parent_id" ref="menu_events"/>
         <field name="action" ref="rea_event_type_act_window"/>
         <field name="sequence" eval="10"/>
     </record>
@@ -255,7 +254,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_event_group">
         <field name="name">Event Groups</field>
-        <field name="type" ref="menu_events"/>
+        <field name="parent_id" ref="menu_events"/>
         <field name="action" ref="rea_event_group_act_window"/>
         <field name="sequence" eval="20"/>
     </record>
@@ -296,5 +295,4 @@
             </xpath>
         </field>
     </record>
-</data>
 </odoo>

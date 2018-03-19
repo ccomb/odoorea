@@ -150,6 +150,8 @@ class Observable(models.Model):
         "Contract Term")
 
     def value(self, commitment):
+        """ get the value of the observable
+        """
         if self.type == 'konst':
             return self.konst
         if self.type == 'field':

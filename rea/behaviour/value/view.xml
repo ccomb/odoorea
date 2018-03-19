@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-<data>
+<odoo>
     <!-- VALUE FIELD SETUP -->
     <record model="ir.ui.view" id="rea_valuation_field_form_view">
         <field name="name">rea.valuation.field.form</field>
@@ -15,14 +14,17 @@
                         <group>
                             <field name="field_name"/>
                             <field name="field" readonly="1" attrs="{'invisible': [('field', '=', False)], 'required': [('field', '!=', False)]}"/>
-                        </group>
-                        <group>
                             <field name="mandatory"/>
                             <field name="type"/>
-                            <field name="calculation"
-                                   attrs="{'invisible': [('type','!=','calc')],
-                                           'required': [('type','=','calc')]}"/>
                         </group>
+                        <group attrs="{'invisible': [('type','!=','calc')]}">
+                            <field name="expression" select="1"
+                                attrs="{'required': [('type','=','calc')]}"/>
+                            <field name="observables"/>
+                            <field name="resolution"/>
+                            <field name="next_valuation"/>
+                        </group>
+                        <button name="compute_all" type="object" string="compute all"/>
                     </group>
                 </sheet>
                 <div class="oe_chatter"></div>
@@ -47,6 +49,7 @@
             <tree>
                 <field name="name"/>
                 <field name="field"/>
+                <field name="expression"/>
             </tree>
         </field>
     </record>
@@ -84,60 +87,107 @@
         <field name="sequence" eval="10"/>
     </record>
 
-    <!-- CALCULATION -->
-    <record id="view_rea_value_calculation_tree" model="ir.ui.view">
-        <field name="name">rea.value.calculation.tree</field>
-        <field name="model">rea.value.calculation</field>
-        <field name="type">tree</field>
-        <field name="priority" eval="8"/>
+
+    <!-- UNIT OF MEASURE -->
+    <record id="view_rea_uom_tree" model="ir.ui.view">
+        <field name="name">rea.uom.tree</field>
+        <field name="model">rea.uom</field>
         <field name="arch" type="xml">
-        <tree string="Calculation">
-            <field name="expression"/>
+        <tree string="Unit of Measure">
+            <field name="name"/>
         </tree>
         </field>
     </record>
-    
-    <record id="view_rea_value_calculation_form" model="ir.ui.view">
-        <field name="name">rea.value.calculation.form</field>
-        <field name="model">rea.value.calculation</field>
-        <field name="type">form</field>
-        <field name="priority" eval="8"/>
+
+    <record id="view_rea_uom_form" model="ir.ui.view">
+        <field name="name">rea.uom.form</field>
+        <field name="model">rea.uom</field>
         <field name="arch" type="xml">
-        <form string="Calculation">
-            <field name="expression" select="1"/>
-            <field name="observables"/>
-            <field name="resolution"/>
-            <field name="next_valuation"/>
-            <button name="compute_all" type="object" string="compute all"/>
+        <form string="Unit of Measure">
+            <group>
+                <field name="name" select="1"/>
+                <field name="code" select="1"/>
+            </group>
         </form>
         </field>
     </record>
-    
-    <record id="view_rea_value_calculation_search" model="ir.ui.view">
-        <field name="name">rea.value.calculation.search</field>
-        <field name="model">rea.value.calculation</field>
-        <field name="type">search</field>
-        <field name="priority" eval="8"/>
+    <record id="view_rea_uom_search" model="ir.ui.view">
+        <field name="name">rea.uom.search</field>
+        <field name="model">rea.uom</field>
         <field name="arch" type="xml">
-        <search string="Calculation">
-            <field name="expression" select="True"/>
+        <search string="Unit of Measure">
+            <field name="name" select="1"/>
+            <field name="code" select="1"/>
         </search>
         </field>
     </record>
-    
-    <record model="ir.actions.act_window" id="act_open_rea_value_calculation_view">
-        <field name="name">Calculation</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">rea.value.calculation</field>
-        <field name="view_mode">tree,form</field>
-        <field name="search_view_id" ref="view_rea_value_calculation_search"/>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
+
+    <!-- add an ident page in the notebook -->
+    <record model="ir.ui.view" id="rea_resource_type_form_view_ident">
+        <field name="inherit_id" ref="rea.rea_resource_type_form_view"/>
+        <field name="model">rea.resource.type</field>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Identification">
+                    <group>
+                        <p>Here you can choose the numbering behaviour of the Events you are creating.</p>
+                    </group>
+                    <group>
+                        <field name="identification"
+                               context="{'model': 'rea.resource.type', 'type_id': active_id}"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
     </record>
-    
-    <menuitem id="menu_rea_value_calculation"
-        parent="menu_behaviours"
-        sequence="20"
-        action="act_open_rea_value_calculation_view"/>
-    </data>
-</openerp>
+    <!-- add a value page in the notebook -->
+    <record model="ir.ui.view" id="rea_resource_type_form_view_value">
+        <field name="inherit_id" ref="rea.rea_resource_type_form_view"/>
+        <field name="model">rea.resource.type</field>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Valuation">
+                    <group>
+                        <p>Here you can choose the valuation behaviour of the Resources you are creating.</p>
+                    </group>
+                    <group>
+                        <field name="valuation"
+                               context="{'model': 'rea.resource.type', 'type_id': active_id}"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+<record id="view_rea_value_observable_tree" model="ir.ui.view">
+    <field name="name">rea.value.observable.tree</field>
+    <field name="model">rea.value.observable</field>
+    <field name="type">tree</field>
+    <field name="priority" eval="8"/>
+    <field name="arch" type="xml">
+    <tree string="Observables">
+        <field name="sequence" widget="handle"/>
+        <field name="name"/>
+        <field name="type"/>
+        <field name="field"/>
+    </tree>
+    </field>
+</record>
+
+<record id="view_rea_value_observable_form" model="ir.ui.view">
+    <field name="name">rea.value.observable.form</field>
+    <field name="model">rea.value.observable</field>
+    <field name="type">form</field>
+    <field name="priority" eval="8"/>
+    <field name="arch" type="xml">
+    <form string="Observables">
+        <group>
+            <field name="name" select="1"/>
+            <field name="type"/>
+            <field name="field" domain="[('ttype','in',('integer','float'))]"/>
+            <field name="value_field" invisible="1"/>
+        </group>
+    </form>
+    </field>
+</record>
+</odoo>

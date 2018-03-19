@@ -9,6 +9,7 @@ def Zero():
 
 def One(resource_type):
     def contract(now, provider, receiver):
+        # TODO move to the contract, return 1 instead
         return [{
             'resource_type': resource_type,
             'quantity': 1,

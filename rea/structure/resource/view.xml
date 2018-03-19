@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-<data>
+<odoo>
 
     <!-- RESOURCE -->
     <record model="ir.ui.view" id="rea_resource_form_view">
@@ -79,7 +78,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_resource">
         <field name="name">Resources</field>
-        <field name="type" ref="menu_resources"/>
+        <field name="parent_id" ref="menu_resources"/>
         <field name="action" ref="rea_resource_act_window"/>
         <field name="sequence" eval="30"/>
     </record>
@@ -161,7 +160,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_resource_type">
         <field name="name">Resource Types</field>
-        <field name="type" ref="menu_resources"/>
+        <field name="parent_id" ref="menu_resources"/>
         <field name="action" ref="rea_resource_type_act_window"/>
         <field name="sequence" eval="10"/>
     </record>
@@ -224,80 +223,9 @@
 
     <record model="ir.ui.menu" id="menu_rea_resource_group">
         <field name="name">Resource Groups</field>
-        <field name="type" ref="menu_resources"/>
+        <field name="parent_id" ref="menu_resources"/>
         <field name="action" ref="rea_resource_group_act_window"/>
         <field name="sequence" eval="20"/>
     </record>
 
-    <!-- UNIT OF MEASURE -->
-    <record id="view_rea_resource_uom_tree" model="ir.ui.view">
-        <field name="name">rea.resource.uom.tree</field>
-        <field name="model">rea.resource.uom</field>
-        <field name="arch" type="xml">
-        <tree string="Unit of Measure">
-            <field name="name"/>
-        </tree>
-        </field>
-    </record>
-
-    <record id="view_rea_resource_uom_form" model="ir.ui.view">
-        <field name="name">rea.resource.uom.form</field>
-        <field name="model">rea.resource.uom</field>
-        <field name="arch" type="xml">
-        <form string="Unit of Measure">
-            <group>
-                <field name="name" select="1"/>
-                <field name="code" select="1"/>
-            </group>
-        </form>
-        </field>
-    </record>
-    <record id="view_rea_resource_uom_search" model="ir.ui.view">
-        <field name="name">rea.resource.uom.search</field>
-        <field name="model">rea.resource.uom</field>
-        <field name="arch" type="xml">
-        <search string="Unit of Measure">
-            <field name="name" select="1"/>
-            <field name="code" select="1"/>
-        </search>
-        </field>
-    </record>
-
-    <!-- add an ident page in the notebook -->
-    <record model="ir.ui.view" id="rea_resource_type_form_view_ident">
-        <field name="inherit_id" ref="rea.rea_resource_type_form_view"/>
-        <field name="model">rea.resource.type</field>
-        <field name="arch" type="xml">
-            <xpath expr="//notebook" position="inside">
-                <page string="Identification">
-                    <group>
-                        <p>Here you can choose the numbering behaviour of the Events you are creating.</p>
-                    </group>
-                    <group>
-                        <field name="identification"
-                               context="{'model': 'rea.resource.type', 'type_id': active_id}"/>
-                    </group>
-                </page>
-            </xpath>
-        </field>
-    </record>
-    <!-- add a value page in the notebook -->
-    <record model="ir.ui.view" id="rea_resource_type_form_view_value">
-        <field name="inherit_id" ref="rea.rea_resource_type_form_view"/>
-        <field name="model">rea.resource.type</field>
-        <field name="arch" type="xml">
-            <xpath expr="//notebook" position="inside">
-                <page string="Valuation">
-                    <group>
-                        <p>Here you can choose the valuation behaviour of the Resources you are creating.</p>
-                    </group>
-                    <group>
-                        <field name="valuation"
-                               context="{'model': 'rea.resource.type', 'type_id': active_id}"/>
-                    </group>
-                </page>
-            </xpath>
-        </field>
-    </record>
-</data>
-</openerp>
+</odoo>

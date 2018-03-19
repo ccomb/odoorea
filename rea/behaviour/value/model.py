@@ -3,6 +3,17 @@ from lxml import etree
 import time
 
 
+class UnitOfMeasure(models.Model):
+    """ Unit of measure of values
+    """
+    _name = 'rea.uom'
+
+    name = fields.Char(
+        'Name')
+    code = fields.Char(
+        'Code')
+
+
 class ValuationField(models.Model):
     """Setup for a valuation field
     """
@@ -15,6 +26,7 @@ class ValuationField(models.Model):
         string="Field name")
     valuation = fields.Many2one(
         'rea.valuation',
+        help=u"The valuation configuration this fiels belongs to",
         ondelete='cascade')
     model = fields.Many2one(
         'ir.model',
@@ -27,9 +39,51 @@ class ValuationField(models.Model):
     type = fields.Selection([
         ('konst', 'Constant'),
         ('calc', 'Calculation')])
-    calculation = fields.Many2one(
-        'rea.value.calculation',
-        string=u"Calculation method")
+    observables = fields.One2many(
+        'rea.value.observable',
+        'value_field',
+        string="Observables")
+    expression = fields.Char(
+        "Expression",
+        help=("Python expression"))
+    resolution = fields.Float(
+        "Period",
+        help=u"Recompute the value at every period of time")
+    next_valuation = fields.Datetime(
+        "Next valuation date")  # TODO replace with a last_valuation
+
+    def compute_all(self):
+        self.env.cr.execute(
+            "select r.id, f.id "
+            "from rea_resource r, rea_resource_type t, "
+            "     rea_valuation v, rea_valuation_field f "
+            "where "
+            "    r.type = t.id "
+            "and t.valuation = v.id "
+            "and f.valuation = v.id "
+            "and (f.next_valuation < '%s' or f.next_valuation is NULL)"
+            % time.strftime('%Y-%m-%d %H:%M:%S'))
+        for resource_id, field_id in self.env.cr.fetchall():
+            field = self.env['rea.valuation.field'].browse(field_id)
+            resource = self.env['rea.resource'].browse(resource_id)
+            value = field.compute(resource)
+            resource.write({field.field.name: value})
+
+    def compute(self, entity):
+        """given a calculation and an entity, return the new value of the field
+        """
+        for vfield in self:
+            localvars = {o.name: o.value(entity) for o in vfield.observables}
+            # TODO memoize and use a resolution (day, minute, etc.)
+            # to avoid recreating the commitment at each term execution
+            # FIXME unsafe
+            if self.expression is False:
+                continue
+            value = eval(self.expression,
+                         {"__builtins__": {}},
+                         localvars)
+            return value
+            # _function(time.strftime('%Y-%m-%d %H:%M:%S'))
 
     @api.model
     def create(self, vals):
@@ -61,11 +115,6 @@ class ValuationField(models.Model):
                     'model': model,
                     'model_id': model_id,
                     'name': field_name,
-                    #'depends': 
-                    #'compute':
-                    #    "for r in self:\n\tr['%s']=self.compute_field('%s')"
-                    #    % (field_name, field_name)
-                    #    if self.type == 'calc' else False,
                     'ttype': 'float'}).id
                 fields.create({
                     'model': model,
@@ -125,9 +174,6 @@ class Valuable(models.AbstractModel):
     type_valuation = fields.Many2one(
         'rea.valuation',
         compute=_get_valuation)
-
-    #def compute_field(self):
-    #    import pdb; pdb.set_trace()
 
     @api.model
     def fields_view_get(self, view_id=None, view_type='form',
@@ -194,8 +240,8 @@ class Observable(models.Model):
     _name = 'rea.value.observable'
     _description = "Observable for value calculation"
 
-    sequence = fields.Integer("Sequence")
     name = fields.Char("Name")
+    sequence = fields.Integer("Sequence")
     type = fields.Selection([
         ('konst', 'Constant'),
         ('days', 'Days after'),
@@ -206,9 +252,9 @@ class Observable(models.Model):
     field = fields.Many2one(
         'ir.model.fields',
         string="Dependent field")
-    calculation = fields.Many2one(
-        'rea.value.calculation',
-        "Calculation")
+    value_field = fields.Many2one(
+        'rea.valuation.field',
+        "Value field")
 
     def value(self, entity):
         """ get the value of the observable
@@ -222,49 +268,3 @@ class Observable(models.Model):
                 return getattr(entity, self.field.name)
             return obs
         raise NotImplementedError
-
-
-class Calculation(models.Model):
-    """ Calculate value fields depending on other fields
-    """
-    _name = 'rea.value.calculation'
-    _description = u"Calculate value fields"
-
-    expression = fields.Char(
-        "Expression",
-        help=("Python expression"))
-
-    observables = fields.One2many(
-        'rea.value.observable',
-        'calculation',
-        string="Observables")
-
-    resolution = fields.Float(
-        "Period",
-        help=u"Recompute the value at every period of time")
-
-    next_valuation = fields.Date(
-        "Next valuation date")
-
-    def compute_all(self):
-        self.env.cr.execute("select r.id, f.id, c.id  from rea_resource r, rea_resource_type t, rea_valuation v, rea_valuation_field f, rea_value_calculation c where r.type = t.id and t.valuation = v.id and f.valuation = v.id and (c.next_valuation < '%s' or c.next_valuation is NULL)" % time.strftime('%Y-%m-%d %H:%M:%S'))
-        for resource_id, field_id, calculation_id in self.env.cr.fetchall():
-            field = self.env['rea.valuation.field'].browse(field_id)
-            resource = self.env['rea.resource'].browse(resource_id)
-            value = self.browse(calculation_id).compute(resource, field)
-            resource.write({field.field.name: value})
-
-    def compute(self, entity, field):
-        """given a calculation and an entity, return the new value of the field
-        """
-        for calc in self:
-            import pdb; pdb.set_trace()
-            localvars = {o.name: o.value(entity) for o in calc.observables}
-            # TODO memoize and use a resolution (day, minute, etc.)
-            # to avoid recreating the commitment at each term execution
-            # FIXME unsafe
-            value = eval(self.expression,
-                         {"__builtins__": {}},
-                         localvars)
-            return value
-            # _function(time.strftime('%Y-%m-%d %H:%M:%S'))

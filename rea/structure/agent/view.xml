@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-<data>
+<odoo>
 
     <!-- AGENT -->
     <record model="ir.ui.view" id="rea_agent_form_view">
@@ -60,7 +59,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_agent">
         <field name="name">Agents</field>
-        <field name="type" ref="menu_agents"/>
+        <field name="parent_id" ref="menu_agents"/>
         <field name="action" ref="rea_agent_act_window"/>
         <field name="sequence" eval="30"/>
     </record>
@@ -125,7 +124,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_agent_type">
         <field name="name">Agent Types</field>
-        <field name="type" ref="menu_agents"/>
+        <field name="parent_id" ref="menu_agents"/>
         <field name="action" ref="rea_agent_type_act_window"/>
         <field name="sequence" eval="10"/>
     </record>
@@ -192,10 +191,9 @@
 
     <record model="ir.ui.menu" id="menu_rea_agent_group">
         <field name="name">Agent Groups</field>
-        <field name="type" ref="menu_agents"/>
+        <field name="parent_id" ref="menu_agents"/>
         <field name="action" ref="rea_agent_group_act_window"/>
         <field name="sequence" eval="20"/>
     </record>
 
-</data>
-</openerp>
+</odoo>

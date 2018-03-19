@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-<data>
+<odoo>
 
     <!-- CONTRACT -->
     <record model="ir.ui.view" id="rea_contract_form_view">
@@ -88,7 +87,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_contract">
         <field name="name">Contracts</field>
-        <field name="type" ref="menu_contracts"/>
+        <field name="parent_id" ref="menu_contracts"/>
         <field name="action" ref="rea_contract_act_window"/>
         <field name="sequence" eval="30"/>
     </record>
@@ -161,7 +160,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_contract_type">
         <field name="name">Contract Types</field>
-        <field name="type" ref="menu_contracts"/>
+        <field name="parent_id" ref="menu_contracts"/>
         <field name="action" ref="rea_contract_type_act_window"/>
         <field name="sequence" eval="10"/>
     </record>
@@ -279,7 +278,7 @@
 
     <record model="ir.ui.menu" id="menu_rea_contract_group">
         <field name="name">Contract Groups</field>
-        <field name="type" ref="menu_contracts"/>
+        <field name="parent_id" ref="menu_contracts"/>
         <field name="action" ref="rea_contract_group_act_window"/>
         <field name="sequence" eval="20"/>
     </record>
@@ -327,5 +326,4 @@
         </field>
     </record>
 
-</data>
-</openerp>
+</odoo>

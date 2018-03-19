@@ -65,20 +65,9 @@ class ResourceType(models.Model):
         help=u"The unit quantity corresponding to this resource type."
              u"Used for conversions")
     uom = fields.Many2one(
-        'rea.resource.uom',
+        'rea.uom',
         )
     # TODO recursive with parent?
-
-
-class UnitOfMeasure(models.Model):
-    """ Unit of measure of resources
-    """
-    _name = 'rea.resource.uom'
-
-    name = fields.Char(
-        'Name')
-    code = fields.Char(
-        'Code')
 
 
 class ResourceGroup(models.Model):
