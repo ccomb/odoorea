@@ -59,6 +59,7 @@ class ValuationField(models.Model):
             "     rea_valuation v, rea_valuation_field f "
             "where "
             "    r.type = t.id "
+            "and f.type = 'calc' "
             "and t.valuation = v.id "
             "and f.valuation = v.id "
             "and (f.next_valuation < '%s' or f.next_valuation is NULL)"
@@ -66,8 +67,7 @@ class ValuationField(models.Model):
         for resource_id, field_id in self.env.cr.fetchall():
             field = self.env['rea.valuation.field'].browse(field_id)
             resource = self.env['rea.resource'].browse(resource_id)
-            value = field.compute(resource)
-            resource.write({field.field.name: value})
+            resource.write({field.field.name: field.compute(resource)})
 
     def compute(self, entity):
         """given a calculation and an entity, return the new value of the field
@@ -260,11 +260,7 @@ class Observable(models.Model):
         """ get the value of the observable
         """
         if self.type == 'konst':
-            def obs():
-                return self.konst
-            return obs
+            return self.konst
         if self.type == 'field' and self.field:
-            def obs():
-                return getattr(entity, self.field.name)
-            return obs
+            return getattr(entity, self.field.name)
         raise NotImplementedError
