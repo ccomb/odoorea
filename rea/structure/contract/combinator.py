@@ -37,7 +37,7 @@ def Scale(obs, cs):
     def contract(now, provider, receiver):
         result = []
         for c in cs(now, provider, receiver):
-            c['quantity'] *= obs()
+            c['quantity'] *= obs
             result.append(c)
         return result
     return contract
@@ -47,7 +47,7 @@ def When(obs, cs):
     def contract(now, provider, receiver):
         result = []
         for c in cs(now, provider, receiver):
-            if not obs():
+            if not obs:
                 continue
             result.append(c)
         return result
@@ -68,7 +68,7 @@ def Or(cs1, cs2):
 
 def Cond(obs, cs1, cs2):
     def contract(now, provider, receiver):
-        if obs():
+        if obs:
             return cs1(now, provider, receiver)
         else:
             return cs2(now, provider, receiver)
@@ -78,7 +78,7 @@ def Truncate(obs, cs):
     def contract(now, provider, receiver):
         result = []
         for c in cs(now, provider, receiver):
-            c['horizon'] = min(obs(), c['horizon'])
+            c['horizon'] = min(obs, c['horizon'])
             result.append(c)
         return result
     return contract
@@ -121,7 +121,7 @@ def Anytime(cs):
 
 def Until(obs, cs):
     def contract(now, provider, receiver):
-        if obs():
+        if obs:
             return []
         else:
             return cs(now, provider, receiver)

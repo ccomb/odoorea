@@ -36,6 +36,7 @@ class ResourceType(models.Model):
     _description = "Resource Type"
     _parent_name = 'type'
     _inherit = ['rea.valuable.type',
+                'rea.valuable.entity',
                 'rea.identifiable.type']
 
     type = fields.Many2one(

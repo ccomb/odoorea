@@ -136,15 +136,21 @@ class Observable(models.Model):
     _description = "Observable for contracts"
 
     sequence = fields.Integer("Sequence")
-    name = fields.Char("Name")
+    name = fields.Char(
+        "Name",
+        help="Name of the variable used in the expression")
     type = fields.Selection([
         ('konst', 'Constant'),
         ('days', 'Days after'),
         ('time', 'Current Time'),
-        ('field', 'Commitment Field')])
+        ('rea.commitment', 'Field of the Commitment'),
+        ('rea.resource.type', 'Field of the Resource Type')])
     konst = fields.Float("Value")
     date = fields.Date("Date")
-    field = fields.Char("Field name")
+    #field = fields.Char("Field name")
+    field = fields.Many2one(
+        'ir.model.fields',
+        "Field")
     term = fields.Many2one(
         'rea.contract.term',
         "Contract Term")
@@ -154,8 +160,10 @@ class Observable(models.Model):
         """
         if self.type == 'konst':
             return self.konst
-        if self.type == 'field':
-            return getattr(commitment, self.field)
+        if self.type == 'rea.commitment':
+            return getattr(commitment, self.field.name)
+        if self.type == 'rea.resource.type':
+            return getattr(commitment.resource_type, self.field.name)
         raise NotImplementedError
 
 

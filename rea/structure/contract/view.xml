@@ -326,4 +326,41 @@
         </field>
     </record>
 
+    <record id="view_rea_contract_observable_tree" model="ir.ui.view">
+        <field name="name">rea.contract.observable.tree</field>
+        <field name="model">rea.contract.observable</field>
+        <field name="type">tree</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+        <tree string="Observable">
+            <field name="name"/>
+            <field name="type"/>
+        </tree>
+        </field>
+    </record>
+
+    <record id="view_rea_contract_observable_form" model="ir.ui.view">
+        <field name="name">rea.contract.observable.form</field>
+        <field name="model">rea.contract.observable</field>
+        <field name="type">form</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+        <form string="Observable">
+            <group>
+                <group>
+                    <field name="name" select="1"/>
+                    <field name="type"/>
+                </group>
+                <group>
+                    <field name="konst"
+                           attrs="{'invisible': [('type','!=','konst')]}"/>
+                    <!--field name="date" attrs="{'invisible': [('type','!=','days')]}"/-->
+                    <field name="field"
+                           domain="[('ttype','in',('integer','float')),('model','=',type)]"
+                           attrs="{'invisible': [('type','not in',('rea.commitment','rea.resource.type'))]}"/>
+                </group>
+            </group>
+        </form>
+        </field>
+    </record>
 </odoo>

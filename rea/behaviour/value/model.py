@@ -7,6 +7,7 @@ class UnitOfMeasure(models.Model):
     """ Unit of measure of values
     """
     _name = 'rea.uom'
+    _description = "Unit of measure"
 
     name = fields.Char(
         'Name')

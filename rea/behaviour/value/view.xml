@@ -140,7 +140,7 @@
             </xpath>
         </field>
     </record>
-    <!-- add a value page in the notebook -->
+    <!-- add a valuation page in the notebook -->
     <record model="ir.ui.view" id="rea_resource_type_form_view_value">
         <field name="inherit_id" ref="rea.rea_resource_type_form_view"/>
         <field name="model">rea.resource.type</field>
