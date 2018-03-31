@@ -1,238 +1,222 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- RESOURCE -->
-    <record model="ir.ui.view" id="rea_resource_form_view">
-        <field name="name">rea.resource.form</field>
-        <field name="model">rea.resource</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <field name="quantity" style="max-width: 4em" placeholder="Qty"/><span style="margin: 0 0.5em"/><field name="type" placeholder="Resource Type"/>
-                        <h1>
-                            <field name="name" placeholder="Resource Name"/>
-                        </h1>
-                    </div>
+<!-- RESOURCE -->
+<record model="ir.ui.view" id="rea_resource_form_view">
+    <field name="name">rea.resource.form</field>
+    <field name="model">rea.resource</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+            </header>
+            <sheet>
+                <div class="oe_title">
+                    <field name="quantity" style="max-width: 4em" placeholder="Qty"/><span style="margin: 0 0.5em"/><field name="type" placeholder="Resource Type"/>
+                    <h1>
+                        <field name="name" placeholder="Resource Name"/>
+                    </h1>
+                </div>
+                <group>
+                    <field name="groups" widget="many2many_tags"/>
+                </group>
+                <notebook>
+                    <page string="Reserved by">
+                        <field name="reserved" readonly="1"/>
+                    </page>
+                </notebook>
+            </sheet>
+            <div class="oe_chatter"></div>
+        </form>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="rea_resource_search_view">
+    <field name="name">rea.resource.search</field>
+    <field name="model">rea.resource</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+            <field name="type"/>
+            <field name="groups"/>
+            <group expand="0" string="Group By">
+                <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
+            </group>
+        </search>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="rea_resource_tree_view">
+    <field name="name">rea.resource.tree</field>
+    <field name="model">rea.resource</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="type"/>
+        </tree>
+    </field>
+</record>
+
+<record model="ir.actions.act_window" id="rea_resource_act_window">
+    <field name="name">Resources</field>
+    <field name="res_model">rea.resource</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+</record>
+
+<record model="ir.ui.menu" id="menu_rea_resource">
+    <field name="name">Resources</field>
+    <field name="parent_id" ref="menu_resources"/>
+    <field name="action" ref="rea_resource_act_window"/>
+    <field name="sequence" eval="30"/>
+</record>
+
+
+<!-- RESOURCE TYPE -->
+<record model="ir.ui.view" id="rea_resource_type_form_view">
+    <field name="name">rea.resource.type.form</field>
+    <field name="model">rea.resource.type</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+            </header>
+            <sheet>
+                <div class="oe_title">
+                    <field name="type" placeholder="Parent Type"/>
+                    <h1>
+                        <field name="name" placeholder="Resource Type Name"/>
+                    </h1>
+                    <span style="margin: 0 1em">Quantity:</span>
+                    <field name="quantity" placeholder="Qty" style="max-width: 4em"
+                           attrs="{'invisible': [('structural','=',True)]}"/>
+                    <span style="margin: 0 1em"/>
+                    <field name="uom" placeholder="Unit Of Measure"
+                           attrs="{'invisible': [('structural','=',True)]}"/>
+                </div>
+                <group>
                     <group>
                         <field name="groups" widget="many2many_tags"/>
+                        <field name="max_reservations"/>
                     </group>
-                    <notebook>
-                        <page string="Reserved by">
-                            <field name="reserved" readonly="1"/>
-                        </page>
-                        <page string="Identifiers">
-                            <group>
-                                <field name="type_identification" invisible="1"/>
-                            </group>
-                        </page>
-                        <page string="Values">
-                            <field name="type_valuation" invisible="1"/>
-                            <group>
-                                <group col="4">
-                                </group>
-                            </group>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter"></div>
-            </form>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="rea_resource_search_view">
-        <field name="name">rea.resource.search</field>
-        <field name="model">rea.resource</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <field name="type"/>
-                <field name="groups"/>
-                <group expand="0" string="Group By">
-                    <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
+                    <group>
+                        <field name="structural"/>
+                    </group>
                 </group>
-            </search>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="rea_resource_tree_view">
-        <field name="name">rea.resource.tree</field>
-        <field name="model">rea.resource</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="type"/>
-            </tree>
-        </field>
-    </record>
-
-    <record model="ir.actions.act_window" id="rea_resource_act_window">
-        <field name="name">Resources</field>
-        <field name="res_model">rea.resource</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-    </record>
-
-    <record model="ir.ui.menu" id="menu_rea_resource">
-        <field name="name">Resources</field>
-        <field name="parent_id" ref="menu_resources"/>
-        <field name="action" ref="rea_resource_act_window"/>
-        <field name="sequence" eval="30"/>
-    </record>
-
-
-    <!-- RESOURCE TYPE -->
-    <record model="ir.ui.view" id="rea_resource_type_form_view">
-        <field name="name">rea.resource.type.form</field>
-        <field name="model">rea.resource.type</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <field name="type" placeholder="Parent Type"/>
-                        <h1>
-                            <field name="name" placeholder="Resource Type Name"/>
-                        </h1>
-                        <span style="margin: 0 1em">Quantity:</span>
-                        <field name="quantity" placeholder="Qty" style="max-width: 4em"
-                               attrs="{'invisible': [('structural','=',True)]}"/>
-                        <span style="margin: 0 1em"/>
-                        <field name="uom" placeholder="Unit Of Measure"
-                               attrs="{'invisible': [('structural','=',True)]}"/>
-                    </div>
-                    <group>
+                <notebook>
+                    <page name="behaviours" string="Behaviours">
                         <group>
-                            <field name="groups" widget="many2many_tags"/>
-                            <field name="max_reservations"/>
+                            <p>Here you can configure the behaviour of the entities of this type.</p>
                         </group>
-                        <group>
-                            <field name="structural"/>
-                        </group>
-                    </group>
-                    <group string="Behaviours">
-                        <notebook>
-                        <page string="Values">
-                            <field name="type_valuation" invisible="1"/>
-                            <group>
-                                <group col="4">
-                                </group>
-                            </group>
-                        </page>
-                        </notebook>
-                    </group>
-                </sheet>
-                <div class="oe_chatter"></div>
-            </form>
-        </field>
-    </record>
+                    </page>
+                </notebook>
+            </sheet>
+            <div class="oe_chatter"></div>
+        </form>
+    </field>
+</record>
 
-    <record model="ir.ui.view" id="rea_resource_type_search_view">
-        <field name="name">rea.resource.type.search</field>
-        <field name="model">rea.resource.type</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <field name="type"/>
-                <field name="groups"/>
-                <field name="uom"/>
-            </search>
-        </field>
-    </record>
+<record model="ir.ui.view" id="rea_resource_type_search_view">
+    <field name="name">rea.resource.type.search</field>
+    <field name="model">rea.resource.type</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+            <field name="type"/>
+            <field name="groups"/>
+            <field name="uom"/>
+        </search>
+    </field>
+</record>
 
-    <record model="ir.ui.view" id="rea_resource_type_tree_view">
-        <field name="name">rea.resource.type.tree</field>
-        <field name="model">rea.resource.type</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="quantity"/>
-                <field name="uom"/>
-                <field name="type"/>
-            </tree>
-        </field>
-    </record>
+<record model="ir.ui.view" id="rea_resource_type_tree_view">
+    <field name="name">rea.resource.type.tree</field>
+    <field name="model">rea.resource.type</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="quantity"/>
+            <field name="uom"/>
+            <field name="type"/>
+        </tree>
+    </field>
+</record>
 
-    <record model="ir.actions.act_window" id="rea_resource_type_act_window">
-        <field name="name">Resource Types</field>
-        <field name="res_model">rea.resource.type</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-    </record>
+<record model="ir.actions.act_window" id="rea_resource_type_act_window">
+    <field name="name">Resource Types</field>
+    <field name="res_model">rea.resource.type</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+</record>
 
-    <record model="ir.ui.menu" id="menu_rea_resource_type">
-        <field name="name">Resource Types</field>
-        <field name="parent_id" ref="menu_resources"/>
-        <field name="action" ref="rea_resource_type_act_window"/>
-        <field name="sequence" eval="10"/>
-    </record>
+<record model="ir.ui.menu" id="menu_rea_resource_type">
+    <field name="name">Resource Types</field>
+    <field name="parent_id" ref="menu_resources"/>
+    <field name="action" ref="rea_resource_type_act_window"/>
+    <field name="sequence" eval="10"/>
+</record>
 
 
-    <!-- RESOURCE GROUP -->
-    <record model="ir.ui.view" id="rea_resource_group_form_view">
-        <field name="name">rea.resource.group.form</field>
-        <field name="model">rea.resource.group</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" placeholder="Resource Group Name"/>
-                        </h1>
-                    </div>
-                    <group>
-                        <field name="code"/>
-                        <field name="group"/>
-                    </group>
-                </sheet>
-                <div class="oe_chatter"></div>
-            </form>
-        </field>
-    </record>
+<!-- RESOURCE GROUP -->
+<record model="ir.ui.view" id="rea_resource_group_form_view">
+    <field name="name">rea.resource.group.form</field>
+    <field name="model">rea.resource.group</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+            </header>
+            <sheet>
+                <div class="oe_title">
+                    <h1>
+                        <field name="name" placeholder="Resource Group Name"/>
+                    </h1>
+                </div>
+                <group>
+                    <field name="code"/>
+                    <field name="group"/>
+                </group>
+            </sheet>
+            <div class="oe_chatter"></div>
+        </form>
+    </field>
+</record>
 
-    <record model="ir.ui.view" id="rea_resource_group_search_view">
-        <field name="name">rea.resource.group.search</field>
-        <field name="model">rea.resource.group</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <field name="code"/>
-                <field name="group"/>
-            </search>
-        </field>
-    </record>
+<record model="ir.ui.view" id="rea_resource_group_search_view">
+    <field name="name">rea.resource.group.search</field>
+    <field name="model">rea.resource.group</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+            <field name="code"/>
+            <field name="group"/>
+        </search>
+    </field>
+</record>
 
-    <record model="ir.ui.view" id="rea_resource_group_tree_view">
-        <field name="name">rea.resource.group.tree</field>
-        <field name="model">rea.resource.group</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="code"/>
-            </tree>
-        </field>
-    </record>
+<record model="ir.ui.view" id="rea_resource_group_tree_view">
+    <field name="name">rea.resource.group.tree</field>
+    <field name="model">rea.resource.group</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="code"/>
+        </tree>
+    </field>
+</record>
 
-    <record model="ir.actions.act_window" id="rea_resource_group_act_window">
-        <field name="name">Resource Groups</field>
-        <field name="res_model">rea.resource.group</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-    </record>
+<record model="ir.actions.act_window" id="rea_resource_group_act_window">
+    <field name="name">Resource Groups</field>
+    <field name="res_model">rea.resource.group</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+</record>
 
-    <record model="ir.ui.menu" id="menu_rea_resource_group">
-        <field name="name">Resource Groups</field>
-        <field name="parent_id" ref="menu_resources"/>
-        <field name="action" ref="rea_resource_group_act_window"/>
-        <field name="sequence" eval="20"/>
-    </record>
+<record model="ir.ui.menu" id="menu_rea_resource_group">
+    <field name="name">Resource Groups</field>
+    <field name="parent_id" ref="menu_resources"/>
+    <field name="action" ref="rea_resource_group_act_window"/>
+    <field name="sequence" eval="20"/>
+</record>
 
 </odoo>

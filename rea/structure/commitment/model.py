@@ -7,10 +7,9 @@ class Commitment(models.Model):
     """
     _name = 'rea.commitment'
     _description = "Commitment"
-    _inherit = [
-        'rea.identifiable.entity',
-        'rea.lifecycleable.entity',
-        'rea.valuable.entity']
+    _inherit = ['rea.lifecycleable.entity',
+                'rea.identifiable.entity',
+                'rea.valuable.entity']
 
     def _default_provider(self):
         for agent in self.contract.parties:
@@ -139,9 +138,13 @@ class CommitmentType(models.Model):
     """
     _name = 'rea.commitment.type'
     _description = "Commitment Type"
+    _parent_name = 'type'
     _inherit = ['rea.identifiable.type',
                 'rea.lifecycleable.type',
-                'rea.valuable.type']
+                'rea.valuable.type',
+                'rea.lifecycleable.entity',
+                'rea.identifiable.entity',
+                'rea.valuable.entity']
 
     type = fields.Many2one(
         'rea.commitment.type',

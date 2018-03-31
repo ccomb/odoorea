@@ -1,298 +1,265 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- EVENT -->
-    <record model="ir.ui.view" id="rea_event_form_view">
-        <field name="name">rea.event.form</field>
-        <field name="model">rea.event</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                    <field name="state" widget="statusbar" />
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                       <field name="type"/>
-                        <h1>
-                            <field name="name" readonly="1"/>
-                        </h1>
-                    </div>
+<!-- EVENT -->
+<record model="ir.ui.view" id="rea_event_form_view">
+    <field name="name">rea.event.form</field>
+    <field name="model">rea.event</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+                <field name="state" widget="statusbar" />
+            </header>
+            <sheet>
+                <div class="oe_title">
+                   <field name="type"/>
+                    <h1>
+                        <field name="name" readonly="1"/>
+                    </h1>
+                </div>
+                <group>
                     <group>
-                        <group>
-                           <field name="provider"/>
-                           <field name="quantity"/>
-                           <field name="resource_type"/>
-                           <field name="resource"/>
-                           <field name="receiver"/>
-                        </group>
-                        <group>
-                           <field name="date"/>
-                           <field name="kind"/>
-                           <field name="groups" widget="many2many_tags"/>
-                        </group>
+                       <field name="provider"/>
+                       <field name="quantity"/>
+                       <field name="resource_type"/>
+                       <field name="resource"/>
+                       <field name="receiver"/>
                     </group>
-                    <notebook>
-                        <page string="Origin">
-                            <field name="commitments" readonly="1"/>
-                        </page>
-                        <page string="Identifiers">
-                            <group>
-                                <field name="type_identification" invisible="1"/>
-                            </group>
-                        </page>
-                        <page string="Values">
-                            <field name="type_valuation" invisible="1"/>
-                            <group>
-                                <group col="4">
-                                </group>
-                            </group>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter"></div>
-            </form>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="rea_event_search_view">
-        <field name="name">rea.event.search</field>
-        <field name="model">rea.event</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <field name="type"/>
-                <field name="provider"/>
-                <field name="receiver"/>
-                <group expand="0" string="Group By">
-                    <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
-                    <filter string="Provider" domain="[]" context="{'group_by':'provider'}"/>
-                    <filter string="Receiver" domain="[]" context="{'group_by':'receiver'}"/>
+                    <group>
+                       <field name="date"/>
+                       <field name="kind"/>
+                       <field name="groups" widget="many2many_tags"/>
+                    </group>
                 </group>
-            </search>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="rea_event_tree_view">
-        <field name="name">rea.event.tree</field>
-        <field name="model">rea.event</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="type"/>
-                <field name="date"/>
-                <field name="provider"/>
-                <field name="receiver"/>
-                <field name="quantity"/>
-                <field name="resource_type"/>
-                <field name="resource"/>
-            </tree>
-        </field>
-    </record>
-
-    <record model="ir.actions.act_window" id="rea_event_act_window">
-        <field name="name">Events</field>
-        <field name="res_model">rea.event</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-    </record>
-
-    <record model="ir.ui.menu" id="menu_rea_event">
-        <field name="name">Events</field>
-        <field name="parent_id" ref="menu_events"/>
-        <field name="action" ref="rea_event_act_window"/>
-        <field name="sequence" eval="30"/>
-    </record>
-
-
-    <!-- EVENT TYPE -->
-    <record model="ir.ui.view" id="rea_event_type_form_view">
-        <field name="name">rea.event.type.form</field>
-        <field name="model">rea.event.type</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <field name="type" placeholder="Parent Type"/>
-                        <h1>
-                            <field name="name" placeholder="Event Type Name"/>
-                        </h1>
-                    </div>
-                    <group>
+                <notebook>
+                    <page string="Origin">
+                        <field name="commitments" readonly="1"/>
+                    </page>
+                    <page string="Identifiers">
                         <group>
-                            <field name="kind"/>
-                            <field name="provider"/>
-                            <field name="resource_type"/>
-                            <field name="receiver"/>
+                            <field name="type_identification" invisible="1"/>
                         </group>
+                    </page>
+                    <page string="Values">
+                        <field name="type_valuation" invisible="1"/>
                         <group>
-                            <field name="structural"/>
+                            <group col="4">
+                            </group>
                         </group>
-                    </group>
-                    <group string="Behaviours">
-                        <notebook>
-                        </notebook>
-                    </group>
-                </sheet>
-                <div class="oe_chatter"></div>
-            </form>
-        </field>
-    </record>
+                    </page>
+                </notebook>
+            </sheet>
+            <div class="oe_chatter"></div>
+        </form>
+    </field>
+</record>
 
-    <record model="ir.ui.view" id="rea_event_type_search_view">
-        <field name="name">rea.event.type.search</field>
-        <field name="model">rea.event.type</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <field name="kind"/>
-                <field name="provider"/>
-                <field name="receiver"/>
-                <field name="resource_type"/>
-            </search>
-        </field>
-    </record>
+<record model="ir.ui.view" id="rea_event_search_view">
+    <field name="name">rea.event.search</field>
+    <field name="model">rea.event</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+            <field name="type"/>
+            <field name="provider"/>
+            <field name="receiver"/>
+            <group expand="0" string="Group By">
+                <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
+                <filter string="Provider" domain="[]" context="{'group_by':'provider'}"/>
+                <filter string="Receiver" domain="[]" context="{'group_by':'receiver'}"/>
+            </group>
+        </search>
+    </field>
+</record>
 
-    <record model="ir.ui.view" id="rea_event_type_tree_view">
-        <field name="name">rea.event.type.tree</field>
-        <field name="model">rea.event.type</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="type"/>
-                <field name="resource_type"/>
-                <field name="provider"/>
-                <field name="receiver"/>
-                <field name="kind"/>
-            </tree>
-        </field>
-    </record>
+<record model="ir.ui.view" id="rea_event_tree_view">
+    <field name="name">rea.event.tree</field>
+    <field name="model">rea.event</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="type"/>
+            <field name="date"/>
+            <field name="provider"/>
+            <field name="receiver"/>
+            <field name="quantity"/>
+            <field name="resource_type"/>
+            <field name="resource"/>
+        </tree>
+    </field>
+</record>
 
-    <record model="ir.actions.act_window" id="rea_event_type_act_window">
-        <field name="name">Event Types</field>
-        <field name="res_model">rea.event.type</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-        <field name="help" type="html">
-            <p class="oe_view_nocontent_create">
-                Before economic events can be created, you must create a new economic event type.
-            </p><p>
-             Here are examples of economic event types : Sale, Purchase, Workday, Payment, Product assembly.
-            </p>
-        </field>
-    </record>
+<record model="ir.actions.act_window" id="rea_event_act_window">
+    <field name="name">Events</field>
+    <field name="res_model">rea.event</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+</record>
 
-    <record model="ir.ui.menu" id="menu_rea_event_type">
-        <field name="name">Event Types</field>
-        <field name="parent_id" ref="menu_events"/>
-        <field name="action" ref="rea_event_type_act_window"/>
-        <field name="sequence" eval="10"/>
-    </record>
+<record model="ir.ui.menu" id="menu_rea_event">
+    <field name="name">Events</field>
+    <field name="parent_id" ref="menu_events"/>
+    <field name="action" ref="rea_event_act_window"/>
+    <field name="sequence" eval="30"/>
+</record>
 
 
-    <!-- EVENT GROUP -->
-    <record model="ir.ui.view" id="rea_event_group_form_view">
-        <field name="name">rea.event.group.form</field>
-        <field name="model">rea.event.group</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" placeholder="Event Group Name"/>
-                        </h1>
-                    </div>
+<!-- EVENT TYPE -->
+<record model="ir.ui.view" id="rea_event_type_form_view">
+    <field name="name">rea.event.type.form</field>
+    <field name="model">rea.event.type</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+            </header>
+            <sheet>
+                <div class="oe_title">
+                    <field name="type" placeholder="Parent Type"/>
+                    <h1>
+                        <field name="name" placeholder="Event Type Name"/>
+                    </h1>
+                </div>
+                <group>
                     <group>
-                    </group>
-                </sheet>
-                <div class="oe_chatter"></div>
-            </form>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="rea_event_group_search_view">
-        <field name="name">rea.event.group.search</field>
-        <field name="model">rea.event.group</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-            </search>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="rea_event_group_tree_view">
-        <field name="name">rea.event.group.tree</field>
-        <field name="model">rea.event.group</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-            </tree>
-        </field>
-    </record>
-
-    <record model="ir.actions.act_window" id="rea_event_group_act_window">
-        <field name="name">Event Groups</field>
-        <field name="res_model">rea.event.group</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-        <field name="help" type="html">
-            <p class="oe_view_nocontent_create">
-                To be able to apply policies to similar economic Events,
-                you must first create Event Groups.
-            </p>
-            <p>
-                Group members may also be computed automatically based on criterions
-            </p>
-        </field>
-    </record>
-
-    <record model="ir.ui.menu" id="menu_rea_event_group">
-        <field name="name">Event Groups</field>
-        <field name="parent_id" ref="menu_events"/>
-        <field name="action" ref="rea_event_group_act_window"/>
-        <field name="sequence" eval="20"/>
-    </record>
-
-    <!-- add an ident page in the notebook -->
-    <record model="ir.ui.view" id="rea_event_type_form_view_ident">
-        <field name="inherit_id" ref="rea.rea_event_type_form_view"/>
-        <field name="model">rea.event.type</field>
-        <field name="arch" type="xml">
-            <xpath expr="//notebook" position="inside">
-                <page string="Identification">
-                    <group>
-                        <p>Here you can choose the numbering behaviour of the Events you are creating.</p>
+                        <field name="kind"/>
+                        <field name="provider"/>
+                        <field name="resource_type"/>
+                        <field name="receiver"/>
                     </group>
                     <group>
-                        <field name="identification"
-                               context="{'model': 'rea.event.type', 'type_id': active_id}"/>
+                        <field name="structural"/>
                     </group>
-                </page>
-            </xpath>
-        </field>
-    </record>
-    <!-- add a value page in the notebook -->
-    <record model="ir.ui.view" id="rea_event_type_form_view_value">
-        <field name="inherit_id" ref="rea.rea_event_type_form_view"/>
-        <field name="model">rea.event.type</field>
-        <field name="arch" type="xml">
-            <xpath expr="//notebook" position="inside">
-                <page string="Valuation">
-                    <group>
-                        <p>Here you can choose the valuation behaviour of the Resources you are creating.</p>
-                    </group>
-                    <group>
-                        <field name="valuation"
-                               context="{'model': 'rea.event.type', 'type_id': active_id}"/>
-                    </group>
-                </page>
-            </xpath>
-        </field>
-    </record>
+                </group>
+                <notebook>
+                    <page name="behaviours" string="Behaviours">
+                        <group>
+                            <p>Here you can configure the behaviour of the entities of this type.</p>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+            <div class="oe_chatter"></div>
+        </form>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="rea_event_type_search_view">
+    <field name="name">rea.event.type.search</field>
+    <field name="model">rea.event.type</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+            <field name="kind"/>
+            <field name="provider"/>
+            <field name="receiver"/>
+            <field name="resource_type"/>
+        </search>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="rea_event_type_tree_view">
+    <field name="name">rea.event.type.tree</field>
+    <field name="model">rea.event.type</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="type"/>
+            <field name="resource_type"/>
+            <field name="provider"/>
+            <field name="receiver"/>
+            <field name="kind"/>
+        </tree>
+    </field>
+</record>
+
+<record model="ir.actions.act_window" id="rea_event_type_act_window">
+    <field name="name">Event Types</field>
+    <field name="res_model">rea.event.type</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+    <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+            Before economic events can be created, you must create a new economic event type.
+        </p><p>
+         Here are examples of economic event types : Sale, Purchase, Workday, Payment, Product assembly.
+        </p>
+    </field>
+</record>
+
+<record model="ir.ui.menu" id="menu_rea_event_type">
+    <field name="name">Event Types</field>
+    <field name="parent_id" ref="menu_events"/>
+    <field name="action" ref="rea_event_type_act_window"/>
+    <field name="sequence" eval="10"/>
+</record>
+
+
+<!-- EVENT GROUP -->
+<record model="ir.ui.view" id="rea_event_group_form_view">
+    <field name="name">rea.event.group.form</field>
+    <field name="model">rea.event.group</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+            </header>
+            <sheet>
+                <div class="oe_title">
+                    <h1>
+                        <field name="name" placeholder="Event Group Name"/>
+                    </h1>
+                </div>
+                <group>
+                </group>
+            </sheet>
+            <div class="oe_chatter"></div>
+        </form>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="rea_event_group_search_view">
+    <field name="name">rea.event.group.search</field>
+    <field name="model">rea.event.group</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+        </search>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="rea_event_group_tree_view">
+    <field name="name">rea.event.group.tree</field>
+    <field name="model">rea.event.group</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+        </tree>
+    </field>
+</record>
+
+<record model="ir.actions.act_window" id="rea_event_group_act_window">
+    <field name="name">Event Groups</field>
+    <field name="res_model">rea.event.group</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+    <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+            To be able to apply policies to similar economic Events,
+            you must first create Event Groups.
+        </p>
+        <p>
+            Group members may also be computed automatically based on criterions
+        </p>
+    </field>
+</record>
+
+<record model="ir.ui.menu" id="menu_rea_event_group">
+    <field name="name">Event Groups</field>
+    <field name="parent_id" ref="menu_events"/>
+    <field name="action" ref="rea_event_group_act_window"/>
+    <field name="sequence" eval="20"/>
+</record>
+
 </odoo>

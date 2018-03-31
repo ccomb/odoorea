@@ -1,4 +1,4 @@
-from openerp import fields, models
+from odoo import fields, models
 
 
 class Agent(models.Model):
@@ -7,6 +7,9 @@ class Agent(models.Model):
     """
     _name = 'rea.agent'
     _description = 'Agent'
+    _inherit = ['rea.lifecycleable.entity',
+                'rea.identifiable.entity',
+                'rea.valuable.entity']
 
     name = fields.Char(
         string="name",
@@ -26,6 +29,12 @@ class AgentType(models.Model):
     _name = 'rea.agent.type'
     _description = 'Agent Type'
     _parent_name = 'type'
+    _inherit = ['rea.identifiable.type',
+                'rea.lifecycleable.type',
+                'rea.valuable.type',
+                'rea.lifecycleable.entity',
+                'rea.identifiable.entity',
+                'rea.valuable.entity']
 
     type = fields.Many2one(
         'rea.agent.type',

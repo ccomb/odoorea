@@ -1,366 +1,326 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- CONTRACT -->
-    <record model="ir.ui.view" id="rea_contract_form_view">
-        <field name="name">rea.contract.form</field>
-        <field name="model">rea.contract</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <field name="type" placeholder="Contract type"/>
-                        <h1>
-                            <field name="name" placeholder="Contract Name"/>
-                        </h1>
-                    </div>
-                    <group>
-                        <field name="parties" widget="many2many_tags"/>
-                    </group>
-                    <group>
-                        <group>
-                            <field name="validity"/>
-                            <field name="signed" readonly="1"/>
-                        </group>
-                        <group>
-                            <field name="start"/>
-                            <field name="end"/>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Clauses">
-                            <field name="clauses"/>
-                        </page>
-                        <page string="Terms">
-                            <field name="terms">
-                                <tree>
-                                    <field name="name"/>
-                                    <field name="expression"/>
-                                </tree>
-                            </field>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter"></div>
-            </form>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="rea_contract_search_view">
-        <field name="name">rea.contract.search</field>
-        <field name="model">rea.contract</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <field name="type"/>
-                <field name="parties"/>
-                <group expand="0" string="Group By">
-                    <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
-                    <filter string="Party" domain="[]" context="{'group_by':'party'}"/>
+<!-- CONTRACT -->
+<record model="ir.ui.view" id="rea_contract_form_view">
+    <field name="name">rea.contract.form</field>
+    <field name="model">rea.contract</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+            </header>
+            <sheet>
+                <div class="oe_title">
+                    <field name="type" placeholder="Contract type"/>
+                    <h1>
+                        <field name="name" placeholder="Contract Name"/>
+                    </h1>
+                </div>
+                <group>
+                    <field name="parties" widget="many2many_tags"/>
                 </group>
-            </search>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="rea_contract_tree_view">
-        <field name="name">rea.contract.tree</field>
-        <field name="model">rea.contract</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="type"/>
-                <field name="start"/>
-                <field name="end"/>
-            </tree>
-        </field>
-    </record>
-
-    <record model="ir.actions.act_window" id="rea_contract_act_window">
-        <field name="name">Contracts</field>
-        <field name="res_model">rea.contract</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-    </record>
-
-    <record model="ir.ui.menu" id="menu_rea_contract">
-        <field name="name">Contracts</field>
-        <field name="parent_id" ref="menu_contracts"/>
-        <field name="action" ref="rea_contract_act_window"/>
-        <field name="sequence" eval="30"/>
-    </record>
-
-
-    <!-- CONTRACT TYPE -->
-    <record model="ir.ui.view" id="rea_contract_type_form_view">
-        <field name="name">rea.contract.type.form</field>
-        <field name="model">rea.contract.type</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <field name="type" placeholder="Parent Type"/>
-                        <h1>
-                            <field name="name" placeholder="Contract Type Name"/>
-                        </h1>
-                    </div>
+                <group>
                     <group>
-                        <group>
-                            <field name="party_types" widget="many2many_tags"/>
-                            <field name="commitment_types" widget="many2many_tags"/>
-                        </group>
-                        <group>
-                            <field name="max_parties"/>
-                            <field name="allow_delete"/>
-                            <field name="structural"/>
-                        </group>
+                        <field name="validity"/>
+                        <field name="signed" readonly="1"/>
                     </group>
-                    <group string="Behaviours">
-                        <notebook>
-                        </notebook>
-                    </group>
-                </sheet>
-                <div class="oe_chatter"></div>
-            </form>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="rea_contract_type_search_view">
-        <field name="name">rea.contract.type.search</field>
-        <field name="model">rea.contract.type</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-            </search>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="rea_contract_type_tree_view">
-        <field name="name">rea.contract.type.tree</field>
-        <field name="model">rea.contract.type</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="type"/>
-            </tree>
-        </field>
-    </record>
-
-    <record model="ir.actions.act_window" id="rea_contract_type_act_window">
-        <field name="name">Contract Types</field>
-        <field name="res_model">rea.contract.type</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-    </record>
-
-    <record model="ir.ui.menu" id="menu_rea_contract_type">
-        <field name="name">Contract Types</field>
-        <field name="parent_id" ref="menu_contracts"/>
-        <field name="action" ref="rea_contract_type_act_window"/>
-        <field name="sequence" eval="10"/>
-    </record>
-
-
-    <!-- CONTRACT TERM -->
-    <record model="ir.ui.view" id="rea_contract_term_form_view">
-        <field name="name">rea.contract.term.form</field>
-        <field name="model">rea.contract.term</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                    <button type="object" name="execute_all_terms" string="Execute"
-                            help="Execute for all commitments of the contract"/>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" placeholder="Name of the contract term"/>
-                        </h1>
-                    </div>
                     <group>
-                        <field name="globalscope"/>
+                        <field name="start"/>
+                        <field name="end"/>
                     </group>
-                    <notebook>
-                        <page string="Observables">
-                            <field name="observables" editable="bottom"/>
-                        </page>
-                        <page string="Conditions">
-                            <group>
-                                <field name="resource_groups" widget="many2many_tags"/>
-                                <field name="resource_type"/>
-                            </group>
-                        </page>
-                        <page string="Action">
-                            <group>
+                </group>
+                <notebook>
+                    <page string="Clauses">
+                        <field name="clauses"/>
+                    </page>
+                    <page string="Terms">
+                        <field name="terms">
+                            <tree>
+                                <field name="name"/>
                                 <field name="expression"/>
-                                <field name="commitment_type"/>
-                                <field name="provider"/>
-                                <field name="receiver"/>
-                            </group>
-                        </page>
-                        <page string="Commitments">
-                            <field name="commitments"/>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter"></div>
-            </form>
-        </field>
-    </record>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+            </sheet>
+            <div class="oe_chatter"></div>
+        </form>
+    </field>
+</record>
 
-    <record model="ir.ui.view" id="rea_contract_term_tree_view">
-        <field name="name">rea.contract.term.tree</field>
-        <field name="model">rea.contract.term</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-            </tree>
-        </field>
-    </record>
+<record model="ir.ui.view" id="rea_contract_search_view">
+    <field name="name">rea.contract.search</field>
+    <field name="model">rea.contract</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+            <field name="type"/>
+            <field name="parties"/>
+            <group expand="0" string="Group By">
+                <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
+                <filter string="Party" domain="[]" context="{'group_by':'party'}"/>
+            </group>
+        </search>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="rea_contract_tree_view">
+    <field name="name">rea.contract.tree</field>
+    <field name="model">rea.contract</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="type"/>
+            <field name="start"/>
+            <field name="end"/>
+        </tree>
+    </field>
+</record>
+
+<record model="ir.actions.act_window" id="rea_contract_act_window">
+    <field name="name">Contracts</field>
+    <field name="res_model">rea.contract</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+</record>
+
+<record model="ir.ui.menu" id="menu_rea_contract">
+    <field name="name">Contracts</field>
+    <field name="parent_id" ref="menu_contracts"/>
+    <field name="action" ref="rea_contract_act_window"/>
+    <field name="sequence" eval="30"/>
+</record>
 
 
-    <!-- CONTRACT GROUP -->
-    <record model="ir.ui.view" id="rea_contract_group_form_view">
-        <field name="name">rea.contract.group.form</field>
-        <field name="model">rea.contract.group</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" placeholder="Contract Group Name"/>
-                        </h1>
-                    </div>
+<!-- CONTRACT TYPE -->
+<record model="ir.ui.view" id="rea_contract_type_form_view">
+    <field name="name">rea.contract.type.form</field>
+    <field name="model">rea.contract.type</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+            </header>
+            <sheet>
+                <div class="oe_title">
+                    <field name="type" placeholder="Parent Type"/>
+                    <h1>
+                        <field name="name" placeholder="Contract Type Name"/>
+                    </h1>
+                </div>
+                <group>
                     <group>
-                        <field name="groups"/>
-                    </group>
-                </sheet>
-                <div class="oe_chatter"></div>
-            </form>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="rea_contract_group_search_view">
-        <field name="name">rea.contract.group.search</field>
-        <field name="model">rea.contract.group</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <field name="groups"/>
-            </search>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="rea_contract_group_tree_view">
-        <field name="name">rea.contract.group.tree</field>
-        <field name="model">rea.contract.group</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-            </tree>
-        </field>
-    </record>
-
-    <record model="ir.actions.act_window" id="rea_contract_group_act_window">
-        <field name="name">Contract Groups</field>
-        <field name="res_model">rea.contract.group</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-    </record>
-
-    <record model="ir.ui.menu" id="menu_rea_contract_group">
-        <field name="name">Contract Groups</field>
-        <field name="parent_id" ref="menu_contracts"/>
-        <field name="action" ref="rea_contract_group_act_window"/>
-        <field name="sequence" eval="20"/>
-    </record>
-
-    <!-- add an ident page in the notebook -->
-    <record model="ir.ui.view" id="rea_contract_type_form_view_ident">
-        <field name="inherit_id" ref="rea.rea_contract_type_form_view"/>
-        <field name="model">rea.contract.type</field>
-        <field name="arch" type="xml">
-            <xpath expr="//notebook" position="inside">
-                <page string="Identification">
-                    <group>
-                        <p>Here you can choose the identification of the entities of this type.</p>
+                        <field name="party_types" widget="many2many_tags"/>
+                        <field name="commitment_types" widget="many2many_tags"/>
                     </group>
                     <group>
-                        <field name="identification"
-                               context="{'model': 'rea.contract.type', 'type_id': active_id}"/>
+                        <field name="max_parties"/>
+                        <field name="allow_delete"/>
+                        <field name="structural"/>
                     </group>
-                </page>
-                <page string="Identifiers">
-                  <group>
-                    <field name="type_identification" invisible="1"/>
-                  </group>
-                </page>
-            </xpath>
-        </field>
-    </record>
+                </group>
+                <notebook>
+                    <page name="behaviours" string="Behaviours">
+                        <group>
+                            <p>Here you can configure the behaviour of the entities of this type.</p>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+            <div class="oe_chatter"></div>
+        </form>
+    </field>
+</record>
 
-    <!-- Add a tab in the contract form -->
-    <record id="rea_contract_form_view_with_identifiers" model="ir.ui.view">
-        <field name="name">Contract</field>
-        <field name="model">rea.contract</field>
-        <field name="inherit_id" ref="rea_contract_form_view" />
-        <field name="arch" type="xml">
-          <xpath expr="/form/header" position='inside'>
-            <field name="step" widget="statusbar" clickable="True"/>
-          </xpath>
-          <xpath expr="//notebook" position="inside">
-            <page string="Identifiers">
-              <group>
-                <field name="type_identification" invisible="1"/>
-              </group>
-            </page>
-          </xpath>
-        </field>
-    </record>
+<record model="ir.ui.view" id="rea_contract_type_search_view">
+    <field name="name">rea.contract.type.search</field>
+    <field name="model">rea.contract.type</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+        </search>
+    </field>
+</record>
 
-    <record id="view_rea_contract_observable_tree" model="ir.ui.view">
-        <field name="name">rea.contract.observable.tree</field>
-        <field name="model">rea.contract.observable</field>
-        <field name="type">tree</field>
-        <field name="priority" eval="8"/>
-        <field name="arch" type="xml">
-        <tree string="Observable">
+<record model="ir.ui.view" id="rea_contract_type_tree_view">
+    <field name="name">rea.contract.type.tree</field>
+    <field name="model">rea.contract.type</field>
+    <field name="arch" type="xml">
+        <tree>
             <field name="name"/>
             <field name="type"/>
         </tree>
-        </field>
-    </record>
+    </field>
+</record>
 
-    <record id="view_rea_contract_observable_form" model="ir.ui.view">
-        <field name="name">rea.contract.observable.form</field>
-        <field name="model">rea.contract.observable</field>
-        <field name="type">form</field>
-        <field name="priority" eval="8"/>
-        <field name="arch" type="xml">
-        <form string="Observable">
-            <group>
+<record model="ir.actions.act_window" id="rea_contract_type_act_window">
+    <field name="name">Contract Types</field>
+    <field name="res_model">rea.contract.type</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+</record>
+
+<record model="ir.ui.menu" id="menu_rea_contract_type">
+    <field name="name">Contract Types</field>
+    <field name="parent_id" ref="menu_contracts"/>
+    <field name="action" ref="rea_contract_type_act_window"/>
+    <field name="sequence" eval="10"/>
+</record>
+
+
+<!-- CONTRACT TERM -->
+<record model="ir.ui.view" id="rea_contract_term_form_view">
+    <field name="name">rea.contract.term.form</field>
+    <field name="model">rea.contract.term</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+                <button type="object" name="execute_all_terms" string="Execute"
+                        help="Execute for all commitments of the contract"/>
+            </header>
+            <sheet>
+                <div class="oe_title">
+                    <h1>
+                        <field name="name" placeholder="Name of the contract term"/>
+                    </h1>
+                </div>
                 <group>
-                    <field name="name" select="1"/>
-                    <field name="type"/>
+                    <field name="globalscope"/>
                 </group>
-                <group>
-                    <field name="konst"
-                           attrs="{'invisible': [('type','!=','konst')]}"/>
-                    <!--field name="date" attrs="{'invisible': [('type','!=','days')]}"/-->
-                    <field name="field"
-                           domain="[('ttype','in',('integer','float')),('model','=',type)]"
-                           attrs="{'invisible': [('type','not in',('rea.commitment','rea.resource.type'))]}"/>
-                </group>
-            </group>
+                <notebook>
+                    <page string="Observables">
+                        <field name="observables" editable="bottom"/>
+                    </page>
+                    <page string="Conditions">
+                        <group>
+                            <field name="resource_groups" widget="many2many_tags"/>
+                            <field name="resource_type"/>
+                        </group>
+                    </page>
+                    <page string="Action">
+                        <group>
+                            <field name="expression"/>
+                            <field name="commitment_type"/>
+                            <field name="provider"/>
+                            <field name="receiver"/>
+                        </group>
+                    </page>
+                    <page string="Commitments">
+                        <field name="commitments"/>
+                    </page>
+                </notebook>
+            </sheet>
+            <div class="oe_chatter"></div>
         </form>
-        </field>
-    </record>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="rea_contract_term_tree_view">
+    <field name="name">rea.contract.term.tree</field>
+    <field name="model">rea.contract.term</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+        </tree>
+    </field>
+</record>
+
+
+<!-- CONTRACT GROUP -->
+<record model="ir.ui.view" id="rea_contract_group_form_view">
+    <field name="name">rea.contract.group.form</field>
+    <field name="model">rea.contract.group</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+            </header>
+            <sheet>
+                <div class="oe_title">
+                    <h1>
+                        <field name="name" placeholder="Contract Group Name"/>
+                    </h1>
+                </div>
+                <group>
+                    <field name="groups"/>
+                </group>
+            </sheet>
+            <div class="oe_chatter"></div>
+        </form>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="rea_contract_group_search_view">
+    <field name="name">rea.contract.group.search</field>
+    <field name="model">rea.contract.group</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+            <field name="groups"/>
+        </search>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="rea_contract_group_tree_view">
+    <field name="name">rea.contract.group.tree</field>
+    <field name="model">rea.contract.group</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+        </tree>
+    </field>
+</record>
+
+<record model="ir.actions.act_window" id="rea_contract_group_act_window">
+    <field name="name">Contract Groups</field>
+    <field name="res_model">rea.contract.group</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+</record>
+
+<record model="ir.ui.menu" id="menu_rea_contract_group">
+    <field name="name">Contract Groups</field>
+    <field name="parent_id" ref="menu_contracts"/>
+    <field name="action" ref="rea_contract_group_act_window"/>
+    <field name="sequence" eval="20"/>
+</record>
+
+<record id="view_rea_contract_observable_tree" model="ir.ui.view">
+    <field name="name">rea.contract.observable.tree</field>
+    <field name="model">rea.contract.observable</field>
+    <field name="type">tree</field>
+    <field name="priority" eval="8"/>
+    <field name="arch" type="xml">
+    <tree string="Observable">
+        <field name="name"/>
+        <field name="type"/>
+    </tree>
+    </field>
+</record>
+
+<record id="view_rea_contract_observable_form" model="ir.ui.view">
+    <field name="name">rea.contract.observable.form</field>
+    <field name="model">rea.contract.observable</field>
+    <field name="type">form</field>
+    <field name="priority" eval="8"/>
+    <field name="arch" type="xml">
+    <form string="Observable">
+        <group>
+            <group>
+                <field name="name" select="1"/>
+                <field name="type"/>
+            </group>
+            <group>
+                <field name="konst"
+                       attrs="{'invisible': [('type','!=','konst')]}"/>
+                <!--field name="date" attrs="{'invisible': [('type','!=','days')]}"/-->
+                <field name="field"
+                       domain="[('ttype','in',('integer','float')),('model','=',type)]"
+                       attrs="{'invisible': [('type','not in',('rea.commitment','rea.resource.type'))]}"/>
+            </group>
+        </group>
+    </form>
+    </field>
+</record>
 </odoo>

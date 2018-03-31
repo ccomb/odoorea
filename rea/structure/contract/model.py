@@ -10,9 +10,9 @@ class Contract(models.Model):
     """
     _name = 'rea.contract'
     _description = "REA Contract"
-    _inherit = [
-        'rea.identifiable.entity',
-        'rea.lifecycleable.entity']
+    _inherit = ['rea.lifecycleable.entity',
+                'rea.identifiable.entity',
+                'rea.valuable.entity']
 
     def _default_parties(self):
         """the relative company depends on the user
@@ -83,9 +83,13 @@ class ContractType(models.Model):
     """
     _name = 'rea.contract.type'
     _description = "Contract Type"
+    _parent_name = 'type'
     _inherit = ['rea.identifiable.type',
                 'rea.lifecycleable.type',
-                'rea.identifiable.entity']
+                'rea.valuable.type',
+                'rea.lifecycleable.entity',
+                'rea.identifiable.entity',
+                'rea.valuable.entity']
     _parent_name = 'type'
 
     type = fields.Many2one(
@@ -147,7 +151,6 @@ class Observable(models.Model):
         ('rea.resource.type', 'Field of the Resource Type')])
     konst = fields.Float("Value")
     date = fields.Date("Date")
-    #field = fields.Char("Field name")
     field = fields.Many2one(
         'ir.model.fields',
         "Field")

@@ -159,7 +159,7 @@ class IdentifiableType(models.AbstractModel):
 
     identification = fields.Many2one(
         'rea.identification',
-        "Identification Type")
+        "Identification")
 
 
 class Identifiable(models.AbstractModel):

@@ -203,7 +203,8 @@ class Lifecycleable(models.AbstractModel):
             return fvg
         doc = etree.fromstring(fvg['arch'])
         header = doc.xpath("/form/header")[0]
-        model = params.get('model', self._name) + '.type'
+        model = params.get('model', self._name)
+        model = model + ('.type' if not model.endswith('.type') else '')
         table = self.env[model]._table
         self.env.cr.execute('''
             select distinct transition.id
@@ -224,7 +225,7 @@ class Lifecycleable(models.AbstractModel):
             osv.orm.transfer_modifiers_to_node(
                 {'invisible': [
                     '|',
-                    ('lifecycle', '!=', transition.lifecycle.id),
+                    ('type_lifecycle', '!=', transition.lifecycle.id),
                     ('state', '!=', state)]}, button)
             header.append(button)
         fvg['arch'] = etree.tostring(doc)
@@ -245,9 +246,9 @@ class Lifecycleable(models.AbstractModel):
 
     def _get_lifecycle(self):
         for entity in self:
-            entity.lifecycle = entity.type.lifecycle
+            entity.type_lifecycle = entity.type.lifecycle
 
-    lifecycle = fields.Many2one(
+    type_lifecycle = fields.Many2one(
         'rea.lifecycle',
         'Lifecycle',
         compute=_get_lifecycle)
@@ -256,7 +257,7 @@ class Lifecycleable(models.AbstractModel):
         'Step',
         index=True,
         copy=False,
-        domain="[('lifecycle','=',lifecycle)]")
+        domain="[('lifecycle','=',type_lifecycle)]")
     state = fields.Char(
         'state',
         compute=_get_state)

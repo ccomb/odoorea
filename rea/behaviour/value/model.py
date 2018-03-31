@@ -158,7 +158,7 @@ class ValuableType(models.AbstractModel):
 
     valuation = fields.Many2one(
         'rea.valuation',
-        "Valuation Type")
+        "Valuation")
 
 
 class Valuable(models.AbstractModel):

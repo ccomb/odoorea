@@ -7,3 +7,6 @@ sandbox/
 .*\.swp$
 .*\.swo$
 .*\.pyc$
+rea/structure/.*/identifier.xml
+rea/structure/.*/lifecycle.xml
+rea/structure/.*/value.xml

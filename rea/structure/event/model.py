@@ -7,7 +7,8 @@ class Event(models.Model):
     """
     _name = 'rea.event'
     _description = "Event"
-    _inherit = ['rea.identifiable.entity',
+    _inherit = ['rea.lifecycleable.entity',
+                'rea.identifiable.entity',
                 'rea.valuable.entity']
 
     name = fields.Char(
@@ -98,8 +99,13 @@ class EventType(models.Model):
     """
     _name = 'rea.event.type'
     _description = "Event Type"
-    _inherit = ['rea.valuable.type',
-                'rea.identifiable.type']
+    _parent_name = 'type'
+    _inherit = ['rea.identifiable.type',
+                'rea.lifecycleable.type',
+                'rea.valuable.type',
+                'rea.lifecycleable.entity',
+                'rea.identifiable.entity',
+                'rea.valuable.entity']
     _parent_name = 'type'
 
     type = fields.Many2one(
@@ -131,7 +137,9 @@ class EventType(models.Model):
         'rea.resource.type',
         string="Resource Type")
 
-# todo : l'event type est proche de la notion de journal et peut avoir une correspondance en compta
+# TODO : l'event type est proche de la
+# notion de journal et peut avoir une
+# correspondance en compta
 
 
 class EventGroup(models.Model):

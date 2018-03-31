@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+<record id="rea_${object}_type_form_view_with_lifecycle" model="ir.ui.view">
+    <field name="model">rea.${object}.type</field>
+    <field name="inherit_id" ref="rea.rea_${object}_type_form_view" />
+    <field name="arch" type="xml">
+        <xpath expr="//notebook/page[@name='behaviours']" position="inside">
+            <page string="Lifecycle">
+                <group string="Lifecycle configuration">
+                    <field name="lifecycle"/>
+                    <field name="subobjects" widget="many2many_tags" domain="[('model', '=', 'rea.${object}')]"/>
+                </group>
+            </page>
+        </xpath>
+    </field>
+</record>
+
+<!-- Search by step -->
+<record id="rea_${object}_search_view_with_steps" model="ir.ui.view">
+    <field name="name">rea.${object}.search</field>
+    <field name="model">rea.${object}</field>
+    <field name="inherit_id" ref="rea_${object}_search_view"/>
+    <field name="priority" eval="16"/>
+    <field name="arch" type="xml">
+        <xpath expr="//search" position="inside">
+                <filter name="${object}s_by_step"
+                        string="Step"
+                        context="{'group_by': ['step']}"
+                        help="Group by step"/>
+        </xpath>
+    </field>
+</record>
+
+<!-- Add a tab in the form view -->
+<record id="rea_${object}_form_view_with_steps" model="ir.ui.view">
+    <field name="name">${Object}</field>
+    <field name="model">rea.${object}</field>
+    <field name="inherit_id" ref="rea_${object}_form_view" />
+    <field name="arch" type="xml">
+      <xpath expr="/form/header" position='inside'>
+        <field name="step" widget="statusbar" clickable="True"/>
+      </xpath>
+      <xpath expr="//notebook" position="inside">
+        <page string="Lifecycle">
+          <group col="9" colspan="2">
+            <field name="type_lifecycle" invisible="1"/>
+            <button name="step_previous" string=""
+                    type="object" icon="fa-arrow-circle-o-left"/>
+            <button name="step_next" string=""
+              type="object" icon="fa-arrow-circle-o-right"/>
+        <field name="state" invisible="1"/>
+          </group>
+        </page>
+      </xpath>
+    </field>
+</record>
+<record id="rea_${object}_type_form_view_with_steps" model="ir.ui.view">
+    <field name="name">${Object} Type</field>
+    <field name="model">rea.${object}.type</field>
+    <field name="inherit_id" ref="rea_${object}_type_form_view" />
+    <field name="arch" type="xml">
+      <xpath expr="/form/header" position='inside'>
+        <field name="step" widget="statusbar" clickable="True"/>
+      </xpath>
+      <xpath expr="//notebook" position="inside">
+        <page string="Lifecycle">
+          <group col="9" colspan="2">
+            <field name="type_lifecycle" invisible="1"/>
+            <button name="step_previous" string=""
+                    type="object" icon="fa-arrow-circle-o-left"/>
+            <button name="step_next" string=""
+              type="object" icon="fa-arrow-circle-o-right"/>
+        <field name="state" invisible="1"/>
+          </group>
+        </page>
+      </xpath>
+    </field>
+</record>
+
+<!-- Add a column in the list view -->
+<record id="rea_${object}_tree_view_with_steps" model="ir.ui.view">
+    <field name="model">rea.${object}</field>
+    <field name="inherit_id" ref="rea_${object}_tree_view" />
+    <field name="arch" type="xml">
+        <xpath expr="/tree" position="inside">
+            <field name="step"/>
+              <button name="step_previous" string=""
+                      type="object" icon="fa-arrow-circle-o-left" />
+              <button name="step_next" string=""
+                type="object" icon="fa-arrow-circle-o-right" />
+        </xpath>
+    </field>
+</record>
+
+</data>
+</odoo>
+

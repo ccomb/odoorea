@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-<data>
+<odoo>
 
 <!-- temporary -->
-    <record model="ir.model.access" id="rea_event_access_public">
-        <field name="name">rea.event public access</field>
-        <field name="model_id" ref="model_rea_event"/>
-        <field name="group_id" ref="base.group_user"/>
-        <field name="perm_read" eval="1"/>
-        <field name="perm_create" eval="0"/>
-        <field name="perm_write" eval="0"/>
-        <field name="perm_unlink" eval="0"/>
-    </record>
+<record model="ir.model.access" id="rea_event_access_public">
+    <field name="name">rea.event public access</field>
+    <field name="model_id" ref="model_rea_event"/>
+    <field name="group_id" ref="base.group_user"/>
+    <field name="perm_read" eval="1"/>
+    <field name="perm_create" eval="0"/>
+    <field name="perm_write" eval="0"/>
+    <field name="perm_unlink" eval="0"/>
+</record>
 
-</data>
-</openerp>
+</odoo>

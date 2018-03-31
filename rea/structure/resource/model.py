@@ -1,4 +1,4 @@
-from openerp import fields, models
+from odoo import fields, models
 
 
 class Resource(models.Model):
@@ -7,7 +7,8 @@ class Resource(models.Model):
     """
     _name = 'rea.resource'
     _description = "Resource"
-    _inherit = ['rea.identifiable.entity',
+    _inherit = ['rea.lifecycleable.entity',
+                'rea.identifiable.entity',
                 'rea.valuable.entity']
 
     name = fields.Char(
@@ -35,9 +36,12 @@ class ResourceType(models.Model):
     _name = 'rea.resource.type'
     _description = "Resource Type"
     _parent_name = 'type'
-    _inherit = ['rea.valuable.type',
-                'rea.valuable.entity',
-                'rea.identifiable.type']
+    _inherit = ['rea.identifiable.type',
+                'rea.lifecycleable.type',
+                'rea.valuable.type',
+                'rea.lifecycleable.entity',
+                'rea.identifiable.entity',
+                'rea.valuable.entity']
 
     type = fields.Many2one(
         'rea.resource.type',

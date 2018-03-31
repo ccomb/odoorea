@@ -1,199 +1,220 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- AGENT -->
-    <record model="ir.ui.view" id="rea_agent_form_view">
-        <field name="name">rea.agent.form</field>
-        <field name="model">rea.agent</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <field name="type" placeholder="Agent Type"/>
-                        <h1>
-                            <field name="name" placeholder="Name"/>
-                        </h1>
-                    </div>
-                    <group>
-                        <field name="groups" widget="many2many_tags"/>
-                    </group>
-                </sheet>
-                <div class="oe_chatter"></div>
-            </form>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="rea_agent_search_view">
-        <field name="name">rea.agent.search</field>
-        <field name="model">rea.agent</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <group expand="0" string="Group By">
-                    <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
+<!-- AGENT -->
+<record model="ir.ui.view" id="rea_agent_form_view">
+    <field name="name">rea.agent.form</field>
+    <field name="model">rea.agent</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+            </header>
+            <sheet>
+                <div class="oe_title">
+                    <field name="type" placeholder="Agent Type"/>
+                    <h1>
+                        <field name="name" placeholder="Name"/>
+                    </h1>
+                </div>
+                <group>
+                    <field name="groups" widget="many2many_tags"/>
                 </group>
-            </search>
-        </field>
-    </record>
-
-    <record model="ir.ui.view" id="rea_agent_tree_view">
-        <field name="name">rea.agent.tree</field>
-        <field name="model">rea.agent</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="type"/>
-            </tree>
-        </field>
-    </record>
-
-    <record model="ir.actions.act_window" id="rea_agent_act_window">
-        <field name="name">Agents</field>
-        <field name="res_model">rea.agent</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-    </record>
-
-    <record model="ir.ui.menu" id="menu_rea_agent">
-        <field name="name">Agents</field>
-        <field name="parent_id" ref="menu_agents"/>
-        <field name="action" ref="rea_agent_act_window"/>
-        <field name="sequence" eval="30"/>
-    </record>
-
-
-    <!-- AGENT TYPE -->
-    <record model="ir.ui.view" id="rea_agent_type_form_view">
-        <field name="name">rea.agent.type.form</field>
-        <field name="model">rea.agent.type</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <field name="type" placeholder="Parent Type"/>
-                        <h1>
-                            <field name="name" placeholder="Agent Type Name"/>
-                        </h1>
-                    </div>
-                    <group>
+                <notebook>
+                    <page string="Identifiers">
                         <group>
+                            <field name="type_identification" invisible="1"/>
                         </group>
+                    </page>
+                    <page string="Values">
+                        <field name="type_valuation" invisible="1"/>
                         <group>
-                            <field name="structural"/>
+                            <group col="4">
+                            </group>
                         </group>
-                    </group>
-                </sheet>
-                <div class="oe_chatter"></div>
-            </form>
-        </field>
-    </record>
+                    </page>
+                </notebook>
+            </sheet>
+            <div class="oe_chatter"></div>
+        </form>
+    </field>
+</record>
 
-    <record model="ir.ui.view" id="rea_agent_type_search_view">
-        <field name="name">rea.agent.type.search</field>
-        <field name="model">rea.agent.type</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-            </search>
-        </field>
-    </record>
+<record model="ir.ui.view" id="rea_agent_search_view">
+    <field name="name">rea.agent.search</field>
+    <field name="model">rea.agent</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+            <group expand="0" string="Group By">
+                <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
+            </group>
+        </search>
+    </field>
+</record>
 
-    <record model="ir.ui.view" id="rea_agent_type_tree_view">
-        <field name="name">rea.agent.type.tree</field>
-        <field name="model">rea.agent.type</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="type"/>
-            </tree>
-        </field>
-    </record>
+<record model="ir.ui.view" id="rea_agent_tree_view">
+    <field name="name">rea.agent.tree</field>
+    <field name="model">rea.agent</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="type"/>
+        </tree>
+    </field>
+</record>
 
-    <record model="ir.actions.act_window" id="rea_agent_type_act_window">
-        <field name="name">Agent Types</field>
-        <field name="res_model">rea.agent.type</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-    </record>
+<record model="ir.actions.act_window" id="rea_agent_act_window">
+    <field name="name">Agents</field>
+    <field name="res_model">rea.agent</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+</record>
 
-    <record model="ir.ui.menu" id="menu_rea_agent_type">
-        <field name="name">Agent Types</field>
-        <field name="parent_id" ref="menu_agents"/>
-        <field name="action" ref="rea_agent_type_act_window"/>
-        <field name="sequence" eval="10"/>
-    </record>
+<record model="ir.ui.menu" id="menu_rea_agent">
+    <field name="name">Agents</field>
+    <field name="parent_id" ref="menu_agents"/>
+    <field name="action" ref="rea_agent_act_window"/>
+    <field name="sequence" eval="30"/>
+</record>
 
 
-    <!-- AGENT GROUP -->
-    <record model="ir.ui.view" id="rea_agent_group_form_view">
-        <field name="name">rea.agent.group.form</field>
-        <field name="model">rea.agent.group</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" placeholder="Agent Group Name"/>
-                        </h1>
-                    </div>
+<!-- AGENT TYPE -->
+<record model="ir.ui.view" id="rea_agent_type_form_view">
+    <field name="name">rea.agent.type.form</field>
+    <field name="model">rea.agent.type</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+            </header>
+            <sheet>
+                <div class="oe_title">
+                    <field name="type" placeholder="Parent Type"/>
+                    <h1>
+                        <field name="name" placeholder="Agent Type Name"/>
+                    </h1>
+                </div>
+                <group>
                     <group>
-                        <field name="agent"/>
-                        <field name="groups" widget="many2many_tags"/>
                     </group>
-                    <notebook>
-                        <page string="Members">
-                            <field name="agents"/>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter"></div>
-            </form>
-        </field>
-    </record>
+                    <group>
+                        <field name="structural"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page name="behaviours" string="Behaviours">
+                        <group>
+                            <p>Here you can configure the behaviour of the entities of this type.</p>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+            <div class="oe_chatter"></div>
+        </form>
+    </field>
+</record>
 
-    <record model="ir.ui.view" id="rea_agent_group_search_view">
-        <field name="name">rea.agent.group.search</field>
-        <field name="model">rea.agent.group</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <field name="groups"/>
-            </search>
-        </field>
-    </record>
+<record model="ir.ui.view" id="rea_agent_type_search_view">
+    <field name="name">rea.agent.type.search</field>
+    <field name="model">rea.agent.type</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+        </search>
+    </field>
+</record>
 
-    <record model="ir.ui.view" id="rea_agent_group_tree_view">
-        <field name="name">rea.agent.group.tree</field>
-        <field name="model">rea.agent.group</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="groups"/>
-            </tree>
-        </field>
-    </record>
+<record model="ir.ui.view" id="rea_agent_type_tree_view">
+    <field name="name">rea.agent.type.tree</field>
+    <field name="model">rea.agent.type</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="type"/>
+        </tree>
+    </field>
+</record>
 
-    <record model="ir.actions.act_window" id="rea_agent_group_act_window">
-        <field name="name">Agent Groups</field>
-        <field name="res_model">rea.agent.group</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-    </record>
+<record model="ir.actions.act_window" id="rea_agent_type_act_window">
+    <field name="name">Agent Types</field>
+    <field name="res_model">rea.agent.type</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+</record>
 
-    <record model="ir.ui.menu" id="menu_rea_agent_group">
-        <field name="name">Agent Groups</field>
-        <field name="parent_id" ref="menu_agents"/>
-        <field name="action" ref="rea_agent_group_act_window"/>
-        <field name="sequence" eval="20"/>
-    </record>
+<record model="ir.ui.menu" id="menu_rea_agent_type">
+    <field name="name">Agent Types</field>
+    <field name="parent_id" ref="menu_agents"/>
+    <field name="action" ref="rea_agent_type_act_window"/>
+    <field name="sequence" eval="10"/>
+</record>
+
+
+<!-- AGENT GROUP -->
+<record model="ir.ui.view" id="rea_agent_group_form_view">
+    <field name="name">rea.agent.group.form</field>
+    <field name="model">rea.agent.group</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+            </header>
+            <sheet>
+                <div class="oe_title">
+                    <h1>
+                        <field name="name" placeholder="Agent Group Name"/>
+                    </h1>
+                </div>
+                <group>
+                    <field name="agent"/>
+                    <field name="groups" widget="many2many_tags"/>
+                </group>
+                <notebook>
+                    <page string="Members">
+                        <field name="agents"/>
+                    </page>
+                </notebook>
+            </sheet>
+            <div class="oe_chatter"></div>
+        </form>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="rea_agent_group_search_view">
+    <field name="name">rea.agent.group.search</field>
+    <field name="model">rea.agent.group</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+            <field name="groups"/>
+        </search>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="rea_agent_group_tree_view">
+    <field name="name">rea.agent.group.tree</field>
+    <field name="model">rea.agent.group</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="groups"/>
+        </tree>
+    </field>
+</record>
+
+<record model="ir.actions.act_window" id="rea_agent_group_act_window">
+    <field name="name">Agent Groups</field>
+    <field name="res_model">rea.agent.group</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+</record>
+
+<record model="ir.ui.menu" id="menu_rea_agent_group">
+    <field name="name">Agent Groups</field>
+    <field name="parent_id" ref="menu_agents"/>
+    <field name="action" ref="rea_agent_group_act_window"/>
+    <field name="sequence" eval="20"/>
+</record>
 
 </odoo>

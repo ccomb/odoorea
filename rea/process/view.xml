@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-<data>
+<odoo>
 
 <!-- PROCESS -->
 <record model="ir.ui.view" id="rea_process_form_view">
@@ -231,5 +230,4 @@
     <field name="sequence" eval="20"/>
 </record>
 
-</data>
-</openerp>
+</odoo>

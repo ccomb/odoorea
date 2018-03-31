@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- add a value page in the notebook -->
+<record model="ir.ui.view" id="rea_${object}_type_form_view_valuation">
+    <field name="inherit_id" ref="rea.rea_${object}_type_form_view"/>
+    <field name="model">rea.${object}.type</field>
+    <field name="arch" type="xml">
+        <xpath expr="//notebook/page[@name='behaviours']" position="inside">
+            <page string="Valuation">
+                <group string="Valuation configuration">
+                    <field name="valuation"
+                           context="{'model': 'rea.${object}.type', 'type_id': active_id}"/>
+                </group>
+            </page>
+        </xpath>
+    </field>
+</record>
+
+<!-- Add a tab in the form view -->
+<record id="rea_${object}_form_view_with_values" model="ir.ui.view">
+    <field name="name">${Object}</field>
+    <field name="model">rea.${object}</field>
+    <field name="inherit_id" ref="rea_${object}_form_view" />
+    <field name="arch" type="xml">
+      <xpath expr="/form/header" position='inside'>
+        <field name="step" widget="statusbar" clickable="True"/>
+      </xpath>
+      <xpath expr="//notebook" position="inside">
+          <page string="Values">
+              <field name="type_valuation" invisible="1"/>
+              <group>
+                  <group col="4">
+                  </group>
+              </group>
+          </page>
+      </xpath>
+    </field>
+</record>
+
+<record id="rea_${object}_type_form_view_with_values" model="ir.ui.view">
+    <field name="model">rea.${object}.type</field>
+    <field name="inherit_id" ref="rea.rea_${object}_type_form_view" />
+    <field name="arch" type="xml">
+        <xpath expr="//notebook" position="inside">
+          <page string="Values">
+              <field name="type_valuation" invisible="1"/>
+              <group>
+                  <group col="4">
+                  </group>
+              </group>
+          </page>
+        </xpath>
+    </field>
+</record>
+
+</odoo>
+

@@ -1,93 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-<data>
-    <!-- IDENTIFICATION FIELD SETUP -->
-    <record model="ir.ui.view" id="rea_identification_field_form_view">
-        <field name="name">rea.identification.field.form</field>
-        <field name="model">rea.identification.field</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                </header>
-                <sheet>
-                    <h1><field name="name"/></h1>
-                    <group>
-                        <field name="field_name"/>
-                        <field name="field" readonly="1" attrs="{'invisible': [('field', '=', False)], 'required': [('field', '!=', False)]}"/>
-                    </group>
-                    <group>
-                        <field name="unique"/>
-                        <field name="mandatory"/>
-                        <field name="generated"/>
-                    </group>
-                    <group attrs="{'invisible': [('generated','=',False)]}">
-                        <field name="prefix"/>
-                        <field name="last_nb"/>
-                        <field name="next_nb"/>
-                        <field name="padding"/>
-                        <field name="step"/>
-                        <field name="suffix"/>
-                        <field name="date_origin"/>
-                        <field name="date_field" attrs="{'invisible': [('date_origin','=','now')],'required': [('date_origin','=','field')]}"/>
-                    </group>
-                </sheet>
-                <div class="oe_chatter"></div>
-            </form>
-        </field>
-    </record>
+<odoo>
 
-    <record model="ir.ui.view" id="rea_identification_field_search_view">
-        <field name="name">rea.identification.field.search</field>
-        <field name="model">rea.identification.field</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-            </search>
-        </field>
-    </record>
+<!-- IDENTIFICATION FIELD SETUP -->
+<record model="ir.ui.view" id="rea_identification_field_form_view">
+    <field name="name">rea.identification.field.form</field>
+    <field name="model">rea.identification.field</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+            </header>
+            <sheet>
+                <h1><field name="name"/></h1>
+                <group>
+                    <field name="field_name"/>
+                    <field name="field" readonly="1" attrs="{'invisible': [('field', '=', False)], 'required': [('field', '!=', False)]}"/>
+                </group>
+                <group>
+                    <field name="unique"/>
+                    <field name="mandatory"/>
+                    <field name="generated"/>
+                </group>
+                <group attrs="{'invisible': [('generated','=',False)]}">
+                    <field name="prefix"/>
+                    <field name="last_nb"/>
+                    <field name="next_nb"/>
+                    <field name="padding"/>
+                    <field name="step"/>
+                    <field name="suffix"/>
+                    <field name="date_origin"/>
+                    <field name="date_field" attrs="{'invisible': [('date_origin','=','now')],'required': [('date_origin','=','field')]}"/>
+                </group>
+            </sheet>
+            <div class="oe_chatter"></div>
+        </form>
+    </field>
+</record>
 
-    <record model="ir.ui.view" id="rea_identification_field_tree_view">
-        <field name="name">rea.identification.field.tree</field>
-        <field name="model">rea.identification.field</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="field"/>
-            </tree>
-        </field>
-    </record>
+<record model="ir.ui.view" id="rea_identification_field_search_view">
+    <field name="name">rea.identification.field.search</field>
+    <field name="model">rea.identification.field</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+        </search>
+    </field>
+</record>
 
-    <record model="ir.ui.view" id="rea_identification_form_view">
-        <field name="name">rea.identification.form</field>
-        <field name="model">rea.identification</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                </header>
-                <sheet>
-                    <h1><field name="name"/></h1>
-                    <group>
-                        <field name="fields"/>
-                    </group>
-                </sheet>
-                <div class="oe_chatter"></div>
-            </form>
-        </field>
-    </record>
+<record model="ir.ui.view" id="rea_identification_field_tree_view">
+    <field name="name">rea.identification.field.tree</field>
+    <field name="model">rea.identification.field</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="field"/>
+        </tree>
+    </field>
+</record>
 
-    <record model="ir.actions.act_window" id="rea_identification_act_window">
-        <field name="name">Identifiers Setup</field>
-        <field name="res_model">rea.identification</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-    </record>
+<record model="ir.ui.view" id="rea_identification_form_view">
+    <field name="name">rea.identification.form</field>
+    <field name="model">rea.identification</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+            </header>
+            <sheet>
+                <h1><field name="name"/></h1>
+                <group>
+                    <field name="fields"/>
+                </group>
+            </sheet>
+            <div class="oe_chatter"></div>
+        </form>
+    </field>
+</record>
 
-    <record model="ir.ui.menu" id="menu_rea_identification">
-        <field name="name">Identifiers Setup</field>
-        <field name="parent_id" ref="menu_behaviours"/>
-        <field name="action" ref="rea_identification_act_window"/>
-        <field name="sequence" eval="10"/>
-    </record>
-</data>
-</openerp>
+<record model="ir.actions.act_window" id="rea_identification_act_window">
+    <field name="name">Identifiers Setup</field>
+    <field name="res_model">rea.identification</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+</record>
+
+<record model="ir.ui.menu" id="menu_rea_identification">
+    <field name="name">Identifiers Setup</field>
+    <field name="parent_id" ref="menu_behaviours"/>
+    <field name="action" ref="rea_identification_act_window"/>
+    <field name="sequence" eval="10"/>
+</record>
+
+</odoo>
