@@ -116,11 +116,13 @@ class ValuationField(models.Model):
                     'model': model,
                     'model_id': model_id,
                     'name': field_name,
+                    'field_description': vals.get('name'),
                     'ttype': 'float'}).id
                 fields.create({
                     'model': model,
                     'model_id': model_id,
                     'name': rt_field_name,
+                    'field_description': '%s Unit' % vals.get('name'),
                     'ttype': 'many2one',
                     'relation': 'rea.resource.type'}).id
         vals['model'] = model_id
