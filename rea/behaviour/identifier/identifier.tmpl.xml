@@ -9,7 +9,7 @@
         <xpath expr="//notebook/page[@name='behaviours']" position="inside">
             <group string="Identification configuration">
                 <field name="identification"
-                       context="{'model': 'rea.contract.type', 'type_id': active_id}"/>
+                       context="{'model': 'rea.${object}.type', 'type_id': active_id}"/>
             </group>
         </xpath>
     </field>
