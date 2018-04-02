@@ -252,7 +252,8 @@ class Observable(models.Model):
     date = fields.Date("Date")
     field = fields.Many2one(
         'ir.model.fields',
-        string="Dependent field")
+        string="Dependent field",
+        help="Used as a variable name in the expression")
     value_field = fields.Many2one(
         'rea.valuation.field',
         "Value field")
