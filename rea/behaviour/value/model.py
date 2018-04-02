@@ -54,38 +54,40 @@ class ValuationField(models.Model):
         "Next valuation date")  # TODO also add a last_valuation
 
     def compute_all(self):
-        # compute resource types first...
-        self.env.cr.execute(
-            "select t1.id, f.id "  # TODO not only resource_type!!
-            "from rea_resource_type t1, rea_resource_type t2, "
-            "     rea_valuation v, rea_valuation_field f "
-            "where "
-            "    t1.type = t2.id "
-            "and f.type = 'calc' "
-            "and t2.valuation = v.id "
-            "and f.valuation = v.id "
-            "and (f.next_valuation < '%s' or f.next_valuation is NULL)"
-            % time.strftime('%Y-%m-%d %H:%M:%S'))
-        for res_type_id, field_id in self.env.cr.fetchall():
-            field = self.env['rea.valuation.field'].browse(field_id)
-            res_type = self.env['rea.resource.type'].browse(res_type_id)
-            res_type.write({field.field.name: field.compute(res_type)})
-        # ...then resources
-        self.env.cr.execute(
-            "select r.id, f.id "  # TODO not only resource_type!!
-            "from rea_resource r, rea_resource_type t, "
-            "     rea_valuation v, rea_valuation_field f "
-            "where "
-            "    r.type = t.id "
-            "and f.type = 'calc' "
-            "and t.valuation = v.id "
-            "and f.valuation = v.id "
-            "and (f.next_valuation < '%s' or f.next_valuation is NULL)"
-            % time.strftime('%Y-%m-%d %H:%M:%S'))
-        for resource_id, field_id in self.env.cr.fetchall():
-            field = self.env['rea.valuation.field'].browse(field_id)
-            resource = self.env['rea.resource'].browse(resource_id)
-            resource.write({field.field.name: field.compute(resource)})
+        # TODO optimize
+        for obj in ('rea_resource', 'rea_event', 'rea_agent', 'rea_commitment', 'rea_contract'):
+            # compute entity types first...
+            self.env.cr.execute(
+                "select t1.id, f.id "
+                "from %(obj)s_type t1, %(obj)s_type t2, "
+                "     rea_valuation v, rea_valuation_field f "
+                "where "
+                "    t1.type = t2.id "
+                "and f.type = 'calc' "
+                "and t2.valuation = v.id "
+                "and f.valuation = v.id "
+                "and (f.next_valuation < '%(now)s' or f.next_valuation is NULL)"
+                % {'obj': obj, 'now': time.strftime('%Y-%m-%d %H:%M:%S')})
+            for ent_type_id, field_id in self.env.cr.fetchall():
+                field = self.env['rea.valuation.field'].browse(field_id)
+                ent_type = self.env['%s.type' % obj.replace('_', '.')].browse(ent_type_id)
+                ent_type.write({field.field.name: field.compute(ent_type)})
+            # ...then entities
+            self.env.cr.execute(
+                "select r.id, f.id "
+                "from %(obj)s r, %(obj)s_type t, "
+                "     rea_valuation v, rea_valuation_field f "
+                "where "
+                "    r.type = t.id "
+                "and f.type = 'calc' "
+                "and t.valuation = v.id "
+                "and f.valuation = v.id "
+                "and (f.next_valuation < '%(now)s' or f.next_valuation is NULL)"
+                % {'obj': obj, 'now': time.strftime('%Y-%m-%d %H:%M:%S')})
+            for entity_id, field_id in self.env.cr.fetchall():
+                field = self.env['rea.valuation.field'].browse(field_id)
+                entity = self.env[obj.replace('_', '.')].browse(entity_id)
+                entity.write({field.field.name: field.compute(entity)})
 
     def compute(self, entity):
         """given a calculation and an entity, return the new value of the field
