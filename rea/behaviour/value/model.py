@@ -51,11 +51,28 @@ class ValuationField(models.Model):
         "Period",
         help=u"Recompute the value at every period of time")
     next_valuation = fields.Datetime(
-        "Next valuation date")  # TODO replace with a last_valuation
+        "Next valuation date")  # TODO also add a last_valuation
 
     def compute_all(self):
+        # compute resource types first...
         self.env.cr.execute(
-            "select r.id, f.id "
+            "select t1.id, f.id "  # TODO not only resource_type!!
+            "from rea_resource_type t1, rea_resource_type t2, "
+            "     rea_valuation v, rea_valuation_field f "
+            "where "
+            "    t1.type = t2.id "
+            "and f.type = 'calc' "
+            "and t2.valuation = v.id "
+            "and f.valuation = v.id "
+            "and (f.next_valuation < '%s' or f.next_valuation is NULL)"
+            % time.strftime('%Y-%m-%d %H:%M:%S'))
+        for res_type_id, field_id in self.env.cr.fetchall():
+            field = self.env['rea.valuation.field'].browse(field_id)
+            res_type = self.env['rea.resource.type'].browse(res_type_id)
+            res_type.write({field.field.name: field.compute(res_type)})
+        # ...then resources
+        self.env.cr.execute(
+            "select r.id, f.id "  # TODO not only resource_type!!
             "from rea_resource r, rea_resource_type t, "
             "     rea_valuation v, rea_valuation_field f "
             "where "
