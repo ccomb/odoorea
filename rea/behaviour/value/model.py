@@ -29,9 +29,6 @@ class ValuationField(models.Model):
         'rea.valuation',
         help=u"The valuation configuration this fiels belongs to",
         ondelete='cascade')
-    model = fields.Many2one(
-        'ir.model',
-        string="Related model")
     field = fields.Many2one(
         'ir.model.fields',
         "Created field",
@@ -55,7 +52,8 @@ class ValuationField(models.Model):
 
     def compute_all(self):
         # TODO optimize
-        for obj in ('rea_resource', 'rea_event', 'rea_agent', 'rea_commitment', 'rea_contract'):
+        for obj in ('rea_resource', 'rea_event', 'rea_agent',
+                    'rea_commitment', 'rea_contract'):
             # compute entity types first...
             self.env.cr.execute(
                 "select t1.id, f.id "
@@ -66,11 +64,13 @@ class ValuationField(models.Model):
                 "and f.type = 'calc' "
                 "and t2.valuation = v.id "
                 "and f.valuation = v.id "
-                "and (f.next_valuation < '%(now)s' or f.next_valuation is NULL)"
+                "and (f.next_valuation < '%(now)s' "
+                "     or f.next_valuation is NULL)"
                 % {'obj': obj, 'now': time.strftime('%Y-%m-%d %H:%M:%S')})
             for ent_type_id, field_id in self.env.cr.fetchall():
                 field = self.env['rea.valuation.field'].browse(field_id)
-                ent_type = self.env['%s.type' % obj.replace('_', '.')].browse(ent_type_id)
+                ent_type = self.env['%s.type' % obj.replace('_', '.')
+                                    ].browse(ent_type_id)
                 ent_type.write({field.field.name: field.compute(ent_type)})
             # ...then entities
             self.env.cr.execute(
@@ -82,7 +82,8 @@ class ValuationField(models.Model):
                 "and f.type = 'calc' "
                 "and t.valuation = v.id "
                 "and f.valuation = v.id "
-                "and (f.next_valuation < '%(now)s' or f.next_valuation is NULL)"
+                "and (f.next_valuation < '%(now)s' "
+                "     or f.next_valuation is NULL)"
                 % {'obj': obj, 'now': time.strftime('%Y-%m-%d %H:%M:%S')})
             for entity_id, field_id in self.env.cr.fetchall():
                 field = self.env['rea.valuation.field'].browse(field_id)
@@ -131,12 +132,14 @@ class ValuationField(models.Model):
             vals['field'] = existing[0].id
         else:
             if field_name != 'name':
+                # value
                 vals['field'] = fields.create({
                     'model': model,
                     'model_id': model_id,
                     'name': field_name,
                     'field_description': vals.get('name'),
                     'ttype': 'float'}).id
+                # unit (resource type)
                 fields.create({
                     'model': model,
                     'model_id': model_id,
