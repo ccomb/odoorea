@@ -9,7 +9,7 @@ class Agent(models.Model):
     _description = 'Agent'
     _inherit = ['rea.lifecycleable.entity',
                 'rea.identifiable.entity',
-                'rea.valuable.entity']
+                'rea.propertyable.entity']
 
     name = fields.Char(
         string="name",
@@ -31,10 +31,10 @@ class AgentType(models.Model):
     _parent_name = 'type'
     _inherit = ['rea.identifiable.type',
                 'rea.lifecycleable.type',
-                'rea.valuable.type',
+                'rea.propertyable.type',
                 'rea.lifecycleable.entity',
                 'rea.identifiable.entity',
-                'rea.valuable.entity']
+                'rea.propertyable.entity']
 
     type = fields.Many2one(
         'rea.agent.type',

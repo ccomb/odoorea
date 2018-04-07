@@ -9,7 +9,7 @@ class Event(models.Model):
     _description = "Event"
     _inherit = ['rea.lifecycleable.entity',
                 'rea.identifiable.entity',
-                'rea.valuable.entity']
+                'rea.propertyable.entity']
 
     name = fields.Char(
         string="name",
@@ -102,10 +102,10 @@ class EventType(models.Model):
     _parent_name = 'type'
     _inherit = ['rea.identifiable.type',
                 'rea.lifecycleable.type',
-                'rea.valuable.type',
+                'rea.propertyable.type',
                 'rea.lifecycleable.entity',
                 'rea.identifiable.entity',
-                'rea.valuable.entity']
+                'rea.propertyable.entity']
     _parent_name = 'type'
 
     type = fields.Many2one(

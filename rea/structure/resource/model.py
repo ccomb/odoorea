@@ -9,7 +9,7 @@ class Resource(models.Model):
     _description = "Resource"
     _inherit = ['rea.lifecycleable.entity',
                 'rea.identifiable.entity',
-                'rea.valuable.entity']
+                'rea.propertyable.entity']
 
     name = fields.Char(
         string="name",
@@ -38,10 +38,10 @@ class ResourceType(models.Model):
     _parent_name = 'type'
     _inherit = ['rea.identifiable.type',
                 'rea.lifecycleable.type',
-                'rea.valuable.type',
+                'rea.propertyable.type',
                 'rea.lifecycleable.entity',
                 'rea.identifiable.entity',
-                'rea.valuable.entity']
+                'rea.propertyable.entity']
 
     type = fields.Many2one(
         'rea.resource.type',

@@ -1,10 +1,11 @@
 from . import model  # noqa
 from os.path import join, dirname
+
 entity = model.__name__.split('.')[-2]
 # dynamically generated view for behaviours
 for behaviour in ('lifecycle',
                   'identifier',
-                  'value'):
+                  'property'):
     source = join(dirname(dirname(dirname(model.__file__))),
                   'behaviour', behaviour, behaviour + '.tmpl.xml')
     target = join(dirname(model.__file__), behaviour + '.xml')

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<record id="view_rea_observable_tree" model="ir.ui.view">
+    <field name="name">rea.observable.tree</field>
+    <field name="model">rea.observable</field>
+    <field name="type">tree</field>
+    <field name="priority" eval="8"/>
+    <field name="arch" type="xml">
+    <tree string="Observables">
+        <field name="sequence" widget="handle"/>
+        <field name="name"/>
+        <field name="type"/>
+        <field name="field"/>
+    </tree>
+    </field>
+</record>
+
+<record id="view_rea_observable_form" model="ir.ui.view">
+    <field name="name">rea.observable.form</field>
+    <field name="model">rea.observable</field>
+    <field name="type">form</field>
+    <field name="priority" eval="8"/>
+    <field name="arch" type="xml">
+    <form string="Observables">
+        <group>
+            <field name="name" select="1"/>
+            <field name="type"/>
+            <field name="field" attrs="{'invisible': [('type','!=','field')]}"
+                   domain="[('ttype','in',('integer','float')),('model','=',context.model)]"/>
+            <field name="konst" attrs="{'invisible': [('type','!=','konst')]}"/>
+        </group>
+    </form>
+    </field>
+</record>
+</odoo>

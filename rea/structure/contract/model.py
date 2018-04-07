@@ -12,7 +12,7 @@ class Contract(models.Model):
     _description = "REA Contract"
     _inherit = ['rea.lifecycleable.entity',
                 'rea.identifiable.entity',
-                'rea.valuable.entity']
+                'rea.propertyable.entity']
 
     def _default_parties(self):
         """the relative company depends on the user
@@ -86,10 +86,10 @@ class ContractType(models.Model):
     _parent_name = 'type'
     _inherit = ['rea.identifiable.type',
                 'rea.lifecycleable.type',
-                'rea.valuable.type',
+                'rea.propertyable.type',
                 'rea.lifecycleable.entity',
                 'rea.identifiable.entity',
-                'rea.valuable.entity']
+                'rea.propertyable.entity']
     _parent_name = 'type'
 
     type = fields.Many2one(

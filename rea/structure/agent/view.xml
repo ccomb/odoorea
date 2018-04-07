@@ -20,18 +20,6 @@
                     <field name="groups" widget="many2many_tags"/>
                 </group>
                 <notebook>
-                    <page string="Identifiers">
-                        <group>
-                            <field name="type_identification" invisible="1"/>
-                        </group>
-                    </page>
-                    <page string="Values">
-                        <field name="type_valuation" invisible="1"/>
-                        <group>
-                            <group col="4">
-                            </group>
-                        </group>
-                    </page>
                 </notebook>
             </sheet>
             <div class="oe_chatter"></div>
