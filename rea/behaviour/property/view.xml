@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- VALUE FIELD SETUP -->
+    <!-- PROPERTY FIELD SETUP -->
     <record model="ir.ui.view" id="rea_property_field_form_view">
         <field name="name">rea.property.field.form</field>
         <field name="model">rea.property.field</field>
@@ -22,6 +22,7 @@
                                    context="{'model': context.model}"/>
                             <field name="expression" select="1"
                                 attrs="{'required': [('type','=','calc')]}"/>
+                            <field name="uom"/>
                             <field name="resolution"/>
                             <field name="next_compute"/>
                         </group>

@@ -45,6 +45,10 @@ class PropertyField(models.Model):
         "Created field",
         required=True,
         ondelete='restrict')
+    uom = fields.Many2one(
+        'rea.uom',
+        string="Unit",
+        help="(optional) unit expected")
     type = fields.Selection([
         ('konst', 'Constant'),
         ('calc', 'Calculation')])
@@ -81,12 +85,15 @@ class PropertyField(models.Model):
                 field = self.env['rea.property.field'].browse(field_id)
                 ent_type = self.env['%s.type' % obj.replace('_', '.')
                                     ].browse(ent_type_id)
-                value = field.compute(ent_type).to_compact()
+                value = field.compute(ent_type)
+                value = (value.to(ureg(field.uom.name))
+                         if field.uom else value.to_compact())
                 unit_id = self.env['rea.uom'].search(
                     [('name', '=', u'{:~P}'.format(value.units))]).id
                 if not unit_id:
-                    raise MissingError(u'Missing unit : {:~P}'
-                                       .format(value.units))
+                    unit_id = self.env['rea.uom'].create(
+                        {'name': u'{:~P}'.format(value.units),
+                         'description': u'{:P}'.format(value.units)}).id
                 ent_type.write({
                     field.field.name: value.magnitude,
                     'x_unit_%s' % field.field.name[2:]: unit_id})
@@ -107,6 +114,8 @@ class PropertyField(models.Model):
                 field = self.env['rea.property.field'].browse(field_id)
                 entity = self.env[obj.replace('_', '.')].browse(entity_id)
                 value = field.compute(entity).to_compact()
+                value = (value.to(ureg(field.uom.name))
+                         if field.uom else value.to_compact())
                 unit_id = self.env['rea.uom'].search(
                     [('name', '=', u'{:~P}'
                                    .format(value.units))]).id

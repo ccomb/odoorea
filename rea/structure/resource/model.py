@@ -91,3 +91,47 @@ class ResourceGroup(models.Model):
     group = fields.Many2one(
         'rea.resource.group',
         string="Group")
+
+
+class ConversionType(models.Model):
+    """ Type of a conversion between resource types
+    """
+    _name = 'rea.conversion.type'
+    _description = "Conversion Type"
+
+    name = fields.Char("Name")
+
+
+class Conversion(models.Model):
+    """ Conversion between two resource types with their uom
+    """
+    _name = 'rea.conversion'
+    _description = "Conversion Table for Units and resource_types"
+
+    type = fields.Many2one(
+        'rea.conversion.type')
+    from_qty = fields.Float("Quantity")
+    from_uom = fields.Many2one(
+        'rea.uom',
+        string="Unit")
+    from_restype = fields.Many2one(
+        'rea.resource.type',
+        string="Resource Type")
+    observables = fields.Many2many(
+        'rea.observable',
+        string="Observables")
+    expression = fields.Char(
+        "Expression",
+        help=("Python expression"))
+    resolution = fields.Float(
+        "Period",
+        help=u"Recompute the value at every period of time")
+    next_valuation = fields.Datetime(
+        "Next valuation date")  # TODO also add a last_valuation
+    to_qty = fields.Float("Quantity")
+    to_uom = fields.Many2one(
+        'rea.uom',
+        string="Unit")
+    to_restype = fields.Many2one(
+        'rea.resource.type',
+        string="Resource Type")
