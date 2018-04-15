@@ -175,7 +175,7 @@ class PropertyField(models.Model):
                     'name': field_name,
                     'field_description': vals.get('name'),
                     'ttype': 'float'}).id
-                # unit
+                # unit (uom)
                 fields.create({
                     'model': model,
                     'model_id': model_id,

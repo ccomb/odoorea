@@ -54,6 +54,7 @@ class Commitment(models.Model):
         help="Events fulfilling this commitment")
     quantity = fields.Float(
         string="Quantity")
+    # TODO uom ?
     resource_type = fields.Many2one(
         'rea.resource.type',
         domain="[('id', 'child_of', type_resource_types[0][2]),"

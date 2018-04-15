@@ -43,6 +43,13 @@ class ResourceType(models.Model):
                 'rea.identifiable.entity',
                 'rea.propertyable.entity']
 
+    def name_get(self):
+        result = []
+        for r in self:
+            result.append(
+                (r.id, u"%s %s" % (r.uom.name or '', r.name)))
+        return result
+
     type = fields.Many2one(
         'rea.resource.type',
         string="Type")
@@ -64,11 +71,6 @@ class ResourceType(models.Model):
     groups = fields.Many2many(
         'rea.resource.group',
         string="Groups")
-    quantity = fields.Float(
-        'Quantity',
-        default=1,
-        help=u"The unit quantity corresponding to this resource type."
-             u"Used for conversions")
     uom = fields.Many2one(
         'rea.uom',
         )
@@ -91,47 +93,3 @@ class ResourceGroup(models.Model):
     group = fields.Many2one(
         'rea.resource.group',
         string="Group")
-
-
-class ConversionType(models.Model):
-    """ Type of a conversion between resource types
-    """
-    _name = 'rea.conversion.type'
-    _description = "Conversion Type"
-
-    name = fields.Char("Name")
-
-
-class Conversion(models.Model):
-    """ Conversion between two resource types with their uom
-    """
-    _name = 'rea.conversion'
-    _description = "Conversion Table for Units and resource_types"
-
-    type = fields.Many2one(
-        'rea.conversion.type')
-    from_qty = fields.Float("Quantity")
-    from_uom = fields.Many2one(
-        'rea.uom',
-        string="Unit")
-    from_restype = fields.Many2one(
-        'rea.resource.type',
-        string="Resource Type")
-    observables = fields.Many2many(
-        'rea.observable',
-        string="Observables")
-    expression = fields.Char(
-        "Expression",
-        help=("Python expression"))
-    resolution = fields.Float(
-        "Period",
-        help=u"Recompute the value at every period of time")
-    next_valuation = fields.Datetime(
-        "Next valuation date")  # TODO also add a last_valuation
-    to_qty = fields.Float("Quantity")
-    to_uom = fields.Many2one(
-        'rea.uom',
-        string="Unit")
-    to_restype = fields.Many2one(
-        'rea.resource.type',
-        string="Resource Type")

@@ -115,7 +115,7 @@ class ValuationField(models.Model):
         model_id = models.search([('model', '=', model)])[0].id
         existing = fields.search([('model_id', '=', model_id),
                                   ('name', '=', field_name)])
-        rt_field_name = 'x_valueunit_%s' % field_name[8:]
+        rt_field_name = 'x_unit_%s' % field_name[2:]
         if existing:
             vals['field'] = existing[0].id
         else:
@@ -148,7 +148,7 @@ class ValuationField(models.Model):
             if not self.search([('field_name', '=', field.name),
                                 ('model', '=', field.model_id.id)]):
                 field.search([('model', '=', field.model),
-                              ('name', '=', 'x_valueunit_' + field.name[8:])]
+                              ('name', '=', 'x_unit_' + field.name[2:])]
                              ).unlink()
                 field.unlink()
 
@@ -217,7 +217,7 @@ class Valuable(models.AbstractModel):
                     'field',
                     name=field.field_name,
                     string=field.name)
-                field_name2 = 'x_valueunit_' + field.field_name[8:]
+                field_name2 = 'x_unit_' + field.field_name[2:]
                 xmlfield2 = etree.Element(
                     'field',
                     name=field_name2,

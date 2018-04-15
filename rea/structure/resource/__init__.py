@@ -1,4 +1,4 @@
-from . import model  # noqa
+from . import model, conversion  # noqa
 from os.path import join, dirname
 
 entity = model.__name__.split('.')[-2]

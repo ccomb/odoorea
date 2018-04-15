@@ -10,3 +10,4 @@ sandbox/
 rea/structure/.*/identifier.xml
 rea/structure/.*/lifecycle.xml
 rea/structure/.*/value.xml
+rea/structure/.*/property.xml

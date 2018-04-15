@@ -30,6 +30,7 @@
         'structure/resource/lifecycle.xml',
         'structure/resource/property.xml',
         'structure/resource/identifier.xml',
+        'structure/resource/conversion/view.xml',
         'structure/event/security.xml',
         'structure/event/view.xml',
         'structure/event/reconciliation/view.xml',
