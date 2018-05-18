@@ -255,11 +255,13 @@ class Identifiable(models.AbstractModel):
                 description = self.env[entity_model]._fields[
                     field.field_name].get_description(self.env)
                 fvg['fields'][field.field_name] = description
+                ident_id = field.identification.id
                 osv.orm.transfer_modifiers_to_node(
                     {'invisible': [
-                      ('type_identification', '!=', field.identification.id)],
+                      ('type_identification', '!=', ident_id)],
                      'readonly': field.generated,
-                     'required': field.mandatory},
+                     'required': (field.mandatory and
+                                  [('type_identification', '=', ident_id)])},
                     xmlfield)
             else:
                 pass

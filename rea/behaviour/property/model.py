@@ -287,10 +287,12 @@ class PropertyableEntity(models.AbstractModel):
                       ('type_propertyconfig', '!=', field.propertyconfig.id)],
                      'required': field.mandatory},
                     xmlfield)
+                conf_id = field.propertyconfig.id
                 osv.orm.transfer_modifiers_to_node(
                     {'invisible': [
-                      ('type_propertyconfig', '!=', field.propertyconfig.id)],
-                     'required': field.mandatory,
+                      ('type_propertyconfig', '!=', conf_id)],
+                     'required': (field.mandatory and
+                                  [('type_propertyconfig', '=', conf_id)]),
                      'readonly': field.type == 'calc'},
                     xmlfield2)
             else:
