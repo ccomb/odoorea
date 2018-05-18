@@ -29,6 +29,14 @@ class Resource(models.Model):
         'rea.commitment',
         string=u"Reserved by")
 
+    def name_get(self):
+        result = []
+        for r in self:
+            result.append(
+                (r.id, u"%s %s %s"
+                       % (r.quantity or '', r.type.name or '', r.name)))
+        return result
+
 
 class ResourceType(models.Model):
     """ Abstract definition of actual resources
