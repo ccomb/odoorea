@@ -173,9 +173,19 @@ class Identifiable(models.AbstractModel):
         for obj in self:
             obj.type_identification = obj.type.identification.id
 
+    @api.depends('type')
+    def _is_name_generated(self):
+        for obj in self:
+            name_fields = obj.type.identification.fields.search(
+                [('identification', '=', obj.type.identification.id),
+                 ('field_name', '=', 'name')])
+            obj.is_name_generated = name_fields and name_fields[0].generated
+
     type_identification = fields.Many2one(
         'rea.identification',
         compute=_get_identification)
+    is_name_generated = fields.Boolean(
+        compute=_is_name_generated)
 
     def update_vals(self, vals):
         """update the vals dict with generated fields
@@ -244,8 +254,8 @@ class Identifiable(models.AbstractModel):
             if field.field_name == 'name':
                 xmlfield = doc.xpath("//field[@name='name']")[0]
                 osv.orm.transfer_modifiers_to_node(
-                    {'readonly': field.generated},
-                    xmlfield)
+                       {'readonly': [('is_name_generated', '=', True)]
+                        }, xmlfield)
             elif field.field_name in self.env[entity_model]._fields:
                 xmlfield = etree.Element(
                     'field',

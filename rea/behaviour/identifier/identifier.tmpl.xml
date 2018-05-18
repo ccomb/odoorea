@@ -27,6 +27,7 @@
       <xpath expr="//notebook" position="inside">
           <page string="Identifiers">
             <group>
+              <field name="is_name_generated" invisible="1"/>
               <field name="type_identification" invisible="1"/>
             </group>
           </page>
@@ -41,6 +42,7 @@
         <xpath expr="//notebook" position="inside">
           <page string="Identifiers">
             <group>
+              <field name="is_name_generated" invisible="1"/>
               <field name="type_identification" invisible="1"/>
             </group>
           </page>
