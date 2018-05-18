@@ -58,6 +58,9 @@
         'behaviour/property/view.xml',
         'process/security.xml',
         'process/view.xml',
+        'process/lifecycle.xml',
+        'process/property.xml',
+        'process/identifier.xml',
         'base/res_users.xml',
     ],
     'demo': [

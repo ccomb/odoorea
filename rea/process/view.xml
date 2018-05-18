@@ -25,15 +25,8 @@
                         </tree>
                     </field>
                 </group>
-                <group string="Behaviours">
-                    <notebook>
-                        <page string="Identifiers">
-                          <group>
-                            <field name="type_identification" invisible="1"/>
-                          </group>
-                        </page>
-                    </notebook>
-                </group>
+                <notebook>
+                </notebook>
             </sheet>
             <div class="oe_chatter"></div>
         </form>
@@ -99,10 +92,13 @@
                 <group>
                     <field name="event_types"/>
                 </group>
-                <group string="Behaviours">
-                    <notebook>
-                    </notebook>
-                </group>
+                <notebook>
+                    <page name="behaviours" string="Behaviours">
+                        <group>
+                            <p>Here you can configure the behaviour of the entities of this type.</p>
+                        </group>
+                    </page>
+                </notebook>
             </sheet>
             <div class="oe_chatter"></div>
         </form>
@@ -147,29 +143,6 @@
     <field name="sequence" eval="10"/>
 </record>
 
-<!-- add an ident page in the notebooks -->
-<record model="ir.ui.view" id="rea_process_type_form_view_ident">
-    <field name="inherit_id" ref="rea.rea_process_type_form_view"/>
-    <field name="model">rea.process.type</field>
-    <field name="arch" type="xml">
-        <xpath expr="//notebook" position="inside">
-            <page string="Identification">
-                <group>
-                    <p>Here you can choose the numbering behaviour of the Processes of this type.</p>
-                </group>
-                <group>
-                    <field name="identification"
-                           context="{'model': 'rea.process.type', 'type_id': active_id}"/>
-                </group>
-            </page>
-            <page string="Identifiers">
-              <group>
-                <field name="type_identification" invisible="1"/>
-              </group>
-            </page>
-        </xpath>
-    </field>
-</record>
 
 <!-- PROCESS GROUP -->
 <record model="ir.ui.view" id="rea_process_group_form_view">

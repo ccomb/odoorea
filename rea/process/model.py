@@ -8,7 +8,9 @@ class Process(models.Model):
     """
     _name = 'rea.process'
     _description = 'Process'
-    _inherit = ['rea.identifiable.entity']
+    _inherit = ['rea.lifecycleable.entity',
+                'rea.identifiable.entity',
+                'rea.propertyable.entity']
 
     name = fields.Char(
         string="name",
@@ -42,7 +44,11 @@ class ProcessType(models.Model):
     _name = 'rea.process.type'
     _description = 'Process Type'
     _inherit = ['rea.identifiable.type',
-                'rea.identifiable.entity']
+                'rea.lifecycleable.type',
+                'rea.propertyable.type',
+                'rea.lifecycleable.entity',
+                'rea.identifiable.entity',
+                'rea.propertyable.entity']
 
     name = fields.Char(
         string="name",
