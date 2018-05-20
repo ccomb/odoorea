@@ -188,16 +188,17 @@
                     <field name="globalscope"/>
                 </group>
                 <notebook>
-                    <page string="Observables">
-                        <field name="observables" editable="bottom"/>
-                    </page>
                     <page string="Conditions">
                         <group>
-                            <field name="condition_resource_groups" widget="many2many_tags"/>
+                            <field name="condition_commitment_type"/>
                             <field name="condition_resource_type"/>
+                            <field name="condition_resource_groups" widget="many2many_tags"/>
                         </group>
                     </page>
                     <page string="Action">
+                        <group>
+                            <field name="observables" editable="bottom"/>
+                        </group>
                         <group>
                             <field name="expression"/>
                             <field name="commitment_type"/>
@@ -320,9 +321,9 @@
                 <!--field name="date" attrs="{'invisible': [('type','!=','days')]}"/-->
                 <field name="field"
                        domain="[('ttype','in',('integer','float')),('model','=',type)]"
-                       attrs="{'invisible': [('type','not in',('rea.commitment.field','rea.resource.type.field'))]}"/>
+                       attrs="{'invisible': [('type','not in',('rea.commitment','rea.resource.type'))]}"/>
                 <field name="resource_type"
-                       attrs="{'invisible': [('type', '!=', 'rea.resource.type')]}"/>
+                       attrs="{'invisible': [('type', '!=', 'model.rea.resource.type')]}"/>
             </group>
         </group>
     </form>

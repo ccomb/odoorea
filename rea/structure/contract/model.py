@@ -138,9 +138,9 @@ class Observable(models.Model):
         ('konst', 'Constant'),
         ('days', 'Days after'),
         ('time', 'Current Time'),
-        ('rea.commitment.field', 'Field of the Commitment'),
-        ('rea.resource.type.field', 'Field of the Resource Type'),
-        ('rea.resource.type', 'Resource Type')])
+        ('rea.commitment', 'Field of the Commitment'),
+        ('rea.resource.type', 'Field of the Resource Type'),
+        ('model.rea.resource.type', 'Resource Type')])
     konst = fields.Float("Value")
     date = fields.Date("Date")
     field = fields.Many2one(
@@ -158,11 +158,11 @@ class Observable(models.Model):
         """
         if self.type == 'konst':
             return self.konst
-        if self.type == 'rea.commitment.field':
+        if self.type == 'rea.commitment':
             return getattr(commitment, self.field.name)
-        if self.type == 'rea.resource.type.field':
-            return getattr(commitment.resource_type, self.field.name)
         if self.type == 'rea.resource.type':
+            return getattr(commitment.resource_type, self.field.name)
+        if self.type == 'model.rea.resource.type':
             return self.resource_type.id
         raise NotImplementedError
 
@@ -216,6 +216,10 @@ class ContractTerm(models.Model):
         'rea.resource.type',
         string='Resource type',
         help="This resource type must be used in the originating commitment.")
+    condition_commitment_type = fields.Many2one(
+        'rea.commitment.type',
+        string='Commitment type',
+        help="The originating commitment must be of this type.")
     commitment_type = fields.Many2one(
         'rea.commitment.type',
         string='Commitment type',
@@ -284,7 +288,12 @@ class Commitment(models.Model):
                 set(c.resource_type.groups
                     ).isdisjoint(set(term.condition_resource_groups))):
                     continue
-            if term.condition_resource_type and term.condition_resource_type not in c.resource_type.search([('id', 'parent_of', c.resource_type.id)]):
+            if (term.condition_commitment_type and
+               term.condition_commitment_type != c.type):
+                continue
+            if (term.condition_resource_type and term.condition_resource_type
+               not in c.resource_type.search(
+                   [('id', 'parent_of', c.resource_type.id)])):
                 continue
             term.execute(c)
         return c
