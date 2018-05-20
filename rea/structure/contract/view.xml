@@ -203,7 +203,6 @@
                             <field name="commitment_type"/>
                             <field name="provider"/>
                             <field name="receiver"/>
-                            <field name="resource_type"/>
                         </group>
                     </page>
                     <page string="Commitments">
