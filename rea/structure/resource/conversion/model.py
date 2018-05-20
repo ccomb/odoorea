@@ -1,4 +1,5 @@
-from odoo import fields, models
+from odoo import fields, models, api, _
+from odoo.exceptions import ValidationError
 
 
 class ConversionType(models.Model):
@@ -12,10 +13,11 @@ class ConversionType(models.Model):
 
 
 class Conversion(models.Model):
-    """ Conversion between two resource types with their uom
+    """ Conversion between two resource or resource types
+    with their uom
     """
     _name = 'rea.resource.conversion'
-    _description = "Conversion Table for Units and resource_types"
+    _description = "Resource Conversion Table"
 
     type = fields.Many2one(
         'rea.resource.conversion.type')
@@ -23,6 +25,9 @@ class Conversion(models.Model):
     from_restype = fields.Many2one(
         'rea.resource.type',
         string="Resource Type")
+    from_res = fields.Many2one(
+        'rea.resource',
+        string="Resource")
     kind = fields.Selection([
         ('konst', 'Constant'),
         ('calc', 'Calculation')],
@@ -44,3 +49,14 @@ class Conversion(models.Model):
     to_restype = fields.Many2one(
         'rea.resource.type',
         string="Resource Type")
+    to_res = fields.Many2one(
+        'rea.resource',
+        string="Resource")
+
+    @api.constrains('from_restype', 'from_res', 'to_restype', 'to_res')
+    @api.one
+    def _check_from(self):
+        if (self.from_restype and self.from_res
+           or self.to_restype and self.to_res):
+            raise ValidationError(
+                _("You cannot specify both a resource and a resource type"))

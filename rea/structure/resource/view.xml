@@ -23,6 +23,9 @@
                     <page string="Reserved by">
                         <field name="reserved" readonly="1"/>
                     </page>
+                    <page string="Conversions">
+                        <field name="conversions"/>
+                    </page>
                 </notebook>
             </sheet>
             <div class="oe_chatter"></div>
@@ -105,6 +108,9 @@
                         <group>
                             <p>Here you can configure the behaviour of the entities of this type.</p>
                         </group>
+                    </page>
+                    <page string="Conversions">
+                        <field name="conversions"/>
                     </page>
                 </notebook>
             </sheet>

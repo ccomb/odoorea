@@ -7,10 +7,13 @@
     <field name="priority" eval="8"/>
     <field name="arch" type="xml">
     <tree string="Conversion" editable="top">
+        <field name="type"/>
         <field name="from_qty"/>
         <field name="from_restype"/>
+        <field name="from_res"/>
         <field name="to_qty"/>
         <field name="to_restype"/>
+        <field name="to_res"/>
     </tree>
     </field>
 </record>
@@ -22,10 +25,13 @@
     <field name="priority" eval="8"/>
     <field name="arch" type="xml">
     <form string="Conversion">
+        <field name="type"/>
         <field name="from_qty"/>
         <field name="from_restype"/>
+        <field name="from_res"/>
         <field name="to_qty"/>
         <field name="to_restype"/>
+        <field name="to_res"/>
     </form>
     </field>
 </record>

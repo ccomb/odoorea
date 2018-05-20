@@ -28,6 +28,10 @@ class Resource(models.Model):
     reserved = fields.Many2many(
         'rea.commitment',
         string=u"Reserved by")
+    conversions = fields.One2many(
+        'rea.resource.conversion',
+        'from_res',
+        "Conversions")
 
     def name_get(self):
         result = []
@@ -83,6 +87,10 @@ class ResourceType(models.Model):
         'rea.uom',
         )
     # TODO recursive with parent?
+    conversions = fields.One2many(
+        'rea.resource.conversion',
+        'from_restype',
+        "Conversions")
 
 
 class ResourceGroup(models.Model):
