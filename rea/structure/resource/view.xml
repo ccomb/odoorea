@@ -24,7 +24,9 @@
                         <field name="reserved" readonly="1"/>
                     </page>
                     <page string="Conversions">
-                        <field name="conversions"/>
+                        <field name="conversions" context="{
+                            'default_from_res': active_id,
+                            'default_from_qty': 1}"/>
                     </page>
                 </notebook>
             </sheet>
@@ -110,7 +112,9 @@
                         </group>
                     </page>
                     <page string="Conversions">
-                        <field name="conversions"/>
+                        <field name="conversions" context="{
+                            'default_from_restype': active_id,
+                            'default_from_qty': 1}"/>
                     </page>
                 </notebook>
             </sheet>
