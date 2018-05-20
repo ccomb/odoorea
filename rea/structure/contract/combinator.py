@@ -7,11 +7,11 @@ def Zero():
     return contract
 
 
-def One(resource_type):
+def One(rt):
     def contract(now, provider, receiver):
         # TODO move to the contract, return 1 instead
         return [{
-            'resource_type': resource_type,
+            'resource_type': rt,
             'quantity': 1,
             'acquisition_date': now,
             'horizon': 0,

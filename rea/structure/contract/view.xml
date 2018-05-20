@@ -193,8 +193,8 @@
                     </page>
                     <page string="Conditions">
                         <group>
-                            <field name="resource_groups" widget="many2many_tags"/>
-                            <field name="resource_type"/>
+                            <field name="condition_resource_groups" widget="many2many_tags"/>
+                            <field name="condition_resource_type"/>
                         </group>
                     </page>
                     <page string="Action">
@@ -203,6 +203,7 @@
                             <field name="commitment_type"/>
                             <field name="provider"/>
                             <field name="receiver"/>
+                            <field name="resource_type"/>
                         </group>
                     </page>
                     <page string="Commitments">
@@ -320,7 +321,9 @@
                 <!--field name="date" attrs="{'invisible': [('type','!=','days')]}"/-->
                 <field name="field"
                        domain="[('ttype','in',('integer','float')),('model','=',type)]"
-                       attrs="{'invisible': [('type','not in',('rea.commitment','rea.resource.type'))]}"/>
+                       attrs="{'invisible': [('type','not in',('rea.commitment.field','rea.resource.type.field'))]}"/>
+                <field name="resource_type"
+                       attrs="{'invisible': [('type', '!=', 'rea.resource.type')]}"/>
             </group>
         </group>
     </form>
