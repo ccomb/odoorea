@@ -163,7 +163,7 @@ class Observable(models.Model):
         if self.type == 'rea.resource.type.field':
             return getattr(commitment.resource_type, self.field.name)
         if self.type == 'rea.resource.type':
-            return self.resource_type
+            return self.resource_type.id
         raise NotImplementedError
 
 
@@ -259,7 +259,7 @@ class ContractTerm(models.Model):
             for c in commitments:
                 if not c:
                     continue
-                if self.env.context.get('term_execution') == t.id:
+                if self.env.context.get('executing_term') == t.id:
                     # avoid infinite recursion
                     continue
                 #c['date'] = c['acquisition_date']
@@ -267,10 +267,9 @@ class ContractTerm(models.Model):
                 c['type'] = t.commitment_type.id
                 c['provider'] = t.provider.id
                 c['receiver'] = t.receiver.id
-                c['resource_type'] = t.resource_type.id
                 print(c)
                 c = self.env['rea.commitment'].with_context(
-                    {'term_execution': t.id}).create(c)
+                    {'executing_term': t.id}).create(c)
                 t.write({'commitments': [(4, c.id)]})
 
 # TODO ClauseType ??
