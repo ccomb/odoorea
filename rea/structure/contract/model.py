@@ -130,9 +130,9 @@ class Observable(models.Model):
     _name = 'rea.contract.observable'
     _description = "Observable for contracts"
 
-    sequence = fields.Integer("Sequence")
     name = fields.Char(
         "Name",
+        required=True,
         help="Name of the variable used in the expression of the action")
     type = fields.Selection([
         ('konst', 'Constant'),
@@ -140,7 +140,8 @@ class Observable(models.Model):
         ('time', 'Current Time'),
         ('rea.commitment', 'Field of the Commitment'),
         ('rea.resource.type', 'Field of the Resource Type'),
-        ('model.rea.resource.type', 'Resource Type')])
+        ('model.rea.resource.type', 'Resource Type'),
+        ('rea.resource.conversion', 'Resource Conversion')])
     konst = fields.Float("Value")
     date = fields.Date("Date")
     field = fields.Many2one(
@@ -152,6 +153,17 @@ class Observable(models.Model):
     resource_type = fields.Many2one(
         'rea.resource.type',
         "Resource type")
+    conversion = fields.Many2one(
+        'rea.resource.conversion',
+        "Conversion")
+    term_resource_type = fields.Many2one(
+        'rea.resource.type',
+        compute='_term_resource_type')
+
+    @api.depends('term')
+    def _term_resource_type(self):
+        for o in self:
+            o.term_resource_type = o.term.condition_resource_type
 
     def value(self, commitment):
         """ get the value of the observable
@@ -164,6 +176,8 @@ class Observable(models.Model):
             return getattr(commitment.resource_type, self.field.name)
         if self.type == 'model.rea.resource.type':
             return self.resource_type.id
+        if self.type == 'rea.resource.conversion':
+            return self.conversion.to_qty
         raise NotImplementedError
 
 

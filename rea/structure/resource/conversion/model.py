@@ -1,3 +1,4 @@
+# encoding: utf-8
 from odoo import fields, models, api, _
 from odoo.exceptions import ValidationError
 
@@ -20,7 +21,8 @@ class Conversion(models.Model):
     _description = "Resource Conversion Table"
 
     type = fields.Many2one(
-        'rea.resource.conversion.type')
+        'rea.resource.conversion.type',
+        required=True)
     from_qty = fields.Float("Quantity")
     from_restype = fields.Many2one(
         'rea.resource.type',
@@ -52,6 +54,16 @@ class Conversion(models.Model):
     to_res = fields.Many2one(
         'rea.resource',
         string="Resource")
+
+    def name_get(self):
+        result = []
+        for c in self:
+            result.append(
+                (c.id, u"%s: %s (%s)"
+                 % (c.from_restype.name or c.from_res.name,
+                    c.type.name,
+                    c.to_restype.name or c.to_res.name)))
+        return result
 
     @api.constrains('from_restype', 'from_res', 'to_restype', 'to_res')
     @api.one

@@ -324,6 +324,10 @@
                        attrs="{'invisible': [('type','not in',('rea.commitment','rea.resource.type'))]}"/>
                 <field name="resource_type"
                        attrs="{'invisible': [('type', '!=', 'model.rea.resource.type')]}"/>
+                <field name="conversion"
+                       domain="[('from_restype', 'child_of', term_resource_type)]"
+                       attrs="{'invisible': [('type','!=','rea.resource.conversion')]}"/>
+                <field name="term_resource_type" invisible="1"/>
             </group>
         </group>
     </form>
