@@ -256,9 +256,13 @@ class ContractTerm(models.Model):
             for c in commitments:
                 if not c:
                     continue
-                if self.env.context.get('executing_term') == t.id:
+                executing = self.env.context.get('executing_terms')
+                executing = [] if executing is None else executing.split(':')
+                if str(t.id) in executing:
                     # avoid infinite recursion
                     continue
+                else:
+                    executing.append(str(t.id))
                 #c['date'] = c['acquisition_date']
                 c['contract'] = commitment.contract.id
                 c['type'] = t.commitment_type.id
@@ -266,7 +270,8 @@ class ContractTerm(models.Model):
                 c['receiver'] = t.receiver.id
                 print(c)
                 c = self.env['rea.commitment'].with_context(
-                    {'executing_term': t.id}).create(c)
+                    {'executing_terms':
+                     ':'.join({str(i) for i in executing})}).create(c)
                 t.write({'commitments': [(4, c.id)]})
 
 # TODO ClauseType ??
