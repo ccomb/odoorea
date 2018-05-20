@@ -308,10 +308,14 @@
     <form string="Observable">
         <group>
             <group>
-                <field name="name" select="1"/>
-                <field name="type"/>
+                <div class="oe_title">
+                    <h1><field name="name" select="1"/></h1>
+                </div>
             </group>
+        </group>
+        <group>
             <group>
+                <field name="type"/>
                 <field name="konst"
                        attrs="{'invisible': [('type','!=','konst')]}"/>
                 <!--field name="date" attrs="{'invisible': [('type','!=','days')]}"/-->
