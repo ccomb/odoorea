@@ -141,7 +141,7 @@ class Observable(models.Model):
         ('rea.commitment', 'Field of the Commitment'),
         ('rea.resource.type', 'Field of the Resource Type'),
         ('model.rea.resource.type', 'Resource Type'),
-        ('rea.resource.conversion', 'Resource Conversion')])
+        ('rea.resource.conversion.type', 'Resource Conversion')])
     konst = fields.Float("Value")
     date = fields.Date("Date")
     field = fields.Many2one(
@@ -153,12 +153,9 @@ class Observable(models.Model):
     resource_type = fields.Many2one(
         'rea.resource.type',
         "Resource type")
-    conversion = fields.Many2one(
-        'rea.resource.conversion',
-        "Conversion")
-    term_resource_type = fields.Many2one(
-        'rea.resource.type',
-        compute='_term_resource_type')
+    conversion_type = fields.Many2one(
+        'rea.resource.conversion.type',
+        "Conversion Type")
 
     @api.depends('term')
     def _term_resource_type(self):
@@ -176,8 +173,10 @@ class Observable(models.Model):
             return getattr(commitment.resource_type, self.field.name)
         if self.type == 'model.rea.resource.type':
             return self.resource_type.id
-        if self.type == 'rea.resource.conversion':
-            return self.conversion.to_qty
+        if self.type == 'rea.resource.conversion.type':
+            conversion = self.env['rea.resource.conversion']
+            return conversion.convert(
+                self.conversion_type, commitment.resource_type)
         raise NotImplementedError
 
 
@@ -266,7 +265,6 @@ class ContractTerm(models.Model):
                                      lcls)
             commitments = contract_function(
                 strftime('%Y-%m-%d %H:%M:%S'), t.provider, t.receiver)
-            print(commitments)
             for c in commitments:
                 if not c:
                     continue
@@ -282,7 +280,6 @@ class ContractTerm(models.Model):
                 c['type'] = t.commitment_type.id
                 c['provider'] = t.provider.id
                 c['receiver'] = t.receiver.id
-                print(c)
                 c = self.env['rea.commitment'].with_context(
                     {'executing_terms':
                      ':'.join({str(i) for i in executing})}).create(c)

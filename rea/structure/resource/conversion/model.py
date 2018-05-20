@@ -55,6 +55,13 @@ class Conversion(models.Model):
         'rea.resource',
         string="Resource")
 
+    _sql_contraint = [
+        ('unique_resource_type_conversion', 'unique(type, from_restype)',
+         'You can create only one conversion of a resource type'),
+        ('unique_resource_conversion', 'unique(type, from_res)',
+         'You can create only one conversion of a resource')
+    ]
+
     def name_get(self):
         result = []
         for c in self:
@@ -72,3 +79,11 @@ class Conversion(models.Model):
            or self.to_restype and self.to_res):
             raise ValidationError(
                 _("You cannot specify both a resource and a resource type"))
+
+    def convert(self, conversion_type, resource_type):
+        """Convert the resource type using the conversion table
+        """
+        # TODO add a convert with a date range or other condition
+        c = self.search([('type', '=', conversion_type.id),
+                         ('from_restype', '=', resource_type.id)])
+        return c[0].to_qty / c[0].from_qty if c else 0
