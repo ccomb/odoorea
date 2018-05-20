@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<record id="view_rea_conversion_tree" model="ir.ui.view">
-    <field name="name">rea.conversion.tree</field>
-    <field name="model">rea.conversion</field>
+<record id="view_rea_resource_conversion_tree" model="ir.ui.view">
+    <field name="name">rea.resource.conversion.tree</field>
+    <field name="model">rea.resource.conversion</field>
     <field name="type">tree</field>
     <field name="priority" eval="8"/>
     <field name="arch" type="xml">
@@ -15,9 +15,9 @@
     </field>
 </record>
 
-<record id="view_rea_conversion_form" model="ir.ui.view">
-    <field name="name">rea.conversion.form</field>
-    <field name="model">rea.conversion</field>
+<record id="view_rea_resource_conversion_form" model="ir.ui.view">
+    <field name="name">rea.resource.conversion.form</field>
+    <field name="model">rea.resource.conversion</field>
     <field name="type">form</field>
     <field name="priority" eval="8"/>
     <field name="arch" type="xml">
@@ -30,9 +30,9 @@
     </field>
 </record>
 
-<record id="view_rea_conversion_search" model="ir.ui.view">
-    <field name="name">rea.conversion.search</field>
-    <field name="model">rea.conversion</field>
+<record id="view_rea_resource_conversion_search" model="ir.ui.view">
+    <field name="name">rea.resource.conversion.search</field>
+    <field name="model">rea.resource.conversion</field>
     <field name="type">search</field>
     <field name="priority" eval="8"/>
     <field name="arch" type="xml">
@@ -43,32 +43,32 @@
     </field>
 </record>
 
-<record model="ir.actions.act_window" id="act_open_rea_conversion_view">
+<record model="ir.actions.act_window" id="act_open_rea_resource_conversion_view">
     <field name="name">Resource Conversion</field>
     <field name="type">ir.actions.act_window</field>
-    <field name="res_model">rea.conversion</field>
+    <field name="res_model">rea.resource.conversion</field>
     <field name="view_mode">tree,form</field>
-    <field name="search_view_id" ref="view_rea_conversion_search"/>
+    <field name="search_view_id" ref="view_rea_resource_conversion_search"/>
     <field name="domain">[]</field>
     <field name="context">{}</field>
 </record>
 
-<record model="ir.actions.act_window.view" id="act_open_rea_conversion_view_form">
-    <field name="act_window_id" ref="act_open_rea_conversion_view"/>
+<record model="ir.actions.act_window.view" id="act_open_rea_resource_conversion_view_form">
+    <field name="act_window_id" ref="act_open_rea_resource_conversion_view"/>
     <field name="sequence" eval="20"/>
     <field name="view_mode">form</field>
-    <field name="view_id" ref="view_rea_conversion_form"/>
+    <field name="view_id" ref="view_rea_resource_conversion_form"/>
 </record>
 
-<record model="ir.actions.act_window.view" id="act_open_rea_conversion_view_tree">
-    <field name="act_window_id" ref="act_open_rea_conversion_view"/>
+<record model="ir.actions.act_window.view" id="act_open_rea_resource_conversion_view_tree">
+    <field name="act_window_id" ref="act_open_rea_resource_conversion_view"/>
     <field name="sequence" eval="10"/>
     <field name="view_mode">tree</field>
-    <field name="view_id" ref="view_rea_conversion_tree"/>
+    <field name="view_id" ref="view_rea_resource_conversion_tree"/>
 </record>
 
-<menuitem id="menu_rea_conversion"
+<menuitem id="menu_rea_resource_conversion"
     parent="menu_resources"
     sequence="20"
-    action="act_open_rea_conversion_view"/>
+    action="act_open_rea_resource_conversion_view"/>
 </odoo>

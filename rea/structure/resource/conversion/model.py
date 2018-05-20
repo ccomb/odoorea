@@ -5,7 +5,7 @@ class ConversionType(models.Model):
     """ Type of a value between resource types
     public price, retailer price, exchange rate, etc.
     """
-    _name = 'rea.conversion.type'
+    _name = 'rea.resource.conversion.type'
     _description = "Conversion Type"
 
     name = fields.Char("Name")
@@ -14,11 +14,11 @@ class ConversionType(models.Model):
 class Conversion(models.Model):
     """ Conversion between two resource types with their uom
     """
-    _name = 'rea.conversion'
+    _name = 'rea.resource.conversion'
     _description = "Conversion Table for Units and resource_types"
 
     type = fields.Many2one(
-        'rea.conversion.type')
+        'rea.resource.conversion.type')
     from_qty = fields.Float("Quantity")
     from_restype = fields.Many2one(
         'rea.resource.type',
