@@ -124,15 +124,6 @@ class Commitment(models.Model):
             commitment = c.read()
             self.env['rea.event'].create(commitment)
 
-    def unlink(self):
-        for c in self:
-            if (c.state == 'draft'
-                    or (c.state == 'canceled' and c.type.allow_delete)):
-                super(Commitment, c).unlink()
-            else:
-                raise ValidationError(
-                    u"Commitment {} cannot be deleted".format(c.name))
-
 
 class CommitmentType(models.Model):
     """ Astract definition of actual commitments
@@ -185,9 +176,6 @@ class CommitmentType(models.Model):
     autofulfill = fields.Boolean(  # TODO
         u"Automatic",
         help=u"Automatically fulfill to events at due date")
-    allow_delete = fields.Boolean(
-        u"Allow to delete",
-        help=u"Allow to delete canceled commitments")
 
 
 class CommitmentGroup(models.Model):

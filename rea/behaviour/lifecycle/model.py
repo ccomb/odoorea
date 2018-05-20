@@ -78,6 +78,10 @@ class Step(models.Model):
     # - missing value on other field
     # - specific value_id on other m2o field
     # - group of the user, etc...
+    forbid_deletion = fields.Boolean(
+        u"Forbid deletion",
+        default=False,
+        help=u"Forbid to delete the entity at this step")
 
 
 class Transition(models.Model):
@@ -247,6 +251,16 @@ class Lifecycleable(models.AbstractModel):
     def _get_lifecycle(self):
         for entity in self:
             entity.type_lifecycle = entity.type.lifecycle
+
+    def unlink(self):
+        for e in self:
+            if e.step.forbid_deletion:
+                raise ValidationError(
+                    u"Entity ({}) cannot be deleted "
+                    u"because its current step ({}) forbids it"
+                    .format(e.name, e.step.name))
+            else:
+                super(Lifecycleable, e).unlink()
 
     type_lifecycle = fields.Many2one(
         'rea.lifecycle',

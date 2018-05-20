@@ -68,15 +68,6 @@ class Contract(models.Model):
     validity = fields.Date(
         string="Valid until")
 
-    def unlink(self):
-        for c in self:
-            if (not c.step or c.step.state == 'draft'
-                    or c.step.state == 'canceled' and c.type.allow_delete):
-                super(Contract, c).unlink()
-            else:
-                raise ValidationError(
-                    u"Contract {} cannot be deleted".format(c.name))
-
 
 class ContractType(models.Model):
     """ Abstract definition of actual contracts
