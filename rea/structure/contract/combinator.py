@@ -36,6 +36,8 @@ def And(cs1, cs2):
 def Scale(obs, cs):
     def contract(now, provider, receiver):
         result = []
+        if not obs:
+            return result
         for c in cs(now, provider, receiver):
             c['quantity'] *= obs
             result.append(c)
