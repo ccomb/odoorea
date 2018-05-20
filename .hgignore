@@ -9,5 +9,8 @@ sandbox/
 .*\.pyc$
 rea/structure/.*/identifier.xml
 rea/structure/.*/lifecycle.xml
-rea/structure/.*/value.xml
 rea/structure/.*/property.xml
+rea/process/identifier.xml
+rea/process/lifecycle.xml
+rea/process/property.xml
+trash/
