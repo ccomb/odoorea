@@ -55,7 +55,7 @@ class Conversion(models.Model):
         'rea.resource',
         string="Resource")
 
-    _sql_contraint = [
+    _sql_contraints = [
         ('unique_resource_type_conversion', 'unique(type, from_restype)',
          'You can create only one conversion of a resource type'),
         ('unique_resource_conversion', 'unique(type, from_res)',
