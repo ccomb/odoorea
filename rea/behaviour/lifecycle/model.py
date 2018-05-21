@@ -192,10 +192,9 @@ class Lifecycleable(models.AbstractModel):
         if 'step' in values:
             for entity in self:
                 for field in entity.type.subobjects:
-                    for subobj in getattr(entity, field.name):
-                        subobj.with_context(
-                            {'lifecycle_no_transition_fail': True}
-                            ).write({'step': values['step']})
+                    getattr(entity, field.name).with_context(
+                        {'lifecycle_no_transition_fail': True}
+                        ).write({'step': values['step']})
         return result
 
     @api.model
