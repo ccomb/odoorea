@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+<!-- RESOURCE CONVERSION TABLE -->
 <record id="view_rea_resource_conversion_tree" model="ir.ui.view">
     <field name="name">rea.resource.conversion.tree</field>
     <field name="model">rea.resource.conversion</field>
@@ -50,7 +51,7 @@
 </record>
 
 <record model="ir.actions.act_window" id="act_open_rea_resource_conversion_view">
-    <field name="name">Resource Conversion</field>
+    <field name="name">Conversion Table</field>
     <field name="type">ir.actions.act_window</field>
     <field name="res_model">rea.resource.conversion</field>
     <field name="view_mode">tree,form</field>
@@ -73,8 +74,68 @@
     <field name="view_id" ref="view_rea_resource_conversion_tree"/>
 </record>
 
-<menuitem id="menu_rea_resource_conversion"
+<menuitem id="menu_rea_resource_conversions"
     parent="menu_resources"
+    sequence="100"
+    name="Resource Conversion"/>
+
+<menuitem id="menu_rea_resource_conversion"
+    parent="menu_rea_resource_conversions"
     sequence="20"
     action="act_open_rea_resource_conversion_view"/>
+
+
+<!-- RESOURCE CONVERSION TYPES -->
+<record id="view_rea_resource_conversion_type_tree" model="ir.ui.view">
+    <field name="name">rea.resource.conversion.type.tree</field>
+    <field name="model">rea.resource.conversion.type</field>
+    <field name="type">tree</field>
+    <field name="priority" eval="8"/>
+    <field name="arch" type="xml">
+    <tree string="Conversion Types">
+        <field name="name"/>
+    </tree>
+    </field>
+</record>
+
+<record id="view_rea_resource_conversion_type_form" model="ir.ui.view">
+    <field name="name">rea.resource.conversion.type.form</field>
+    <field name="model">rea.resource.conversion.type</field>
+    <field name="type">form</field>
+    <field name="priority" eval="8"/>
+    <field name="arch" type="xml">
+    <form string="Conversion Types">
+        <field name="name" select="1"/>
+    </form>
+    </field>
+</record>
+
+<record model="ir.actions.act_window" id="act_open_rea_resource_conversion_type_view">
+    <field name="name">Conversion Types</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">rea.resource.conversion.type</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+</record>
+
+<record model="ir.actions.act_window.view" id="act_open_rea_resource_conversion_type_view_form">
+    <field name="act_window_id" ref="act_open_rea_resource_conversion_type_view"/>
+    <field name="sequence" eval="20"/>
+    <field name="view_mode">form</field>
+    <field name="view_id" ref="view_rea_resource_conversion_type_form"/>
+</record>
+
+<record model="ir.actions.act_window.view" id="act_open_rea_resource_conversion_type_view_tree">
+    <field name="act_window_id" ref="act_open_rea_resource_conversion_type_view"/>
+    <field name="sequence" eval="10"/>
+    <field name="view_mode">tree</field>
+    <field name="view_id" ref="view_rea_resource_conversion_type_tree"/>
+</record>
+
+<menuitem id="menu_rea_resource_conversion_type"
+    parent="menu_rea_resource_conversions"
+    sequence="21"
+    action="act_open_rea_resource_conversion_type_view"/>
 </odoo>
