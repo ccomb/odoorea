@@ -262,9 +262,15 @@ class ContractTerm(models.Model):
                 lcls[c] = getattr(combinator, c)
             # TODO memoize and use a resolution (day, minute, etc.)
             # to avoid recreating the commitment at each term execution
-            contract_function = eval(t.expression,
-                                     {"__builtins__": {}},
-                                     lcls)
+            try:
+                contract_function = eval(t.expression,
+                                         {"__builtins__": {}},
+                                         lcls)
+            except Exception as e:
+                raise ValidationError(
+                    "The contract \"%s\" has an error in the expression used"
+                    " in the term \"%s\":\n\n%s\n\nThe error is: %s"
+                    % (t.contract.name, t.name, t.expression, str(e)))
             commitments = contract_function(
                 strftime('%Y-%m-%d %H:%M:%S'), t.provider, t.receiver)
             for c in commitments:
