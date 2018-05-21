@@ -38,7 +38,8 @@ class Contract(models.Model):
     type = fields.Many2one(
         'rea.contract.type',
         required=True,
-        string="Type")
+        string="Type",
+        ondelete='restrict')
     groups = fields.Many2many(
         'rea.commitment.group',
         string="Groups")
@@ -85,7 +86,8 @@ class ContractType(models.Model):
 
     type = fields.Many2one(
         'rea.contract.type',
-        string="Type")
+        string="Type",
+        ondelete='restrict')
     structural = fields.Boolean(
         'Structural type?',
         help="Hide in operational choices?")

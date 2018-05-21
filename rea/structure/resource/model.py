@@ -21,7 +21,8 @@ class Resource(models.Model):
         help=u"The quantity of the specified type")
     type = fields.Many2one(
         'rea.resource.type',
-        string="Type")
+        string="Type",
+        ondelete='restrict')
     groups = fields.Many2many(
         'rea.resource.group',
         string="Groups")
@@ -64,7 +65,8 @@ class ResourceType(models.Model):
 
     type = fields.Many2one(
         'rea.resource.type',
-        string="Type")
+        string="Type",
+        ondelete='restrict')
     subtypes = fields.One2many(
         'rea.resource.type',
         'type',

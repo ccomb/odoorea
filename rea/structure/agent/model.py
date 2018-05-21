@@ -38,7 +38,8 @@ class AgentType(models.Model):
 
     type = fields.Many2one(
         'rea.agent.type',
-        string="Type")
+        string="Type",
+        ondelete='restrict')
     subtypes = fields.One2many(
         'rea.agent.type',
         'type',

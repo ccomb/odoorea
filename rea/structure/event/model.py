@@ -20,7 +20,8 @@ class Event(models.Model):
     )
     type = fields.Many2one(
         'rea.event.type',
-        string="Type")
+        string="Type",
+        ondelete='restrict')
     state = fields.Many2one(
         'rea.event.state',
         string="State")
@@ -110,7 +111,8 @@ class EventType(models.Model):
 
     type = fields.Many2one(
         'rea.event.type',
-        string="Type")
+        string="Type",
+        ondelete='restrict')
     subtypes = fields.One2many(
         'rea.event.type',
         'type',
