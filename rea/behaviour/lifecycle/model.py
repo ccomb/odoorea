@@ -183,6 +183,8 @@ class Lifecycleable(models.AbstractModel):
                     ('target', '=', values['step']),
                     ('lifecycle', '=', entity.type.lifecycle.id)])
                 if not valid_transitions and entity.step:
+                    if self.env.context.get('lifecycle_no_transition_fail'):
+                        continue
                     raise UserError(
                         _("Warning: {} \"{}\" has no transitions to this step"
                           .format(entity._description, entity.name)))
@@ -191,7 +193,9 @@ class Lifecycleable(models.AbstractModel):
             for entity in self:
                 for field in entity.type.subobjects:
                     for subobj in getattr(entity, field.name):
-                        subobj.write({'step': values['step']})
+                        subobj.with_context(
+                            {'lifecycle_no_transition_fail': True}
+                            ).write({'step': values['step']})
         return result
 
     @api.model
@@ -244,10 +248,14 @@ class Lifecycleable(models.AbstractModel):
             values['step'] = type.get_first_step()
         return super(Lifecycleable, self).create(values)
 
+    @api.multi
+    @api.depends('step')
     def _get_state(self):
         for e in self:
             e.state = e.step.state
 
+    @api.multi
+    @api.depends('type')
     def _get_lifecycle(self):
         for entity in self:
             entity.type_lifecycle = entity.type.lifecycle
@@ -274,6 +282,7 @@ class Lifecycleable(models.AbstractModel):
         domain="[('lifecycle','=',type_lifecycle)]")
     state = fields.Char(
         'state',
+        store=True,
         compute=_get_state)
 
 
