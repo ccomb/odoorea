@@ -22,7 +22,7 @@ def One(rt):
 
 def Give(cs):
     def contract(now, provider, receiver):
-        return [c(now, receiver, provider) for c in cs]
+        return [c for c in cs(now, receiver, provider)]
     return contract
 
 
