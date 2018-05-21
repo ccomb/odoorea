@@ -21,6 +21,7 @@ class Commitment(models.Model):
                         and self.type.provider_type in agent.type.search(
                         [('id', 'parent_of', agent.type.id)])):
                     return agent
+        return self.contract.parties.browse(False)
 
     def _default_receiver(self):
         for agent in self.contract.parties:
@@ -32,6 +33,7 @@ class Commitment(models.Model):
                         and self.type.receiver_type in agent.type.search(
                         [('id', 'parent_of', agent.type.id)])):
                     return agent
+        return self.contract.parties.browse(False)
 
     name = fields.Char(
         string="name",

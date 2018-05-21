@@ -222,6 +222,7 @@ class ContractTerm(models.Model):
     provider_choice = fields.Selection([
         ('commitment', "Same as the source commitment"),
         ('contract', "Same as the source contract (not implemented yet)"),
+        ('default', "Default provider of the commitment"),
         ('select', "Select...")
     ])
     provider = fields.Many2one(
@@ -232,6 +233,7 @@ class ContractTerm(models.Model):
     receiver_choice = fields.Selection([
         ('commitment', "Same as the source commitment"),
         ('contract', "Same as the source contract (not implemented yet)"),
+        ('default', "Default receiver of the commitment"),
         ('select', "Select...")
     ])
     receiver = fields.Many2one(
@@ -286,10 +288,14 @@ class ContractTerm(models.Model):
             provider_id = (
                 commitment.provider.id if t.provider_choice == 'commitment'
                 else NotImplemented if t.provider_choice == 'contract'
+                else commitment._default_provider().id or t.provider.id
+                if t.provider_choice == 'default'
                 else t.provider.id)
             receiver_id = (
                 commitment.receiver.id if t.receiver_choice == 'commitment'
                 else NotImplemented if t.receiver_choice == 'contract'
+                else commitment._default_receiver().id or t.receiver.id
+                if t.receiver_choice == 'default'
                 else t.receiver.id)
             commitments = contract_function(
                 strftime('%Y-%m-%d %H:%M:%S'), provider_id, receiver_id)
