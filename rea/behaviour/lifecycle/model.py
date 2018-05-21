@@ -243,7 +243,7 @@ class Lifecycleable(models.AbstractModel):
     def create(self, values):
         """select the default step
         """
-        if not values.get('step'):
+        if 'type' in values and 'step' not in values:
             type = self.type.browse(values['type'])
             values['step'] = type.get_first_step()
         return super(Lifecycleable, self).create(values)
