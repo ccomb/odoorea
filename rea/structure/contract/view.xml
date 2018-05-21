@@ -202,8 +202,12 @@
                         <group>
                             <field name="expression"/>
                             <field name="commitment_type"/>
-                            <field name="provider"/>
-                            <field name="receiver"/>
+                            <field name="provider_choice"/>
+                            <field name="provider"
+                                   attrs="{'invisible': [('provider_choice', '!=', 'select')]}"/>
+                            <field name="receiver_choice"/>
+                            <field name="receiver"
+                                   attrs="{'invisible': [('receiver_choice', '!=', 'select')]}"/>
                         </group>
                     </page>
                     <page string="Commitments">
