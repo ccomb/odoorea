@@ -159,6 +159,9 @@
             <field name="name"/>
             <field name="type"/>
             <field name="kind"/>
+            <field name="contract_type"/>
+            <field name="provider_type"/>
+            <field name="receiver_type"/>
         </tree>
     </field>
 </record>

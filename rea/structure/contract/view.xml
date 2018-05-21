@@ -190,8 +190,8 @@
                 <notebook>
                     <page string="Conditions">
                         <group>
-                            <field name="condition_commitment_type"/>
-                            <field name="condition_resource_type"/>
+                            <field name="condition_commitment_types" widget="many2many_tags"/>
+                            <field name="condition_resource_types" widget="many2many_tags"/>
                             <field name="condition_resource_groups" widget="many2many_tags"/>
                         </group>
                     </page>
