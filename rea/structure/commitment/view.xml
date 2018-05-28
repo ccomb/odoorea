@@ -73,7 +73,7 @@
         <tree>
             <field name="type"/>
             <field name="name"/>
-            <field name="contract"/>
+            <field name="contract" invisible="context.get('hide_contract')"/>
             <field name="date"/>
             <field name="provider"/>
             <field name="receiver"/>

@@ -31,7 +31,7 @@
                 </group>
                 <notebook>
                     <page string="Clauses">
-                        <field name="clauses"/>
+                        <field name="clauses" context="{'hide_contract': 1}" />
                     </page>
                     <page string="Terms">
                         <field name="terms">
