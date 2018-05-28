@@ -202,11 +202,14 @@
                         <group>
                             <field name="expression"/>
                             <field name="commitment_type"/>
+                            <field name="contract_choice"/>
+                            <field name="commitment_contract"
+                                   attrs="{'invisible': [('contract_choice', '!=', 'select')]}"/>
                             <field name="provider_choice"/>
-                            <field name="provider"
+                            <field name="commitment_provider"
                                    attrs="{'invisible': [('provider_choice', '!=', 'select')]}"/>
                             <field name="receiver_choice"/>
-                            <field name="receiver"
+                            <field name="commitment_receiver"
                                    attrs="{'invisible': [('receiver_choice', '!=', 'select')]}"/>
                         </group>
                     </page>
