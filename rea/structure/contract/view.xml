@@ -32,6 +32,7 @@
                 <notebook>
                     <page string="Clauses">
                         <field name="clauses" context="{'hide_contract': 1}" />
+                        <field name="totals"/>
                     </page>
                     <page string="Terms">
                         <field name="terms">

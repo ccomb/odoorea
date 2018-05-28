@@ -3,6 +3,7 @@ from odoo import fields, models, api, _
 from odoo.exceptions import ValidationError
 from time import strftime
 from . import combinator
+from itertools import groupby
 
 
 class Contract(models.Model):
@@ -30,6 +31,28 @@ class Contract(models.Model):
                     u"This type of contract cannot have more than {} parties"
                     .format(c.type.max_parties))
 
+    @api.depends('clauses')
+    def _totals(self):
+        """compute the grouped totals for the contract footer
+        """
+        for c in self:
+            company = self.env.user.company
+            inclauses = sorted((c.type.name, c.resource_type.name, c.quantity)
+                               for c in c.clauses if c.receiver == company)
+            intotals = [gr[0] + (str(sum(g[2] for g in gr[1])),)
+                        for gr in groupby(inclauses, lambda c: c[0:2])]
+            outclauses = sorted((c.type.name, c.resource_type.name, c.quantity)
+                                for c in c.clauses if c.provider == company)
+            outtotals = [gr[0] + (str(sum(g[2] for g in gr[1])),)
+                         for gr in groupby(outclauses, lambda c: c[0:2])]
+            c.totals = ('<div style="text-align: right"><h3>Inflows</h3>' +
+                        '<br/>'.join(["%s: <b>%s %s</b>" % (k[0], k[2], k[1])
+                                      for k in intotals]) +
+                        '<h3>Outflows</h3>' +
+                        '<br/>'.join(["%s: <b>%s %s</b>" % (k[0], k[2], k[1])
+                                      for k in outtotals]) +
+                        '</div>')
+
     name = fields.Char(
         string="name",
         required=True,
@@ -49,7 +72,7 @@ class Contract(models.Model):
         default=_default_parties,
         help="Agents involved in this contract.")
     clauses = fields.One2many(
-        'rea.commitment',
+        'rea.commitment',  # rea.contract.clause?
         'contract',
         copy=True,
         string="Clauses",
@@ -68,7 +91,10 @@ class Contract(models.Model):
         string="Signature date")
     validity = fields.Date(
         string="Valid until")
-
+    totals = fields.Html(
+        string="Inflow",
+        readonly=True,
+        compute='_totals')
 
 class ContractType(models.Model):
     """ Abstract definition of actual contracts
