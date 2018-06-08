@@ -45,10 +45,10 @@ class Contract(models.Model):
                                 for c in c.clauses if c.provider == company)
             outtotals = [gr[0] + (str(sum(g[2] for g in gr[1])),)
                          for gr in groupby(outclauses, lambda c: c[0:2])]
-            c.totals = ('<div style="text-align: right"><h3>Inflows</h3>' +
+            c.totals = ('<div style="text-align: right"><h3>Increments</h3>' +
                         '<br/>'.join(["%s: <b>%s %s</b>" % (k[0], k[2], k[1])
                                       for k in intotals]) +
-                        '<h3>Outflows</h3>' +
+                        '<h3>Decrements</h3>' +
                         '<br/>'.join(["%s: <b>%s %s</b>" % (k[0], k[2], k[1])
                                       for k in outtotals]) +
                         '</div>')
