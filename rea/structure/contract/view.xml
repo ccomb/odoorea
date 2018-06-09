@@ -117,6 +117,7 @@
                     <group>
                         <field name="max_parties"/>
                         <field name="structural"/>
+                        <field name="total_name"/>
                     </group>
                 </group>
                 <notebook>

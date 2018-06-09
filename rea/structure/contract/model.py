@@ -37,20 +37,27 @@ class Contract(models.Model):
         """
         for c in self:
             company = self.env.user.company
+            # FIXME : we group by id instead of by name
             inclauses = sorted((c.type.name, c.resource_type.name, c.quantity)
                                for c in c.clauses if c.receiver == company)
-            intotals = [gr[0] + (str(sum(g[2] for g in gr[1])),)
-                        for gr in groupby(inclauses, lambda c: c[0:2])]
+            insums = [gr[0] + (str(sum(g[2] for g in gr[1])),)
+                      for gr in groupby(inclauses, lambda c: c[0:2])]
+            inclauses2 = sorted(((c.type.name, c.resource_type.name, c.quantity)
+                                 for c in c.clauses if c.receiver == company), key=lambda x: x[1])
+            intotals = [(gr[0], str(sum(g[2] for g in gr[1])))
+                        for gr in groupby(inclauses2, lambda c: c[1])]
             outclauses = sorted((c.type.name, c.resource_type.name, c.quantity)
                                 for c in c.clauses if c.provider == company)
-            outtotals = [gr[0] + (str(sum(g[2] for g in gr[1])),)
-                         for gr in groupby(outclauses, lambda c: c[0:2])]
-            c.totals = ('<div style="text-align: right"><h3>Increments</h3>' +
+            outsums = [gr[0] + (str(sum(g[2] for g in gr[1])),)
+                       for gr in groupby(outclauses, lambda c: c[0:2])]
+            c.totals = ('<div style="text-align: right"><h3>Increments:</h3>' +
                         '<br/>'.join(["%s: <b>%s %s</b>" % (k[0], k[2], k[1])
+                                      for k in insums]) + '<br/>' +
+                        '<br/>'.join(["<b>%s: %s %s</b>" % (c.type.total_name, k[1], k[0])
                                       for k in intotals]) +
-                        '<h3>Decrements</h3>' +
+                        '<h3>Decrements:</h3>' +
                         '<br/>'.join(["%s: <b>%s %s</b>" % (k[0], k[2], k[1])
-                                      for k in outtotals]) +
+                                      for k in outsums]) +
                         '</div>')
 
     name = fields.Char(
@@ -137,6 +144,10 @@ class ContractType(models.Model):
     allow_delete = fields.Boolean(
         u"Allow to delete",
         help=u"Allow to delete draft or canceled contracts")
+    total_name = fields.Char(
+        string="Total label",
+        required=True,
+        default="Total")
 
 
 class ContractGroup(models.Model):
