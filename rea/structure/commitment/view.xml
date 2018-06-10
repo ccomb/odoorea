@@ -76,9 +76,9 @@
             <field name="contract" invisible="context.get('hide_contract')"/>
             <field name="date"/>
             <field name="provider"/>
-            <field name="receiver"/>
             <field name="quantity"/>
             <field name="resource_type"/>
+            <field name="receiver"/>
         </tree>
     </field>
 </record>
