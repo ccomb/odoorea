@@ -10,7 +10,7 @@ class Contract(models.Model):
     """ Set of commitments and terms forming clauses
     """
     _name = 'rea.contract'
-    _description = "REA Contract"
+    _description = "Contract"
     _inherit = ['rea.lifecycleable.entity',
                 'rea.identifiable.entity',
                 'rea.propertyable.entity']
@@ -242,7 +242,7 @@ class ContractTerm(models.Model):
     (generate additional commitments)
     """
     _name = 'rea.contract.term'
-    _description = "REA Contract term"
+    _description = "Contract term"
 
     name = fields.Char(
         string="name",

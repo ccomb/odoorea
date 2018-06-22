@@ -40,7 +40,7 @@ class Step(models.Model):
     Correspond to kanban columns
     """
     _name = 'rea.lifecycle.step'
-    _order = 'sequence'
+    _order = 'sequence, id'
 
     lifecycle = fields.Many2one(
         'rea.lifecycle',
@@ -100,6 +100,11 @@ class Transition(models.Model):
         required=True,
         translate=True,
         help="Used for the transition button")
+    code = fields.Char(
+        'Code',
+        required=True,
+        translate=True,
+        help="Used to compare on different types")
     description = fields.Text(
         'Description',
         help="Add more information on the transition")
@@ -125,7 +130,7 @@ class Lifecycleable(models.AbstractModel):
     """
     _name = 'rea.lifecycleable.entity'
 
-    def get_steps(self):
+    def steps(self):
         if not self.type:
             raise MissingError(
                 _("Warning: No type defined"))
@@ -139,62 +144,168 @@ class Lifecycleable(models.AbstractModel):
         return steps
 
     @api.multi
-    def step_previous(self):
-        """move the entity to the previous step
+    def go_previous(self):
+        """ask transition going to the previous step
         """
         for entity in self:
-            steps = entity.get_steps()
-            if entity.step == steps[0]:  # first step
-                raise UserError(
-                    _("Warning: {} \"{}\" is already in the first step"
-                      .format(entity._description, entity.name)))
-            elif entity.step not in steps:  # no step
+            if not entity.step:
+                entity.write({'step': entity.type.get_first_step()})
                 continue
-            else:
-                next_step = steps[list(steps).index(entity.step) - 1]
-            entity.write({'step': next_step.id})
+            if entity.transition.target == entity.step:
+                self.cancel_transition()
+                continue
+            transitions = entity.step.transitions
+            # guess what is previous by sorting on id and sequence
+            sorted_trans = sorted(
+                [(t.target.sequence, t.target.id, t) for t in transitions]
+                + [(entity.step.sequence, entity.step.id, None)],
+                key=lambda x: x[0:2])
+            if sorted_trans[0][2] is None:
+                if not self.env.context.get('transition_no_fail'):
+                    raise UserError(
+                        _("Warning: {} \"{}\" seems already in the first step"
+                          .format(entity._description, entity.name)))
+            transition = sorted_trans[
+                sorted_trans.index((entity.step.sequence, entity.step.id, None)
+                                   ) - 1][2]
+            entity.write({'transition': transition.id})
 
     @api.multi
-    def step_next(self):
-        """move the entity to the next step
+    def go_next(self):
+        """ask transition going to the next step
         """
         for entity in self:
-            steps = entity.get_steps()
-            if entity.step == steps[-1]:  # last step
-                raise UserError(
-                    _("Warning: {} \"{}\" is already in the last step"
-                      .format(entity._description, entity.name)))
-            elif entity.step not in steps:  # no step
-                next_step = steps[0]
-            else:
-                next_step = steps[list(steps).index(entity.step) + 1]
-            entity.write({'step': next_step.id})
-
-    def transition(self):
-        transition_id = int(self.env.context['transition'])
-        target = self.type.lifecycle.transitions.browse(transition_id).target
-        self.write({'step': target.id})
-
-    def write(self, values):
-        if 'step' in values:
-            for entity in self:
-                valid_transitions = entity.type.lifecycle.transitions.search([
-                    ('origin', '=', entity.step.id),
-                    ('target', '=', values['step']),
-                    ('lifecycle', '=', entity.type.lifecycle.id)])
-                if not valid_transitions and entity.step:
-                    if self.env.context.get('lifecycle_no_transition_fail'):
-                        continue
+            if not entity.step:
+                entity.write({'step': entity.type.get_first_step()})
+                continue
+            if entity.transition.target == entity.step:
+                self.cancel_transition()
+                continue
+            transitions = entity.step.transitions
+            # guess what is next by sorting on id and sequence
+            sorted_trans = sorted(
+                [(t.target.sequence, t.target.id, t) for t in transitions]
+                + [(entity.step.sequence, entity.step.id, None)],
+                key=lambda x: x[0:2])
+            if sorted_trans[-1][2] is None:
+                if not self.env.context.get('transition_no_fail'):
                     raise UserError(
-                        _("Warning: {} \"{}\" has no transitions to this step"
+                        _("Warning: {} \"{}\" seems already in the last step"
                           .format(entity._description, entity.name)))
-        result = super(Lifecycleable, self).write(values)
-        if 'step' in values:
+            transition = sorted_trans[
+                sorted_trans.index((entity.step.sequence, entity.step.id, None)
+                                   ) + 1][2]
+            entity.write({'transition': transition.id})
+
+    def start_transition(self, transition=None, no_fail=False):
+        """ Mark the transition as started but do nothin yet
+        """
+        for entity in self:
+            trans_id = transition.id or int(self.env.context['transition'])
+            if entity.transition and not no_fail:
+                raise UserError(
+                    _("Transition is already started. "
+                      "You can still cancel it before it is handled"))
+            if trans_id:
+                entity.write({'transition': trans_id})
+
+    def cancel_transition(self):
+        for entity in self:
+            entity.write({
+                'transition': False,
+                'step': entity.transition.origin.id or entity.step.id})
+            for field in entity.type.subobjects:
+                getattr(entity, field.name).cancel_transition()
+
+    @api.one
+    def do_transition(self):
+        target = self.type.lifecycle.transitions.browse(transition_id).target
+        pass
+
+    def write(self, vals):
+        """ only step: add transition
+        only transition : transition
+        step and transition : only valid if transition is False
+        """
+        # TODO: allow to run two transitions at the same time?
+        step_id, trans_id = vals.get('step'), vals.get('transition')
+        wanted_step = self.env['rea.lifecycle.step'].browse(step_id)
+        for entity in self:
+            # allow to specify a state instead of a step id
+            if 'state' in vals:
+                steps = entity.step.search([
+                    ('state', '=', vals['state']),
+                    ('lifecycle', '=', entity.type.lifecycle.id)])
+                if len(steps) == 1:
+                    vals['step'] = step_id = steps[0].id
+                    wanted_step = entity.step.browse(step_id)
+                else:
+                    raise UserError(_("Wrong configuration: these steps have"
+                                      " the same state: %s"
+                                      % ', '.join([s.name for s in steps])))
+
+            # if a transition is started, only accept a step cancelling it
+            if entity.transition:
+                if step_id:
+                    if wanted_step.state != entity.transition.origin.state:
+                        if not self.env.context.get('transition_no_fail'):
+                            raise UserError(
+                                _("A transition is already started, you can "
+                                  "only set the step back to the origin "
+                                  "of the transition"))
+
+                if trans_id:
+                    new_trans = entity.transition.browse(trans_id)
+                    if (new_trans.target != entity.transition.origin
+                            and new_trans.origin != entity.transition.target):
+                        if not self.env.context.get('transition_no_fail'):
+                            raise UserError(
+                                _("A transition is already started, you can "
+                                  "only set the reverse transition of the "
+                                  "current transition"))
+
+                vals['transition'] = False
+            else:
+                # check the wanted step is valid
+                if wanted_step:
+                    if wanted_step == entity.step:
+                        continue
+                    # find the possible transition
+                    targets = [t.target.id for t in entity.step.transitions]
+                    if wanted_step.id not in targets:
+                        if not self.env.context.get('transition_no_fail'):
+                            raise UserError(
+                                _("Warning: {} \"{}\" "
+                                  "has no transitions to this step"
+                                  .format(entity._description, entity.name)))
+                    transitions = [t for t in entity.step.transitions
+                                   if t.target.state == wanted_step.state]
+                    if len(transitions) == 1:
+                        vals['transition'] = trans_id = transitions[0].id
+                    else:
+                        if not self.env.context.get('transition_no_fail'):
+                            raise UserError(
+                                _("Not exactly one transition exists for this "
+                                  "target step"))
+                elif trans_id:
+                    wanted_trans = entity.transition.browse(trans_id)
+                    if wanted_trans.origin.state != entity.step.state:
+                        raise UserError(
+                            _("Invalid transition for the current step"))
+                    vals['step'] = step_id = wanted_trans.target.id
+                    wanted_step = entity.step.browse(step_id)
+
+        result = super(Lifecycleable, self).write(vals)
+
+        # apply the same state for subobjects
+        if step_id:
+            if 'transition' in vals:
+                del vals['transition']
             for entity in self:
                 for field in entity.type.subobjects:
                     getattr(entity, field.name).with_context(
-                        {'lifecycle_no_transition_fail': True}
-                        ).write({'step': values['step']})
+                        {'transition_no_fail': True}
+                        ).write({'state': wanted_step.state})
         return result
 
     @api.model
@@ -222,7 +333,7 @@ class Lifecycleable(models.AbstractModel):
         for transition in transitions:
             button = etree.Element(
                 "button",
-                name='transition',
+                name='start_transition',
                 context="{'transition': '%s'}" % transition.id,
                 string=transition.name,
                 type='object')
@@ -275,7 +386,14 @@ class Lifecycleable(models.AbstractModel):
         compute=_get_lifecycle)
     step = fields.Many2one(
         'rea.lifecycle.step',
-        'Step',
+        'Current Step',
+        index=True,
+        copy=False,
+        domain="[('lifecycle','=',type_lifecycle)]")
+    transition = fields.Many2one(
+        'rea.lifecycle.transition',
+        'Transition started',
+        help="Contains the transition in demand but not run yet",
         index=True,
         copy=False,
         domain="[('lifecycle','=',type_lifecycle)]")
@@ -304,7 +422,8 @@ class LifecyclableType(models.AbstractModel):
             for f in o.subobjects:
                 if 'step' not in self.env[o.subobjects.relation]._fields:
                     raise ValidationError(
-                        u"This subobjects corresponding to this field has no lifecycles: {}"
+                        u"This subobjects corresponding to this field "
+                        u"has no lifecycles: {}"
                         .format(f.display_name))
 
     lifecycle = fields.Many2one(
@@ -314,4 +433,5 @@ class LifecyclableType(models.AbstractModel):
         'ir.model.fields',
         domain="['|', ('ttype','=','one2many'), ('ttype','=','many2many')]",
         help=u"When changing the step of the current object, the sub-objects "
-             u"in the specified fields will be changed as well")
+             u"in the specified fields will be changed as well, "
+             u"using the same state")

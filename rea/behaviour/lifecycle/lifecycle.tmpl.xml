@@ -46,10 +46,15 @@
         <page string="Lifecycle">
           <group col="9" colspan="2">
             <field name="type_lifecycle" invisible="1"/>
-            <button name="step_previous" string=""
-                    type="object" icon="fa-arrow-circle-o-left"/>
-            <button name="step_next" string=""
-              type="object" icon="fa-arrow-circle-o-right"/>
+            <group>
+                <button name="go_previous" string=""
+                        type="object" icon="fa-arrow-circle-o-left"/>
+                <button name="go_next" string=""
+                        type="object" icon="fa-arrow-circle-o-right"/>
+            </group>
+            <group>
+                <field name="transition" attrs="{'invisible': [('transition','=',False)]}"/>
+            </group>
         <field name="state" invisible="1"/>
           </group>
         </page>
@@ -68,9 +73,9 @@
         <page string="Lifecycle">
           <group col="9" colspan="2">
             <field name="type_lifecycle" invisible="1"/>
-            <button name="step_previous" string=""
+            <button name="go_previous" string=""
                     type="object" icon="fa-arrow-circle-o-left"/>
-            <button name="step_next" string=""
+            <button name="go_next" string=""
               type="object" icon="fa-arrow-circle-o-right"/>
         <field name="state" invisible="1"/>
           </group>
@@ -86,10 +91,11 @@
     <field name="arch" type="xml">
         <xpath expr="/tree" position="inside">
             <field name="step"/>
+            <field name="transition"/>
             <field name="state" invisible="1"/>
-              <button name="step_previous" string=""
+              <button name="go_previous" string=""
                       type="object" icon="fa-arrow-circle-o-left" />
-              <button name="step_next" string=""
+              <button name="go_next" string=""
                 type="object" icon="fa-arrow-circle-o-right" />
         </xpath>
     </field>
