@@ -2,9 +2,9 @@
 <odoo>
 
 <!-- temporary -->
-<record model="ir.model.access" id="rea_process_access_public">
-    <field name="name">rea.process public access</field>
-    <field name="model_id" ref="model_rea_process"/>
+<record model="ir.model.access" id="rea_duality_access_public">
+    <field name="name">rea.duality public access</field>
+    <field name="model_id" ref="model_rea_duality"/>
     <field name="group_id" ref="base.group_user"/>
     <field name="perm_read" eval="1"/>
     <field name="perm_create" eval="0"/>
