@@ -54,10 +54,6 @@ class Event(models.Model):
     outflow = fields.Many2one(
         'rea.resource',
         string="Outflow")
-    process = fields.Many2one(
-        'rea.process',
-        string="Process",
-        help="The process this event is part of")
     kind = fields.Selection(
         [('increment', 'Increment'),
          ('decrement', 'Decrement'),

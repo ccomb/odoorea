@@ -21,9 +21,6 @@
     <field name="model">rea.${object}</field>
     <field name="inherit_id" ref="rea_${object}_form_view" />
     <field name="arch" type="xml">
-      <xpath expr="/form/header" position='inside'>
-        <field name="step" widget="statusbar" clickable="True"/>
-      </xpath>
       <xpath expr="//notebook" position="inside">
           <page string="Identifiers">
             <group>

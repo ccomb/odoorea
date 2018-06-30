@@ -29,9 +29,5 @@
           name="Behaviours"
           parent="menu_rea"
           sequence="5000"/>
-<menuitem id="menu_processes"
-          name="Process"
-          parent="menu_rea"
-          sequence="10000"/>
 
 </odoo>

@@ -1,5 +1,6 @@
 from odoo import fields, models, api, _
 from odoo.exceptions import ValidationError
+import time
 
 
 class Commitment(models.Model):
@@ -10,6 +11,7 @@ class Commitment(models.Model):
     _inherit = ['rea.lifecycleable.entity',
                 'rea.identifiable.entity',
                 'rea.propertyable.entity']
+    _lifecycle_actions = [('fulfill', 'Fulfill the commitment')]
 
     def _default_provider(self):
         for agent in self.contract.parties:
@@ -122,10 +124,22 @@ class Commitment(models.Model):
         """Create the full event if no args are given
         Otherwise create a partial event corresponding to the amount or ratio
         """
-        raise NotImplementedError  # TODO
         for c in self:
-            commitment = c.read()
-            self.env['rea.event'].create(commitment)
+            commitment = c.read(load=None)[0]
+            event = {
+                'name': commitment.get('name'),
+                'type': None,  # FIXME
+                'date': time.strftime('%Y-%m-%d %H:%M:%S'),
+                'quantity': commitment.get('quantity'),  # FIXME
+                'resource_type': commitment.get('resource_type'),
+                'resource': commitment.get('resource'),
+                'provider': commitment.get('provider'),
+                'receiver': commitment.get('receiver'),
+                'inflow': commitment.get('inflow'),
+                'outflow': commitment.get('outflow'),
+                'kind': commitment.get('kind'),
+            }
+            self.env['rea.event'].create(event)
 
 
 class CommitmentType(models.Model):

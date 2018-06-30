@@ -9,7 +9,7 @@
         <xpath expr="//notebook/page[@name='behaviours']" position="inside">
             <page string="Lifecycle">
                 <group string="Lifecycle configuration">
-                    <field name="lifecycle"/>
+                    <field name="lifecycle" context="{'model': 'rea.${object}', 'origin_id': context.active_id}"/>
                     <field name="subobjects" widget="many2many_tags" domain="[('model', '=', 'rea.${object}')]"/>
                 </group>
             </page>
@@ -40,7 +40,9 @@
     <field name="inherit_id" ref="rea_${object}_form_view" />
     <field name="arch" type="xml">
       <xpath expr="/form/header" position='inside'>
-        <field name="step" widget="statusbar" clickable="True"/>
+        <button name="cancel_transition" string="Cancel transition" type="object"
+                attrs="{'invisible': [('transition', '=', False)]}"/>
+        <field name="step" widget="statusbar"/>
       </xpath>
       <xpath expr="//notebook" position="inside">
         <page string="Lifecycle">
@@ -67,7 +69,9 @@
     <field name="inherit_id" ref="rea_${object}_type_form_view" />
     <field name="arch" type="xml">
       <xpath expr="/form/header" position='inside'>
-        <field name="step" widget="statusbar" clickable="True"/>
+        <button name="cancel_transition" string="Cancel transition" type="object"
+                attrs="{'invisible': [('transition', '=', False)]}"/>
+        <field name="step" widget="statusbar"/>
       </xpath>
       <xpath expr="//notebook" position="inside">
         <page string="Lifecycle">

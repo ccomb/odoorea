@@ -24,7 +24,7 @@
                 <field name="steps" context="{'default_lifecycle': active_id}"/>
             </page>
             <page string="Transitions">
-                <field name="transitions" context="{'default_lifecycle': active_id}"/>
+                <field name="transitions" context="{'default_lifecycle': active_id, 'model': context.model, 'origin_id': context.origin_id}"/>
             </page>
         </notebook>
     </form>
@@ -92,6 +92,8 @@
             </group>
             <group>
                 <field name="primary"/>
+                <field name="action"/>
+                <field name="immediate"/>
             </group>
         </group>
         <notebook>
