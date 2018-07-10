@@ -19,7 +19,7 @@
                         </group>
                         <group attrs="{'invisible': [('type','!=','calc')]}">
                             <field name="observables"
-                                   context="{'model': context.model}"/>
+                                   context="{'model': context.get('model')}"/>
                             <field name="expression" select="1"
                                 attrs="{'required': [('type','=','calc')]}"/>
                             <field name="uom"/>
@@ -67,7 +67,7 @@
                     <h1><field name="name"/></h1>
                     <group>
                         <field name="fields"
-                               context="{'model': context.model}" />
+                               context="{'model': context.get('model')}" />
                     </group>
                 </sheet>
                 <div class="oe_chatter"></div>
