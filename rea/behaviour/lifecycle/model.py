@@ -34,6 +34,18 @@ class Lifecycle(models.Model):
         help="List of transition buttons between steps for contracts "
              "of this type. Buttons appear in the form view of the contracts")
 
+    @api.multi
+    def copy_data(self, default=None):
+        if default is None:
+            default = {}
+        copied = super(Lifecycle, self).copy_data(default)
+        for c in copied:
+            for t in c['transitions']:
+                # didn't find a way to copy the origin and target
+                t[2]['origin'] = False
+                t[2]['target'] = False
+        return copied
+
 
 class Step(models.Model):
     """Lifecycle step of an entity
@@ -137,7 +149,15 @@ class Transition(models.Model):
         origin_id = self.env.context.get('origin_id')
         if not model or not origin_id:
             return []
-        return self.env[model].browse(origin_id)._lifecycle_actions
+        return getattr(self.env[model].browse(origin_id),
+                       '_lifecycle_actions', [])
+
+    @api.multi
+    def copy_data(self, default=None):
+        if default is None:
+            default = {}
+        default['action'] = False
+        return super(Transition, self).copy_data(default)
 
 
 class Lifecycleable(models.AbstractModel):
@@ -239,7 +259,7 @@ class Lifecycleable(models.AbstractModel):
             if trans_id:
                 transition = entity.transition.browse(trans_id)
                 if transition.immediate:
-                    self.do_transition(transition.id)
+                    entity.do_transition(transition.id)
                 else:
                     entity.write({'step': transition.target.id,
                                   'transition': transition.id})
