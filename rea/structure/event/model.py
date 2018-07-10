@@ -22,9 +22,6 @@ class Event(models.Model):
         'rea.event.type',
         string="Type",
         ondelete='restrict')
-    state = fields.Many2one(
-        'rea.event.state',
-        string="State")
     groups = fields.Many2many(
         'rea.event.group',
         string="Groups")
@@ -150,15 +147,3 @@ class EventGroup(models.Model):
         string="name",
         required=True,
         index=True)
-
-
-class EventState(models.Model):
-    """State of events
-    """
-    _name = 'rea.event.state'
-
-    code = fields.Char(u"Code")
-    name = fields.Char(u"Name")
-    type = fields.Many2one(
-        'rea.event.type',
-        string=u"Event type")
