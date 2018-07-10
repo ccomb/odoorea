@@ -279,12 +279,12 @@ class Lifecycleable(models.AbstractModel):
         doc = etree.fromstring(fvg['arch'])
         header = doc.xpath("/form/header")[0]
         model = params.get('model', self._name)
-        model = model + ('.type' if not model.endswith('.type') else '')
-        table = self.env[model]._table
+        modeltype = model + ('.type' if not model.endswith('.type') else '')
+        typetable = self.env[modeltype]._table
         self.env.cr.execute('''
             select distinct transition.id
             from rea_lifecycle_transition transition, %s type
-            where transition.lifecycle = type.lifecycle''' % table)
+            where transition.lifecycle = type.lifecycle''' % typetable)
         trans_ids = [t[0] for t in self.env.cr.fetchall()]
         transitions = self.env['rea.lifecycle.transition'].browse(trans_ids)
         for transition in transitions:

@@ -57,7 +57,7 @@
             <group>
                 <field name="transition" attrs="{'invisible': [('transition','=',False)]}"/>
             </group>
-        <field name="state" invisible="1"/>
+            <field name="state" invisible="1"/>
           </group>
         </page>
       </xpath>
@@ -77,11 +77,16 @@
         <page string="Lifecycle">
           <group col="9" colspan="2">
             <field name="type_lifecycle" invisible="1"/>
-            <button name="go_previous" string=""
-                    type="object" icon="fa-arrow-circle-o-left"/>
-            <button name="go_next" string=""
-              type="object" icon="fa-arrow-circle-o-right"/>
-        <field name="state" invisible="1"/>
+            <group>
+                <button name="go_previous" string=""
+                        type="object" icon="fa-arrow-circle-o-left"/>
+                <button name="go_next" string=""
+                        type="object" icon="fa-arrow-circle-o-right"/>
+            </group>
+            <group>
+                <field name="transition" attrs="{'invisible': [('transition','=',False)]}"/>
+            </group>
+            <field name="state" invisible="1"/>
           </group>
         </page>
       </xpath>
