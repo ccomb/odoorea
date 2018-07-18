@@ -1,5 +1,5 @@
 # coding: utf-8
-from odoo import fields, models, api, _
+from odoo import fields, models, api, tools, _
 from odoo.exceptions import ValidationError
 from time import strftime
 from . import combinator
@@ -11,9 +11,10 @@ class Contract(models.Model):
     """
     _name = 'rea.contract'
     _description = "Contract"
-    _inherit = ['rea.lifecycleable.entity',
-                'rea.identifiable.entity',
-                'rea.propertyable.entity']
+    _inherit = ['rea.entity.lifecycle',
+                'rea.entity.identifier',
+                'rea.entity.property']
+    tools.generate_views(__file__, _name, _inherit)
 
     def _default_parties(self):
         """the relative company depends on the user
@@ -128,12 +129,13 @@ class ContractType(models.Model):
     _name = 'rea.contract.type'
     _description = "Contract Type"
     _parent_name = 'type'
-    _inherit = ['rea.identifiable.type',
-                'rea.lifecycleable.type',
-                'rea.propertyable.type',
-                'rea.lifecycleable.entity',
-                'rea.identifiable.entity',
-                'rea.propertyable.entity']
+    _inherit = ['rea.type.identifier',
+                'rea.type.lifecycle',
+                'rea.type.property',
+                'rea.entity.lifecycle',
+                'rea.entity.identifier',
+                'rea.entity.property']
+    tools.generate_views(__file__, _name, _inherit)
     _parent_name = 'type'
 
     type = fields.Many2one(

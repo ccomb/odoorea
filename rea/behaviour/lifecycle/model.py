@@ -163,7 +163,7 @@ class Transition(models.Model):
 class Lifecycleable(models.AbstractModel):
     """ Add lifecycle behaviour to entities
     """
-    _name = 'rea.lifecycleable.entity'
+    _name = 'rea.entity.lifecycle'
 
     def steps(self):
         if not self.type:
@@ -384,7 +384,7 @@ class Lifecycleable(models.AbstractModel):
 class LifecyclableType(models.AbstractModel):
     """Abstract class adding lifecycle behaviour on entity types
     """
-    _name = 'rea.lifecycleable.type'
+    _name = 'rea.type.lifecycle'
 
     def get_first_step(self):
         """ Return the id of the first step of a type"""

@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import fields, models, tools
 
 
 class Agent(models.Model):
@@ -7,9 +7,10 @@ class Agent(models.Model):
     """
     _name = 'rea.agent'
     _description = 'Agent'
-    _inherit = ['rea.lifecycleable.entity',
-                'rea.identifiable.entity',
-                'rea.propertyable.entity']
+    _inherit = ['rea.entity.lifecycle',
+                'rea.entity.identifier',
+                'rea.entity.property']
+    tools.generate_views(__file__, _name, _inherit)
 
     name = fields.Char(
         string="name",
@@ -29,12 +30,13 @@ class AgentType(models.Model):
     _name = 'rea.agent.type'
     _description = 'Agent Type'
     _parent_name = 'type'
-    _inherit = ['rea.identifiable.type',
-                'rea.lifecycleable.type',
-                'rea.propertyable.type',
-                'rea.lifecycleable.entity',
-                'rea.identifiable.entity',
-                'rea.propertyable.entity']
+    _inherit = ['rea.type.identifier',
+                'rea.type.lifecycle',
+                'rea.type.property',
+                'rea.entity.lifecycle',
+                'rea.entity.identifier',
+                'rea.entity.property']
+    tools.generate_views(__file__, _name, _inherit)
 
     type = fields.Many2one(
         'rea.agent.type',

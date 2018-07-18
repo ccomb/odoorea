@@ -1,0 +1,14 @@
+<!-- add a field in the behaviour tab -->
+<record model="ir.ui.view" id="${xmlid}_form_view_with_identification">
+    <field name="inherit_id" ref="rea.${xmlid}_form_view"/>
+    <field name="model">${object}</field>
+    <field name="arch" type="xml">
+        <xpath expr="//notebook/page[@name='behaviours']" position="inside">
+            <group string="Identification configuration">
+                <field name="identification"
+                       context="{'model': '${object}', 'type_id': active_id}"/>
+            </group>
+        </xpath>
+    </field>
+</record>
+

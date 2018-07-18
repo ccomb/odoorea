@@ -1,4 +1,4 @@
-from odoo import fields, models, api
+from odoo import fields, models, api, tools
 from odoo.exceptions import ValidationError, UserError
 
 
@@ -7,15 +7,17 @@ class DualityType(models.Model):
     Abstract definition of actual Dualities.
     It contains the rules of the duality.
     It can also be seen as a business 'deal'
+    (was previously named process)
     """
     _name = 'rea.duality.type'
     _description = 'Duality Type'
-    _inherit = ['rea.identifiable.type',
-                'rea.lifecycleable.type',
-                'rea.propertyable.type',
-                'rea.lifecycleable.entity',
-                'rea.identifiable.entity',
-                'rea.propertyable.entity']
+    _inherit = ['rea.type.identifier',
+                'rea.type.lifecycle',
+                'rea.type.property',
+                'rea.entity.lifecycle',
+                'rea.entity.identifier',
+                'rea.entity.property']
+    tools.generate_views(__file__, _name, _inherit)
 
     name = fields.Char(
         string="name",
@@ -61,9 +63,10 @@ class Duality(models.Model):
     """
     _name = 'rea.duality'
     _description = 'Duality'
-    _inherit = ['rea.lifecycleable.entity',
-                'rea.identifiable.entity',
-                'rea.propertyable.entity']
+    _inherit = ['rea.entity.lifecycle',
+                'rea.entity.identifier',
+                'rea.entity.property']
+    tools.generate_views(__file__, _name, _inherit)
 
     name = fields.Char(
         string="name",
@@ -162,7 +165,7 @@ class Event(models.Model):
             event.duality_balance = event.quantity - assigned
 
     def check_duality(self):
-        """check the balance of a list of events
+        """check the validity of the dualiy
         """
         agents = {}
         for e in self:

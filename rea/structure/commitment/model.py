@@ -1,4 +1,4 @@
-from odoo import fields, models, api, _
+from odoo import fields, models, api, tools, _
 from odoo.exceptions import ValidationError
 import time
 
@@ -8,9 +8,10 @@ class Commitment(models.Model):
     """
     _name = 'rea.commitment'
     _description = "Commitment"
-    _inherit = ['rea.lifecycleable.entity',
-                'rea.identifiable.entity',
-                'rea.propertyable.entity']
+    _inherit = ['rea.entity.lifecycle',
+                'rea.entity.identifier',
+                'rea.entity.property']
+    tools.generate_views(__file__, _name, _inherit)
     _lifecycle_actions = [('fulfill', 'Fulfill the commitment')]
 
     def _default_provider(self):
@@ -148,12 +149,13 @@ class CommitmentType(models.Model):
     _name = 'rea.commitment.type'
     _description = "Commitment Type"
     _parent_name = 'type'
-    _inherit = ['rea.identifiable.type',
-                'rea.lifecycleable.type',
-                'rea.propertyable.type',
-                'rea.lifecycleable.entity',
-                'rea.identifiable.entity',
-                'rea.propertyable.entity']
+    _inherit = ['rea.type.identifier',
+                'rea.type.lifecycle',
+                'rea.type.property',
+                'rea.entity.lifecycle',
+                'rea.entity.identifier',
+                'rea.entity.property']
+    tools.generate_views(__file__, _name, _inherit)
 
     type = fields.Many2one(
         'rea.commitment.type',

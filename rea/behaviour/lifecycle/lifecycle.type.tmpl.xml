@@ -1,0 +1,14 @@
+<record id="${xmlid}_form_view_with_lifecycle" model="ir.ui.view">
+    <field name="model">${object}</field>
+    <field name="inherit_id" ref="rea.${xmlid}_form_view" />
+    <field name="arch" type="xml">
+        <xpath expr="//notebook/page[@name='behaviours']" position="inside">
+            <page string="Lifecycle">
+                <group string="Lifecycle configuration">
+                    <field name="lifecycle" context="{'model': '${object}', 'origin_id': context.active_id}"/>
+                    <field name="subobjects" widget="many2many_tags" domain="[('model', '=', '${object}')]"/>
+                </group>
+            </page>
+        </xpath>
+    </field>
+</record>

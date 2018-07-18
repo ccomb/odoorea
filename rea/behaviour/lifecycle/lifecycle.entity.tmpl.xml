@@ -1,0 +1,62 @@
+<!-- Search by step -->
+<record id="${xmlid}_search_view_with_steps" model="ir.ui.view">
+    <field name="model">${object}</field>
+    <field name="inherit_id" ref="${xmlid}_search_view"/>
+    <field name="priority" eval="16"/>
+    <field name="arch" type="xml">
+        <xpath expr="//search" position="inside">
+                <filter name="${xml}s_by_step"
+                        string="Step"
+                        context="{'group_by': ['step']}"
+                        help="Group by step"/>
+        </xpath>
+    </field>
+</record>
+
+<!-- Add a tab in the form view -->
+<record id="${xmlid}_form_view_with_steps" model="ir.ui.view">
+    <field name="model">${object}</field>
+    <field name="inherit_id" ref="${xmlid}_form_view" />
+    <field name="arch" type="xml">
+      <xpath expr="/form/header" position='inside'>
+        <button name="cancel_transition" string="Cancel transition" type="object"
+                attrs="{'invisible': [('transition', '=', False)]}"/>
+        <field name="step" widget="statusbar"/>
+      </xpath>
+      <xpath expr="//notebook" position="inside">
+        <page string="Lifecycle">
+          <group col="9" colspan="2">
+            <field name="type_lifecycle" invisible="1"/>
+            <group>
+                <button name="go_previous" string=""
+                        type="object" icon="fa-arrow-circle-o-left"/>
+                <button name="go_next" string=""
+                        type="object" icon="fa-arrow-circle-o-right"/>
+            </group>
+            <group>
+                <field name="transition" attrs="{'invisible': [('transition','=',False)]}"/>
+            </group>
+            <field name="state" invisible="1"/>
+          </group>
+        </page>
+      </xpath>
+    </field>
+</record>
+
+<!-- Add a column in the list view -->
+<record id="${xmlid}_tree_view_with_steps" model="ir.ui.view">
+    <field name="model">${object}</field>
+    <field name="inherit_id" ref="${xmlid}_tree_view" />
+    <field name="arch" type="xml">
+        <xpath expr="/tree" position="inside">
+            <field name="step"/>
+            <field name="transition"/>
+            <field name="state" invisible="1"/>
+              <button name="go_previous" string=""
+                      type="object" icon="fa-arrow-circle-o-left" />
+              <button name="go_next" string=""
+                type="object" icon="fa-arrow-circle-o-right" />
+        </xpath>
+    </field>
+</record>
+

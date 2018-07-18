@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import fields, models, tools
 
 
 class Resource(models.Model):
@@ -7,9 +7,10 @@ class Resource(models.Model):
     """
     _name = 'rea.resource'
     _description = "Resource"
-    _inherit = ['rea.lifecycleable.entity',
-                'rea.identifiable.entity',
-                'rea.propertyable.entity']
+    _inherit = ['rea.entity.lifecycle',
+                'rea.entity.identifier',
+                'rea.entity.property']
+    tools.generate_views(__file__, _name, _inherit)
 
     name = fields.Char(
         string="name",
@@ -49,12 +50,13 @@ class ResourceType(models.Model):
     _name = 'rea.resource.type'
     _description = "Resource Type"
     _parent_name = 'type'
-    _inherit = ['rea.identifiable.type',
-                'rea.lifecycleable.type',
-                'rea.propertyable.type',
-                'rea.lifecycleable.entity',
-                'rea.identifiable.entity',
-                'rea.propertyable.entity']
+    _inherit = ['rea.type.identifier',
+                'rea.type.lifecycle',
+                'rea.type.property',
+                'rea.entity.lifecycle',
+                'rea.entity.identifier',
+                'rea.entity.property']
+    tools.generate_views(__file__, _name, _inherit)
 
     def name_get(self):
         result = []

@@ -7,7 +7,5 @@ sandbox/
 .*\.swp$
 .*\.swo$
 .*\.pyc$
-rea/structure/.*/identifier.xml
-rea/structure/.*/lifecycle.xml
-rea/structure/.*/property.xml
+rea/structure/.*/behaviours.xml
 trash/

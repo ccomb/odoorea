@@ -1,0 +1,13 @@
+<!-- add a property page in the notebook -->
+<record model="ir.ui.view" id="${xmlid}_form_view_property">
+    <field name="inherit_id" ref="rea.${xmlid}_form_view"/>
+    <field name="model">${object}</field>
+    <field name="arch" type="xml">
+        <xpath expr="//notebook/page[@name='behaviours']" position="inside">
+            <group string="Properties configuration">
+                <field name="propertyconfig"
+                       context="{'model': '${object}', 'type_id': active_id}"/>
+            </group>
+        </xpath>
+    </field>
+</record>

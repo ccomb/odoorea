@@ -214,7 +214,7 @@ class Config(models.Model):
 class PropertyableType(models.AbstractModel):
     """ field to choose the property fields on the entity type
     """
-    _name = 'rea.propertyable.type'
+    _name = 'rea.type.property'
 
     propertyconfig = fields.Many2one(
         'rea.property.config',
@@ -224,7 +224,7 @@ class PropertyableType(models.AbstractModel):
 class PropertyableEntity(models.AbstractModel):
     """ entity with configurable properties
     """
-    _name = 'rea.propertyable.entity'
+    _name = 'rea.entity.property'
     _description = 'Entity with properties'
 
     @api.depends('type')

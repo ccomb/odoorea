@@ -1,4 +1,4 @@
-from odoo import fields, models, _
+from odoo import fields, models, tools, _
 from odoo.exceptions import UserError
 
 
@@ -7,9 +7,10 @@ class Event(models.Model):
     """
     _name = 'rea.event'
     _description = "Event"
-    _inherit = ['rea.lifecycleable.entity',
-                'rea.identifiable.entity',
-                'rea.propertyable.entity']
+    _inherit = ['rea.entity.lifecycle',
+                'rea.entity.identifier',
+                'rea.entity.property']
+    tools.generate_views(__file__, _name, _inherit)
 
     name = fields.Char(
         string="name",
@@ -94,12 +95,13 @@ class EventType(models.Model):
     _name = 'rea.event.type'
     _description = "Event Type"
     _parent_name = 'type'
-    _inherit = ['rea.identifiable.type',
-                'rea.lifecycleable.type',
-                'rea.propertyable.type',
-                'rea.lifecycleable.entity',
-                'rea.identifiable.entity',
-                'rea.propertyable.entity']
+    _inherit = ['rea.type.identifier',
+                'rea.type.lifecycle',
+                'rea.type.property',
+                'rea.entity.lifecycle',
+                'rea.entity.identifier',
+                'rea.entity.property']
+    tools.generate_views(__file__, _name, _inherit)
     _parent_name = 'type'
 
     type = fields.Many2one(

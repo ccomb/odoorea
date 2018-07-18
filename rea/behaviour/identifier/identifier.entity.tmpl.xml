@@ -1,0 +1,16 @@
+<!-- Add a tab in the form view -->
+<record id="${xmlid}_form_view_with_identifiers" model="ir.ui.view">
+    <field name="model">${object}</field>
+    <field name="inherit_id" ref="${xmlid}_form_view" />
+    <field name="arch" type="xml">
+      <xpath expr="//notebook" position="inside">
+          <page string="Identifiers">
+            <group>
+              <field name="is_name_generated" invisible="1"/>
+              <field name="type_identification" invisible="1"/>
+            </group>
+          </page>
+      </xpath>
+    </field>
+</record>
+

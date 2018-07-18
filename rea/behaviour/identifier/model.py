@@ -155,7 +155,7 @@ class Identification(models.Model):
 class IdentifiableType(models.AbstractModel):
     """ field to choose the identification fields on the entity type
     """
-    _name = 'rea.identifiable.type'
+    _name = 'rea.type.identifier'
 
     identification = fields.Many2one(
         'rea.identification',
@@ -165,7 +165,7 @@ class IdentifiableType(models.AbstractModel):
 class Identifiable(models.AbstractModel):
     """ entity with configurable identifiers
     """
-    _name = 'rea.identifiable.entity'
+    _name = 'rea.entity.identifier'
     _description = 'Identifiable entity'
 
     @api.depends('type')
