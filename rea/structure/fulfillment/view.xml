@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+<!-- FULFILLMENT -->
+<record model="ir.ui.view" id="rea_fulfillment_form_view">
+    <field name="name">rea.fulfillment.form</field>
+    <field name="model">rea.fulfillment</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+            </header>
+            <sheet>
+                <div class="oe_title">
+                    <field name="type" placeholder="Fulfillment Type"/>
+                    <h1>
+                        <field name="name" placeholder="Fulfillment Name"/>
+                    </h1>
+                </div>
+                <group>
+                    <field name="partial_commitments">
+                        <tree>
+                            <field name="commitment"/>
+                            <field name="quantity"/>
+                            <field name="resource_type" readonly="1"/>
+                        </tree>
+                    </field>
+                    <field name="partial_events">
+                        <tree>
+                            <field name="event"/>
+                            <field name="quantity"/>
+                            <field name="resource_type" readonly="1"/>
+                        </tree>
+                    </field>
+                </group>
+                <notebook>
+                </notebook>
+            </sheet>
+            <div class="oe_chatter"></div>
+        </form>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="rea_fulfillment_search_view">
+    <field name="name">rea.fulfillment.search</field>
+    <field name="model">rea.fulfillment</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+            <group expand="0" string="Group By">
+                <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
+            </group>
+        </search>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="rea_fulfillment_tree_view">
+    <field name="name">rea.fulfillment.tree</field>
+    <field name="model">rea.fulfillment</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="type"/>
+        </tree>
+    </field>
+</record>
+
+<record model="ir.actions.act_window" id="rea_fulfillment_act_window">
+    <field name="name">Fulfillment</field>
+    <field name="res_model">rea.fulfillment</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+</record>
+
+<record model="ir.ui.menu" id="menu_fulfillment">
+    <field name="name">Fulfillment</field>
+    <field name="parent_id" ref="menu_commitments"/>
+    <field name="sequence" eval="35"/>
+</record>
+
+<record model="ir.ui.menu" id="menu_rea_fulfillment">
+    <field name="name">Fulfillments</field>
+    <field name="parent_id" ref="menu_fulfillment"/>
+    <field name="action" ref="rea_fulfillment_act_window"/>
+    <field name="sequence" eval="50"/>
+</record>
+
+
+<!-- FULFILLMENT TYPE -->
+<record model="ir.ui.view" id="rea_fulfillment_type_form_view">
+    <field name="name">rea.fulfillment.type.form</field>
+    <field name="model">rea.fulfillment.type</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+            </header>
+            <sheet>
+                <div class="oe_title">
+                    <field name="type" placeholder="Type" nolabel="1" /><br/>
+                    <h1>
+                        <field name="name" placeholder="Fulfillment Type Name"/>
+                    </h1>
+                </div>
+                <group>
+                    <field name="event_types"/>
+                </group>
+                <notebook>
+                    <page name="behaviours" string="Behaviours">
+                        <group>
+                            <p>Here you can configure the behaviour of the entities of this type.</p>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+            <div class="oe_chatter"></div>
+        </form>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="rea_fulfillment_type_search_view">
+    <field name="name">rea.fulfillment.type.search</field>
+    <field name="model">rea.fulfillment.type</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+            <field name="event_types"/>
+        </search>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="rea_fulfillment_type_tree_view">
+    <field name="name">rea.fulfillment.type.tree</field>
+    <field name="model">rea.fulfillment.type</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+        </tree>
+    </field>
+</record>
+
+<record model="ir.actions.act_window" id="rea_fulfillment_type_act_window">
+    <field name="name">Fulfillment Types</field>
+    <field name="res_model">rea.fulfillment.type</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+</record>
+
+<record model="ir.ui.menu" id="menu_rea_fulfillment_type">
+    <field name="name">Fulfillment Types</field>
+    <field name="parent_id" ref="menu_fulfillment"/>
+    <field name="action" ref="rea_fulfillment_type_act_window"/>
+    <field name="sequence" eval="40"/>
+</record>
+
+
+<!-- FULFILLMENT GROUP -->
+<record model="ir.ui.view" id="rea_fulfillment_group_form_view">
+    <field name="name">rea.fulfillment.group.form</field>
+    <field name="model">rea.fulfillment.group</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+            </header>
+            <sheet>
+                <div class="oe_title">
+                    <h1>
+                        <field name="name" placeholder="Fulfillment Group Name"/>
+                    </h1>
+                </div>
+                <group>
+                    <field name="groups"/>
+                </group>
+            </sheet>
+            <div class="oe_chatter"></div>
+        </form>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="rea_fulfillment_group_search_view">
+    <field name="name">rea.fulfillment.group.search</field>
+    <field name="model">rea.fulfillment.group</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+            <field name="groups"/>
+        </search>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="rea_fulfillment_group_tree_view">
+    <field name="name">rea.fulfillment.group.tree</field>
+    <field name="model">rea.fulfillment.group</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+        </tree>
+    </field>
+</record>
+
+<record model="ir.actions.act_window" id="rea_fulfillment_group_act_window">
+    <field name="name">Fulfillment Groups</field>
+    <field name="res_model">rea.fulfillment.group</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+</record>
+
+<record model="ir.ui.menu" id="menu_rea_fulfillment_group">
+    <field name="name">Fulfillment Groups</field>
+    <field name="parent_id" ref="menu_fulfillment"/>
+    <field name="action" ref="rea_fulfillment_group_act_window"/>
+    <field name="sequence" eval="50"/>
+</record>
+
+
+<!-- Add a tab in the event form -->
+<record id="rea_event_form_view_with_fulfillment" model="ir.ui.view">
+    <field name="model">rea.event</field>
+    <field name="inherit_id" ref="rea_event_form_view" />
+    <field name="arch" type="xml">
+        <xpath expr="//notebook" position="inside">
+            <page string="Fulfillments">
+                <group>
+                    <div class="oe_inline"><p><span>Unfulfilling quantity: </span><field name="fulfillment_balance" style="margin: 0.5em"/></p>
+                    <p>Below are quantities assigned to fulfillments.
+                    Fullfilments are used to link events to commitments.
+                    To link events to commitments,
+                    select and associate them from the list view</p>
+                    </div>
+                </group>
+                <group>
+                    <field name="fulfillment_partial_events" readonly="1">
+                        <tree>
+                            <field name="event" invisible="1"/>
+                            <field name="fulfillment"/>
+                            <field name="quantity"/>
+                            <field name="resource_type" readonly="1"/>
+                        </tree>
+                    </field>
+                </group>
+            </page>
+        </xpath>
+    </field>
+</record>
+
+<!-- Add a tab in the commitment form -->
+<record id="rea_commitment_form_view_with_fulfillment" model="ir.ui.view">
+    <field name="model">rea.commitment</field>
+    <field name="inherit_id" ref="rea_commitment_form_view" />
+    <field name="arch" type="xml">
+        <xpath expr="//notebook" position="inside">
+            <page string="Fulfillments">
+                <group>
+                    <div class="oe_inline"><p><span>Unfulfilled quantity: </span><field name="fulfillment_balance" style="margin: 0.5em"/></p>
+                    <p>Below are quantities assigned to fulfillments.
+                    Fullfilments are used to link events to commitments.
+                    To link events to commitments,
+                    select and associate them from the list view</p>
+                    </div>
+                </group>
+                <group>
+                    <field name="fulfillment_partial_commitments" readonly="1">
+                        <tree>
+                            <field name="commitment" invisible="1"/>
+                            <field name="fulfillment"/>
+                            <field name="quantity"/>
+                            <field name="resource_type" readonly="1"/>
+                        </tree>
+                    </field>
+                </group>
+            </page>
+        </xpath>
+    </field>
+</record>
+
+<!-- add a column in the list view -->
+<record id="rea_commitment_tree_view_with_fulfillment" model="ir.ui.view">
+    <field name="model">rea.commitment</field>
+    <field name="inherit_id" ref="rea_commitment_tree_view" />
+    <field name="arch" type="xml">
+        <xpath expr="//tree" position="inside">
+            <field name="fulfillment_balance"/>
+        </xpath>
+    </field>
+</record>
+<record id="rea_event_tree_view_with_fulfillment" model="ir.ui.view">
+    <field name="model">rea.event</field>
+    <field name="inherit_id" ref="rea_event_tree_view" />
+    <field name="arch" type="xml">
+        <xpath expr="//tree" position="inside">
+            <field name="fulfillment_balance"/>
+        </xpath>
+    </field>
+</record>
+
+<!-- search (un)fulfilling events -->
+<record id="rea_commitment_unfulfilled_search_view" model="ir.ui.view">
+    <field name="model">rea.commitment</field>
+    <field name="inherit_id" ref="rea_commitment_search_view"/>
+    <field name="arch" type="xml">
+        <xpath expr="//search/group[1]" position="inside">
+            <filter name="fulfillment_unfulfilling_commitments"
+                    string="Unfulfilled"
+                    domain="[('fulfillment_balance','!=',0)]"
+                    help="Unfulfilled commitments"/>
+        </xpath>
+    </field>
+</record>
+<record id="rea_event_unfulfilling_search_view" model="ir.ui.view">
+    <field name="model">rea.event</field>
+    <field name="inherit_id" ref="rea_event_search_view"/>
+    <field name="arch" type="xml">
+        <xpath expr="//search/group[1]" position="inside">
+            <filter name="fulfillment_unfulfilling_events"
+                    string="Unfulfilling"
+                    domain="[('fulfillment_balance','!=',0)]"
+                    help="Unfulfilling events"/>
+        </xpath>
+    </field>
+</record>
+
+<!-- Wizard to link fulfilling events -->
+<record id="rea_fulfillment_wizard_view" model="ir.ui.view">
+    <field name="name">Fulfill...</field>
+    <field name="model">rea.fulfillment.wizard</field>
+    <field name="arch" type="xml">
+        <form string="Fulfilling">
+            <label string="Choose the quantity to affect to each event so that they are partially or fully fulfilling commitments. By default the full balance is selected so that commitments are fully fulfilled."/>
+            <group>
+                <field name="fulfillment_type" required="1"/>
+            </group>
+            <field name="fulfillment_partial_commitments">
+                <tree editable="bottom">
+                    <field name="commitment"/>
+                    <field name="commitment_provider"/>
+                    <field name="quantity"/>
+                    <field name="commitment_resource_type" readonly="1"/>
+                    <field name="commitment_receiver"/>
+                </tree>
+            </field>
+            <field name="fulfillment_partial_events">
+                <tree editable="bottom">
+                    <field name="event"/>
+                    <field name="event_provider"/>
+                    <field name="quantity"/>
+                    <field name="event_resource_type" readonly="1"/>
+                    <field name="event_receiver"/>
+                </tree>
+            </field>
+            <footer>
+                <button string="Confirm" name="save_fulfillment" type="object" default_focus="1" class="oe_highlight"/>
+                or
+                <button string="Cancel" class="oe_link" special="cancel"/>
+            </footer>
+        </form>
+    </field>
+</record>
+
+<record id="rea_fulfillment_wizard_action" model="ir.actions.act_window">
+    <field name="name">Fulfill commitments as events....</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">rea.fulfillment.wizard</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">form</field>
+    <field name="view_id" ref="rea_fulfillment_wizard_view"/>
+    <field name="context">{}</field>
+    <field name="target">new</field>
+    <field name="help">This wizard will save the proposed fulfillment.</field>
+</record>
+
+<record model="ir.values" id="rea_fulfillment_wizard_irvalues">
+    <field name="model_id" ref="model_rea_commitment" />
+    <field name="name">Fulfill commitments as events...</field>
+    <field name="key2">client_action_multi</field>
+    <field name="value" eval="'ir.actions.act_window,' + str(ref('rea_fulfillment_wizard_action'))" />
+    <field name="key">action</field>
+    <field name="model">rea.commitment</field>
+</record>
+
+</data>
+</odoo>

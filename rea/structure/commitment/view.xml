@@ -8,8 +8,6 @@
     <field name="arch" type="xml">
         <form>
             <header>
-                <button name="fulfill" string="Fulfill..." type="object" states="confirmed" class="btn-primary"/>
-
             </header>
             <sheet>
                 <div class="oe_title">
@@ -36,9 +34,6 @@
                 <notebook>
                     <page string="Reservations">
                         <field name="reserved_resources"/>
-                    </page>
-                    <page string="Fullfilments">
-                        <field name="events"/>
                     </page>
                 </notebook>
             </sheet>

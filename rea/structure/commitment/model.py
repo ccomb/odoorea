@@ -54,10 +54,6 @@ class Commitment(models.Model):
         string="Groups")
     date = fields.Date(
         "Expected date")
-    events = fields.Many2many(
-        'rea.event',
-        string="Events",
-        help="Events fulfilling this commitment")
     quantity = fields.Float(
         string="Quantity")
     # TODO uom ?
@@ -120,27 +116,6 @@ class Commitment(models.Model):
     def _type_resource_types(self):
         for commitment in self:
             commitment.type_resource_types = commitment.type.resource_types
-
-    def fulfill(self, amount=None, ratio=None):
-        """Create the full event if no args are given
-        Otherwise create a partial event corresponding to the amount or ratio
-        """
-        for c in self:
-            commitment = c.read(load=None)[0]
-            event = {
-                'name': commitment.get('name'),
-                'type': None,  # FIXME
-                'date': time.strftime('%Y-%m-%d %H:%M:%S'),
-                'quantity': commitment.get('quantity'),  # FIXME
-                'resource_type': commitment.get('resource_type'),
-                'resource': commitment.get('resource'),
-                'provider': commitment.get('provider'),
-                'receiver': commitment.get('receiver'),
-                'inflow': commitment.get('inflow'),
-                'outflow': commitment.get('outflow'),
-                'kind': commitment.get('kind'),
-            }
-            self.env['rea.event'].create(event)
 
 
 class CommitmentType(models.Model):
