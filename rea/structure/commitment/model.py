@@ -1,6 +1,5 @@
 from odoo import fields, models, api, tools, _
 from odoo.exceptions import ValidationError
-import time
 
 
 class Commitment(models.Model):

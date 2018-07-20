@@ -101,6 +101,7 @@
                     <h1>
                         <field name="name" placeholder="Fulfillment Type Name"/>
                     </h1>
+                    <field name="code" placeholder="Technical code"/>
                 </div>
                 <group>
                     <field name="event_types"/>

@@ -1,5 +1,6 @@
 from odoo import fields, models, api, tools
 from odoo.exceptions import ValidationError, UserError
+import time
 
 
 class FulfillmentType(models.Model):
@@ -19,6 +20,10 @@ class FulfillmentType(models.Model):
         string="name",
         required=True,
         index=True)
+    code = fields.Char(
+        string="Code",
+        help=u"arbitrary technical code",
+        index=True)
     type = fields.Many2one(
         'rea.fulfillment.type',
         string="Fulfillment Type")
@@ -33,6 +38,11 @@ class FulfillmentType(models.Model):
     commitment_types = fields.Many2many(
         'rea.commitment.type',
         string="Commitment Types")
+
+    _sql_contraints = [
+        ('unique_fulfillment_type_code', 'unique(code)',
+         'Another fulfillment type with the same code already exists.'),
+    ]
 
 
 class FulfillmentGroup(models.Model):
@@ -87,12 +97,14 @@ class Fulfillment(models.Model):
                 commitment.write(
                     {'fulfillment_balance':
                         commitment.quantity - sum(
-                            p.quantity for p in commitment.fulfillment_partial_commitments)})
+                            p.quantity for p in
+                            commitment.fulfillment_partial_commitments)})
             for event in events:
                 event.write(
                     {'fulfillment_balance':
                         event.quantity - sum(
-                            p.quantity for p in event.fulfillment_partial_events)})
+                            p.quantity for p in
+                            event.fulfillment_partial_events)})
 
 
 class PartialEvent(models.Model):
@@ -213,7 +225,8 @@ class Event(models.Model):
     def _fulfillment_balance(self):
         for event in self:
             # check that the event is associated to a commitment
-            assigned = sum(p.quantity for p in event.fulfillment_partial_events)
+            assigned = sum(
+                p.quantity for p in event.fulfillment_partial_events)
             event.fulfillment_balance = event.quantity - assigned
 
     def check_fulfillment(self):
@@ -242,29 +255,48 @@ class Commitment(models.Model):
     def _fulfillment_balance(self):
         for commitment in self:
             # check that the commitment is associated to a commitment
-            assigned = sum(p.quantity for p in commitment.fulfillment_partial_commitments)
+            assigned = sum(
+                p.quantity for p in commitment.fulfillment_partial_commitments)
             commitment.fulfillment_balance = commitment.quantity - assigned
 
     def fulfill(self, amount=None, ratio=None):
         """Create the full event if no args are given
         Otherwise create a partial event corresponding to the amount or ratio
         """
-        for c in self:
-            commitment = c.read(load=None)[0]
+        for commitment in self:
+            cdict = commitment.read(load=None)[0]
             event = {
-                'name': commitment.get('name'),
+                'name': cdict.get('name'),
                 'type': None,  # FIXME
                 'date': time.strftime('%Y-%m-%d %H:%M:%S'),
-                'quantity': commitment.get('quantity'),  # FIXME
-                'resource_type': commitment.get('resource_type'),
-                'resource': commitment.get('resource'),
-                'provider': commitment.get('provider'),
-                'receiver': commitment.get('receiver'),
-                'inflow': commitment.get('inflow'),
-                'outflow': commitment.get('outflow'),
-                'kind': commitment.get('kind'),
+                'quantity': cdict.get('quantity'),  # FIXME
+                'resource_type': cdict.get('resource_type'),
+                'resource': cdict.get('resource'),
+                'provider': cdict.get('provider'),
+                'receiver': cdict.get('receiver'),
+                'inflow': cdict.get('inflow'),
+                'outflow': cdict.get('outflow'),
+                'kind': cdict.get('kind'),
             }
-            self.env['rea.event'].create(event)
+            # add the fulfillment between the C and the E
+            event = self.env['rea.event'].create(event)
+            ftype = self.env['rea.fulfillment.type'].search(
+                [('code', '=', 'direct')])
+            if len(ftype) < 1:
+                raise UserError("Please first create a fulfillment type with "
+                                "code = 'direct'. It will be used for direct "
+                                "transformation of commitments to events")
+            ftype = ftype[0]
+            fulfillment = self.env['rea.fulfillment'].create({
+                'type': ftype[0].id})
+            self.env['rea.fulfillment.commitment'].create({
+                'fulfillment': fulfillment.id,
+                'commitment': commitment.id,
+                'quantity': commitment.quantity})
+            self.env['rea.fulfillment.event'].create({
+                'fulfillment': fulfillment.id,
+                'event': event.id,
+                'quantity': event.quantity})
 
     def check_fulfillment(self):
         """check the validity of the fulfillment
