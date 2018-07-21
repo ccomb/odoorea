@@ -283,6 +283,7 @@ class Commitment(models.Model):
             ftype = self.env['rea.fulfillment.type'].search(
                 [('code', '=', 'direct')])
             if len(ftype) < 1:
+                # TODO: specify the code in the fulfillment type?
                 raise UserError("Please first create a fulfillment type with "
                                 "code = 'direct'. It will be used for direct "
                                 "transformation of commitments to events")
