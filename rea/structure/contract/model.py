@@ -123,6 +123,12 @@ class Contract(models.Model):
         readonly=True,
         compute='_totals')
 
+    def copy(self, default=None):
+        # signal the commitment creation to not execute terms
+        return super(Contract, self.with_context(
+            {'no_term_exec': True})).copy(default)
+
+
 class ContractType(models.Model):
     """ Abstract definition of actual contracts
     """
@@ -413,5 +419,6 @@ class Commitment(models.Model):
                     [('id', 'parent_of', c.resource_type.id)])
                     for rt in term.condition_resource_types])):
                 continue
-            term.execute(c)
+            if not self.env.context.get('no_term_exec'):
+                term.execute(c)
         return c
