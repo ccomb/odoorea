@@ -343,9 +343,9 @@ class ContractTerm(models.Model):
                                          lcls)
             except Exception as e:
                 raise ValidationError(
-                    "The contract \"%s\" has an error in the expression used"
-                    " in the term \"%s\":\n\n%s\n\nThe error is: %s"
-                    % (t.contract.name, t.name, t.expression, str(e)))
+                    "The expression \"%s\" used in the term \"%s\" "
+                    "of the contract \"%s\" has an error : %s"
+                    % (t.expression, t.name, t.contract.name, str(e)))
             # attributes of the created commitment depends on the config
             provider_id = (
                 commitment.provider.id if t.provider_choice == 'commitment'
