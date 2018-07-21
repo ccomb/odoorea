@@ -1,5 +1,5 @@
 from odoo import fields, models, api, tools, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
 
 class Commitment(models.Model):
@@ -84,9 +84,6 @@ class Commitment(models.Model):
         'rea.agent',
         default=_default_receiver,
         string="Receiver")
-    autofulfill = fields.Boolean(  # TODO
-        u"Automatic",
-        help=u"Automatically fulfill to an event at due date")
 
     @api.onchange('type')
     def _change_type(self):
@@ -131,6 +128,15 @@ class CommitmentType(models.Model):
                 'rea.entity.property']
     tools.generate_views(__file__, _name, _inherit)
 
+    name = fields.Char(
+        string=u"name",
+        required=True,
+        index=True)
+    code = fields.Char(
+        string="Code",
+        required=True,
+        help=u"arbitrary technical code",
+        index=True)
     type = fields.Many2one(
         'rea.commitment.type',
         string="Type",
@@ -143,10 +149,6 @@ class CommitmentType(models.Model):
     structural = fields.Boolean(
         'Structural type?',
         help="Hide in operational choices?")
-    name = fields.Char(
-        string=u"name",
-        required=True,
-        index=True)
     kind = fields.Selection([
         ('increment', 'Increment'),
         ('decrement', 'Decrement')],
@@ -154,6 +156,10 @@ class CommitmentType(models.Model):
     contract_type = fields.Many2one(
         'rea.contract.type',
         string=u"Contract Type")
+    event_type = fields.Many2one(
+        'rea.event.type',
+        string=u"Event Type",
+        help="Type of the events corresponding to this type of commitments")
     provider_type = fields.Many2one(
         'rea.agent.type',
         string=u"Provider Type")
@@ -167,9 +173,37 @@ class CommitmentType(models.Model):
     resource_groups = fields.Many2one(
         'rea.resource.group',
         string="Resource Groups permitted for this commitment type")
-    autofulfill = fields.Boolean(  # TODO
-        u"Automatic",
-        help=u"Automatically fulfill to events at due date")
+
+    _sql_contraints = [
+        ('unique_commitment_type_code', 'unique(code)',
+         'Another commitment type with the same code already exists.'),
+    ]
+
+    def create_event_type(self):
+        """Create an event type similar to this commitment type
+        """
+        results = []
+        for ct in self:
+            if ct.event_type:
+                raise UserError("Event type is already set")
+            EVENT_TYPE = self.env['rea.event.type']
+            event_type_type = None
+            event_type_types = EVENT_TYPE.search([('code', '=', ct.code)])
+            if len(event_type_types) == 1:
+                event_type_type = event_type_types[0]
+            event_type = EVENT_TYPE.create({
+                'name': ct.name,
+                'code': ct.code,
+                'type': event_type_type and event_type_type.id or False,
+                'structural': ct.structural,
+                'kind': ct.kind,
+                'provider_type': ct.provider_type.id,
+                'receiver_type': ct.receiver_type.id,
+                'resource_types': [(6, 0, ct.resource_types.ids)],
+                })
+            results.append(event_type.id)
+            ct.write({'event_type': event_type.id})
+        return results
 
 
 class CommitmentGroup(models.Model):

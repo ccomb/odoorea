@@ -22,6 +22,7 @@ class FulfillmentType(models.Model):
         index=True)
     code = fields.Char(
         string="Code",
+        required=True,
         help=u"arbitrary technical code",
         index=True)
     type = fields.Many2one(
@@ -235,11 +236,22 @@ class Event(models.Model):
         pass
 
 
+class CommitmentType(models.Model):
+    _inherit = 'rea.commitment.type'
+
+    autofulfill = fields.Boolean(  # TODO
+        u"Automatic",
+        help=u"Automatically fulfill to events at due date")
+
+
 class Commitment(models.Model):
     """add partial_commitment info on the commitment
     """
     _inherit = 'rea.commitment'
 
+    autofulfill = fields.Boolean(  # TODO
+        u"Automatic",
+        help=u"Automatically fulfill to an event at due date")
     fulfillment_partial_commitments = fields.One2many(
         'rea.fulfillment.commitment',
         'commitment',
@@ -259,24 +271,28 @@ class Commitment(models.Model):
                 p.quantity for p in commitment.fulfillment_partial_commitments)
             commitment.fulfillment_balance = commitment.quantity - assigned
 
-    def fulfill(self, amount=None, ratio=None):
+    def fulfill_balance(self):
+        return self.fulfill()
+
+    def fulfill(self, quantity=None, ratio=None):
         """Create the full event if no args are given
-        Otherwise create a partial event corresponding to the amount or ratio
+        Otherwise create a partial event corresponding to the quantity or ratio
         """
         for commitment in self:
-            cdict = commitment.read(load=None)[0]
+            if not commitment.type.event_type:
+                raise UserError("Commitment \"%s\" cannot be automatically "
+                                "fulfilled because its type \"%s\" does not "
+                                "specify any corresponding event_type")
+            balance = commitment.fulfillment_balance
+            quantity = quantity or ratio and ratio * balance or balance
             event = {
-                'name': cdict.get('name'),
-                'type': None,  # FIXME
+                'name': commitment.name,
+                'type': commitment.type.event_type.id,
                 'date': time.strftime('%Y-%m-%d %H:%M:%S'),
-                'quantity': cdict.get('quantity'),  # FIXME
-                'resource_type': cdict.get('resource_type'),
-                'resource': cdict.get('resource'),
-                'provider': cdict.get('provider'),
-                'receiver': cdict.get('receiver'),
-                'inflow': cdict.get('inflow'),
-                'outflow': cdict.get('outflow'),
-                'kind': cdict.get('kind'),
+                'quantity': quantity,
+                'resource_type': commitment.resource_type.id,
+                'provider': commitment.provider.id,
+                'receiver': commitment.receiver.id,
             }
             # add the fulfillment between the C and the E
             event = self.env['rea.event'].create(event)
@@ -293,7 +309,7 @@ class Commitment(models.Model):
             self.env['rea.fulfillment.commitment'].create({
                 'fulfillment': fulfillment.id,
                 'commitment': commitment.id,
-                'quantity': commitment.quantity})
+                'quantity': event.quantity})
             self.env['rea.fulfillment.event'].create({
                 'fulfillment': fulfillment.id,
                 'event': event.id,

@@ -254,6 +254,7 @@
         <xpath expr="//notebook" position="inside">
             <page string="Fulfillments">
                 <group>
+                    <button type="object" name="fulfill_balance" string="Fulfill the remaining quantity" />
                     <div class="oe_inline"><p><span>Unfulfilled quantity: </span><field name="fulfillment_balance" style="margin: 0.5em"/></p>
                     <p>Below are quantities assigned to fulfillments.
                     Fullfilments are used to link events to commitments.

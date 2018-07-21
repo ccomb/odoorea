@@ -116,6 +116,9 @@
                         <field name="resource_types" widget="many2many_tags"/>
                         <field name="receiver_type"/>
                         <field name="contract_type"/>
+                        <field name="event_type"/>
+                        <button type="object" name="create_event_type" string="Create similar"
+                                attrs="{'invisible': [('event_type','!=',False)]}"/>
                     </group>
                     <group>
                         <field name="autofulfill"/>

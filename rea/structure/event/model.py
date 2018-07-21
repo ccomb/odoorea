@@ -104,6 +104,15 @@ class EventType(models.Model):
     tools.generate_views(__file__, _name, _inherit)
     _parent_name = 'type'
 
+    name = fields.Char(
+        string="name",
+        required=True,
+        index=True)
+    code = fields.Char(
+        string="Code",
+        required=True,
+        help=u"arbitrary technical code",
+        index=True)
     type = fields.Many2one(
         'rea.event.type',
         string="Type",
@@ -116,23 +125,24 @@ class EventType(models.Model):
     structural = fields.Boolean(
         'Structural type?',
         help="Hide in operational choices?")
-    name = fields.Char(
-        string="name",
-        required=True,
-        index=True)
     kind = fields.Selection(
         [('increment', 'Increment'),
          ('decrement', 'Decrement')],
         string="Kind")
-    provider = fields.Many2one(
+    provider_type = fields.Many2one(
         'rea.agent.type',
         string="Provider Type")
-    receiver = fields.Many2one(
+    receiver_type = fields.Many2one(
         'rea.agent.type',
         string="Receiver Type")
     resource_type = fields.Many2one(
         'rea.resource.type',
         string="Resource Type")
+
+    _sql_contraints = [
+        ('unique_event_type_code', 'unique(code)',
+         'Another event type with the same code already exists.'),
+    ]
 
 # TODO : l'event type est proche de la
 # notion de journal et peut avoir une
