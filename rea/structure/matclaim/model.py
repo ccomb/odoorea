@@ -109,19 +109,33 @@ class PartialEvent(models.Model):
     matclaim = fields.Many2one(
         'rea.matclaim',
         ondelete='cascade')
+    event_type = fields.Many2one(
+        'rea.event.type',
+        related='event.type',
+        readonly=True,
+        string="Event type")
     event = fields.Many2one(
         'rea.event',
         required=True,
         string="Event")
+    provider = fields.Many2one(
+        'rea.agent',
+        related='event.provider',
+        readonly=True,
+        string="Provider")
     quantity = fields.Float(
         required=True,
         string="Quantity")
-
     resource_type = fields.Many2one(
         'rea.resource.type',
         related='event.resource_type',
         readonly=True,
         string="Resource Type")
+    receiver = fields.Many2one(
+        'rea.agent',
+        related='event.receiver',
+        readonly=True,
+        string="Receiver")
 
     def unlink(self):
         for p in self:
@@ -201,8 +215,15 @@ class MaterializedClaimWizard(models.TransientModel):
             raise UserError(u"Nothing to claim")
         return [(6, 0, rec_ids)]
 
+    mode = fields.Selection(
+        [('create', "Create a new materialized claim"),
+         ('add', "Add to an existing materialized claim")],
+        default='create')
     matclaim_type = fields.Many2one(
         'rea.matclaim.type')
+    matclaim = fields.Many2one(
+        'rea.matclaim',
+        string="Materialized Claim")
     event = fields.Many2one(
         'rea.event',
         string="Event")
@@ -222,18 +243,23 @@ class MaterializedClaimWizard(models.TransientModel):
         readonly=True,
         string="Resource Type")
 
-    matclaim = fields.Many2one(
+    wizard = fields.Many2one(
         'rea.matclaim.wizard',
         string="Materialized Claim")
     matclaim_partial_events = fields.One2many(
         'rea.matclaim.wizard',
-        'matclaim',
+        'wizard',
         default=_matclaim_partial_events,
         string="Partial events")
 
     def save_matclaim(self):
-        matclaim = self.env['rea.matclaim'].create(
-            {'type': self.matclaim_type.id})
+        if self.mode == 'create':
+            matclaim = self.env['rea.matclaim'].create(
+                {'type': self.matclaim_type.id})
+        elif self.mode == 'add':
+            matclaim = self.matclaim
+        else:
+            raise UserError('Wizard error: no mode specified')
         if not matclaim.name:
             raise UserError(u"Please configure "
                             u"an automatic numbering for materialized claims")

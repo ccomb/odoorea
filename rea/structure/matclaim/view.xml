@@ -18,15 +18,20 @@
                     </h1>
                 </div>
                 <group>
-                    <field name="partial_events">
-                        <tree>
-                            <field name="event"/>
-                            <field name="quantity"/>
-                            <field name="resource_type" readonly="1"/>
-                        </tree>
-                    </field>
                 </group>
                 <notebook>
+                  <page string="Claimed Events">
+                    <field name="partial_events" nolabel="1">
+                        <tree>
+                            <field name="event_type"/>
+                            <field name="event"/>
+                            <field name="provider"/>
+                            <field name="quantity"/>
+                            <field name="resource_type" readonly="1"/>
+                            <field name="receiver"/>
+                        </tree>
+                    </field>
+                    </page>
                 </notebook>
             </sheet>
             <div class="oe_chatter"></div>
@@ -276,7 +281,13 @@
         <form string="Claiming related events">
             <label string="Choose the quantity to affect to each event so that they are partially or fully claimed. By default the full balance is selected so that events are fully claimed."/>
             <group>
-                <field name="matclaim_type" required="1"/>
+                <field name="mode" required="1"/>
+                <field name="matclaim_type"
+                       attrs="{'invisible': [('mode','!=','create')],
+                               'required': [('mode','==','create')]}"/>
+                <field name="matclaim"
+                       attrs="{'invisible': [('mode','!=','add')],
+                               'required': [('mode','==','add')]}"/>
             </group>
             <field name="matclaim_partial_events">
                 <tree editable="bottom">
