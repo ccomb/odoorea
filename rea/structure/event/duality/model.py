@@ -3,8 +3,7 @@ from odoo.exceptions import ValidationError, UserError
 
 
 class DualityType(models.Model):
-    """Set of event types bound by a duality relationship.
-    Abstract definition of actual Dualities.
+    """Abstract definition of actual Dualities.
     It contains the rules of the duality.
     It can also be seen as a business 'deal'
     (was previously named process)
