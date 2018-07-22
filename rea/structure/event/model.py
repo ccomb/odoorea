@@ -13,7 +13,7 @@ class Event(models.Model):
     tools.generate_views(__file__, _name, _inherit)
 
     name = fields.Char(
-        string="name",
+        string="Name",
         required=True,  # TODO configurable?
         default=lambda self: _('New'),
         index=True
@@ -109,7 +109,7 @@ class EventType(models.Model):
     _parent_name = 'type'
 
     name = fields.Char(
-        string="name",
+        string="Name",
         required=True,
         index=True)
     code = fields.Char(
@@ -160,6 +160,6 @@ class EventGroup(models.Model):
     _description = "Event Group"
 
     name = fields.Char(
-        string="name",
+        string="Name",
         required=True,
         index=True)

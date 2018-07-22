@@ -13,7 +13,7 @@ class Agent(models.Model):
     tools.generate_views(__file__, _name, _inherit)
 
     name = fields.Char(
-        string="name",
+        string="Name",
         required=True,
         index=True)
     type = fields.Many2one(
@@ -44,7 +44,7 @@ class AgentType(models.Model):
     tools.generate_views(__file__, _name, _inherit)
 
     name = fields.Char(
-        string="name",
+        string="Name",
         required=True,
         index=True)
     code = fields.Char(
@@ -78,7 +78,7 @@ class AgentGroup(models.Model):
     _description = "Agent Group"
 
     name = fields.Char(
-        string="name",
+        string="Name",
         required=True,
         index=True)
     groups = fields.Many2many(

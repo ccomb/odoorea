@@ -38,7 +38,7 @@ class Commitment(models.Model):
         return self.contract.parties.browse(False)
 
     name = fields.Char(
-        string="name",
+        string="Name",
         required=True,
         default=lambda self: _('New'),
         index=True)
@@ -218,6 +218,6 @@ class CommitmentGroup(models.Model):
     _description = "Commitment Group"
 
     name = fields.Char(
-        string="name",
+        string="Name",
         required=True,
         index=True)

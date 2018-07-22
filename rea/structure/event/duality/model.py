@@ -26,7 +26,7 @@ class DualityType(models.Model):
     code = fields.Char(
         string="Code",
         required=True,
-        help=u"arbitrary technical code",
+        help=u"Arbitrary technical code",
         index=True)
     type = fields.Many2one(
         'rea.duality.type',
@@ -60,7 +60,7 @@ class DualityGroup(models.Model):
     _description = "Duality Group"
 
     name = fields.Char(
-        string="name",
+        string="Name",
         required=True,
         index=True)
     groups = fields.Many2one(
@@ -79,7 +79,7 @@ class Duality(models.Model):
     tools.generate_views(__file__, _name, _inherit)
 
     name = fields.Char(
-        string="name",
+        string="Name",
         required=True,
         index=True)
     type = fields.Many2one(

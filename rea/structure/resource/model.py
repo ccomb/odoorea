@@ -13,7 +13,7 @@ class Resource(models.Model):
     tools.generate_views(__file__, _name, _inherit)
 
     name = fields.Char(
-        string="name",
+        string="Name",
         required=True,
         index=True)
     quantity = fields.Float(
@@ -71,7 +71,7 @@ class ResourceType(models.Model):
         return result
 
     name = fields.Char(
-        string="name",
+        string="Name",
         required=True,
         index=True)
     code = fields.Char(
@@ -119,7 +119,7 @@ class ResourceGroup(models.Model):
     _description = "Resource Group"
 
     name = fields.Char(
-        string="name",
+        string="Name",
         required=True,
         index=True)
     code = fields.Char(

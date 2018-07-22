@@ -81,7 +81,7 @@ class Contract(models.Model):
                         '</td></tr></table>')
 
     name = fields.Char(
-        string="name",
+        string="Name",
         required=True,
         default=lambda self: _('New'),
         index=True)
@@ -203,7 +203,7 @@ class ContractGroup(models.Model):
     _description = "Contract Group"
 
     name = fields.Char(
-        string="name",
+        string="Name",
         required=True,
         index=True)
     groups = fields.Many2one(
@@ -268,7 +268,7 @@ class ContractTerm(models.Model):
     _description = "Contract term"
 
     name = fields.Char(
-        string="name",
+        string="Name",
         required=True)
     contract = fields.Many2one(
         'rea.contract',
