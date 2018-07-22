@@ -23,6 +23,11 @@ class DualityType(models.Model):
         string="name",
         required=True,
         index=True)
+    code = fields.Char(
+        string="Code",
+        required=True,
+        help=u"arbitrary technical code",
+        index=True)
     type = fields.Many2one(
         'rea.duality.type',
         string="Duality Type")
@@ -39,7 +44,12 @@ class DualityType(models.Model):
         'rea.event.type',
         string="Event Types")
 
-    # for each duality type, create an action button to start a new duality
+    # for each process type, create an action button to start a new process
+
+    _sql_contraints = [
+        ('unique_duality_type_code', 'unique(code)',
+         'Another duality type with the same code already exists.'),
+    ]
 
 
 class DualityGroup(models.Model):
@@ -90,6 +100,11 @@ class Duality(models.Model):
                     {'duality_balance':
                         event.quantity - sum(
                             p.quantity for p in event.duality_partial_events)})
+
+    _sql_contraints = [
+        ('unique_duality_name', 'unique(name)',
+         'Another duality with the same name already exists.'),
+    ]
 
 
 class PartialEvent(models.Model):

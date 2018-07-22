@@ -97,6 +97,7 @@
                     </h1>
                 </div>
                 <group>
+                    <field name="code" placeholder="Technical code"/>
                     <field name="event_types"/>
                 </group>
                 <notebook>
@@ -118,6 +119,7 @@
     <field name="arch" type="xml">
         <search>
             <field name="name"/>
+            <field name="code"/>
             <field name="kind"/>
             <field name="event_types"/>
         </search>
@@ -130,6 +132,7 @@
     <field name="arch" type="xml">
         <tree>
             <field name="name"/>
+            <field name="code"/>
             <field name="kind"/>
         </tree>
     </field>
