@@ -23,6 +23,11 @@ class Agent(models.Model):
         'rea.agent.group',
         string="Groups")
 
+    _sql_contraints = [
+        ('unique_agent_name', 'unique(name)',
+         'Another agent with the same name already exists.'),
+    ]
+
 
 class AgentType(models.Model):
     """ Abstract definition of actual Agents
@@ -38,6 +43,15 @@ class AgentType(models.Model):
                 'rea.entity.property']
     tools.generate_views(__file__, _name, _inherit)
 
+    name = fields.Char(
+        string="name",
+        required=True,
+        index=True)
+    code = fields.Char(
+        string="Code",
+        required=True,
+        help=u"arbitrary technical code that must be unique",
+        index=True)
     type = fields.Many2one(
         'rea.agent.type',
         string="Type",
@@ -50,10 +64,11 @@ class AgentType(models.Model):
     structural = fields.Boolean(
         'Structural type?',
         help="Hide in operational choices?")
-    name = fields.Char(
-        string="name",
-        required=True,
-        index=True)
+
+    _sql_contraints = [
+        ('unique_agent_type_code', 'unique(code)',
+         'Another agent type with the same code already exists.'),
+    ]
 
 
 class AgentGroup(models.Model):

@@ -98,6 +98,7 @@
                 </div>
                 <group>
                     <group>
+                        <field name="code" placeholder="Technical code"/>
                         <field name="groups" widget="many2many_tags"/>
                         <field name="max_reservations"/>
                     </group>
@@ -129,6 +130,7 @@
     <field name="arch" type="xml">
         <search>
             <field name="name"/>
+            <field name="code"/>
             <field name="type"/>
             <field name="groups"/>
             <field name="uom"/>
@@ -143,6 +145,7 @@
         <tree>
             <field name="uom"/>
             <field name="name"/>
+            <field name="code"/>
             <field name="type"/>
         </tree>
     </field>

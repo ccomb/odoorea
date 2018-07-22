@@ -35,6 +35,11 @@ class Resource(models.Model):
         'from_res',
         "Conversions")
 
+    _sql_contraints = [
+        ('unique_resource_name', 'unique(name)',
+         'Another resource with the same name already exists.'),
+    ]
+
     def name_get(self):
         result = []
         for r in self:
@@ -65,6 +70,15 @@ class ResourceType(models.Model):
                 (r.id, u"%s %s" % (r.uom.name or '', r.name)))
         return result
 
+    name = fields.Char(
+        string="name",
+        required=True,
+        index=True)
+    code = fields.Char(
+        string="Code",
+        required=True,
+        help=u"arbitrary technical code",
+        index=True)
     type = fields.Many2one(
         'rea.resource.type',
         string="Type",
@@ -77,10 +91,6 @@ class ResourceType(models.Model):
     structural = fields.Boolean(
         'Structural type?',
         help="Hide in operational choices?")
-    name = fields.Char(
-        string="name",
-        required=True,
-        index=True)
     max_reservations = fields.Integer(
         u"Max reservations",
         default=1)
@@ -95,6 +105,11 @@ class ResourceType(models.Model):
         'rea.resource.conversion',
         'from_restype',
         "Conversions")
+
+    _sql_contraints = [
+        ('unique_resource_type_code', 'unique(code)',
+         'Another resource type with the same code already exists.'),
+    ]
 
 
 class ResourceGroup(models.Model):

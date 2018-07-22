@@ -85,6 +85,11 @@ class Commitment(models.Model):
         default=_default_receiver,
         string="Receiver")
 
+    _sql_contraints = [
+        ('unique_commitment_name', 'unique(name)',
+         'Another commitment with the same name already exists.'),
+    ]
+
     @api.onchange('type')
     def _change_type(self):
         for commitment in self:

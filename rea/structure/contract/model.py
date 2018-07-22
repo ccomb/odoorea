@@ -123,6 +123,11 @@ class Contract(models.Model):
         readonly=True,
         compute='_totals')
 
+    _sql_contraints = [
+        ('unique_contract_name', 'unique(name)',
+         'Another contract with the same name already exists.'),
+    ]
+
     def copy(self, default=None):
         # signal the commitment creation to not execute terms
         return super(Contract, self.with_context(
@@ -144,6 +149,15 @@ class ContractType(models.Model):
     tools.generate_views(__file__, _name, _inherit)
     _parent_name = 'type'
 
+    name = fields.Char(
+        string="Contract Type",
+        required=True,
+        index=True)
+    code = fields.Char(
+        string="Code",
+        required=True,
+        help=u"arbitrary technical code that must be unique",
+        index=True)
     type = fields.Many2one(
         'rea.contract.type',
         string="Type",
@@ -151,10 +165,6 @@ class ContractType(models.Model):
     structural = fields.Boolean(
         'Structural type?',
         help="Hide in operational choices?")
-    name = fields.Char(
-        string="Contract Type",
-        required=True,
-        index=True)
     subtypes = fields.One2many(
         'rea.contract.type',
         'type',
@@ -179,6 +189,11 @@ class ContractType(models.Model):
         string="Total label for decrements",
         required=True,
         default="Decrement Totals")
+
+    _sql_contraints = [
+        ('unique_contract_type_code', 'unique(code)',
+         'Another contract type with the same code already exists.'),
+    ]
 
 
 class ContractGroup(models.Model):

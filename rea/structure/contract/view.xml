@@ -111,6 +111,7 @@
                 </div>
                 <group>
                     <group>
+                        <field name="code" placeholder="Technical code"/>
                         <field name="party_types" widget="many2many_tags"/>
                         <field name="commitment_types" widget="many2many_tags"/>
                     </group>
@@ -140,6 +141,7 @@
     <field name="arch" type="xml">
         <search>
             <field name="name"/>
+            <field name="code"/>
         </search>
     </field>
 </record>
@@ -150,6 +152,7 @@
     <field name="arch" type="xml">
         <tree>
             <field name="name"/>
+            <field name="code"/>
             <field name="type"/>
         </tree>
     </field>

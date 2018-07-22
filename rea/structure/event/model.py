@@ -15,7 +15,6 @@ class Event(models.Model):
     name = fields.Char(
         string="name",
         required=True,  # TODO configurable?
-        # TODO unique?
         default=lambda self: _('New'),
         index=True
     )
@@ -59,6 +58,11 @@ class Event(models.Model):
          ('internal', 'Internal')],
         compute='_kind',
         string="Kind")
+
+    _sql_contraints = [
+        ('unique_event_name', 'unique(name)',
+         'Another event with the same name already exists.'),
+    ]
 
     def _kind(self):
         if not self.env.user.company:
