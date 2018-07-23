@@ -4,7 +4,7 @@
     <field name="inherit_id" ref="${xmlid}_form_view" />
     <field name="arch" type="xml">
       <xpath expr="//notebook" position="inside">
-          <page string="Identifiers">
+          <page string="Identifiers" attrs="{'invisible': [('type_identification','=',False)]}">
             <group>
               <field name="is_name_generated" invisible="1"/>
               <field name="type_identification" invisible="1"/>

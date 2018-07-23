@@ -20,11 +20,11 @@
     <field name="arch" type="xml">
       <xpath expr="/form/header" position='inside'>
         <button name="cancel_transition" string="Cancel transition" type="object"
-                attrs="{'invisible': [('transition', '=', False)]}"/>
-        <field name="step" widget="statusbar"/>
+                attrs="{'invisible': ['|', ('transition', '=', False), ('type_lifecycle','=',False)]}" />
+        <field name="step" widget="statusbar" attrs="{'invisible': [('type_lifecycle','=',False)]}" />
       </xpath>
       <xpath expr="//notebook" position="inside">
-        <page string="Lifecycle">
+        <page string="Lifecycle" attrs="{'invisible': [('type_lifecycle','=',False)]}">
           <group col="9" colspan="2">
             <field name="type_lifecycle" invisible="1"/>
             <group>
