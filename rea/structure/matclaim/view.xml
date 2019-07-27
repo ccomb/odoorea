@@ -72,13 +72,13 @@
 </record>
 
 <record model="ir.ui.menu" id="menu_matclaim">
-    <field name="name">Materialized Claim</field>
-    <field name="parent_id" ref="menu_events"/>
-    <field name="sequence" eval="35"/>
+    <field name="name">Claim</field>
+    <field name="parent_id" ref="menu_rea"/>
+    <field name="sequence" eval="85"/>
 </record>
 
 <record model="ir.ui.menu" id="menu_rea_matclaim">
-    <field name="name">Materialized Claims</field>
+    <field name="name">Claims</field>
     <field name="parent_id" ref="menu_matclaim"/>
     <field name="action" ref="rea_matclaim_act_window"/>
     <field name="sequence" eval="50"/>
