@@ -44,8 +44,7 @@ class Commitment(models.Model):
         index=True)
     type = fields.Many2one(
         'rea.commitment.type',
-        domain="[('contract_type', 'parent_of', contract_type),"
-               "('structural', '=', False)]",
+        domain="[('structural', '=', False)]",
         string="Type",
         ondelete='restrict')
     groups = fields.Many2many(
