@@ -19,8 +19,11 @@ class Contract(models.Model):
     def _default_parties(self):
         """the relative company depends on the user
         """
-        if self.env.user.company:
-            return [(6, 0, [self.env.user.company.id])]
+        company = self.env.user.company
+        types = self.type.party_types
+        if company and company.type in types.search(
+                [('id', 'child_of', types.ids)]):
+            return [self.env.user.company.id]
         return []
 
     @api.one
@@ -82,6 +85,7 @@ class Contract(models.Model):
 
     @api.onchange('type')
     def change_type(self):
+        self.parties = [(6, 0, self._default_parties())]
         if not self.type.party_types:
             return {}
         return {'domain': {'parties':
