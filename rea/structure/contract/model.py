@@ -82,8 +82,10 @@ class Contract(models.Model):
 
     @api.onchange('type')
     def change_type(self):
+        if not self.type.party_types:
+            return {}
         return {'domain': {'parties':
-                [('type', 'in', [t for t in self.type.party_types._ids])]}}
+                [('type', 'in', self.type.party_types.ids)]}}
 
     name = fields.Char(
         string="Name",
