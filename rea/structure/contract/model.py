@@ -80,6 +80,11 @@ class Contract(models.Model):
                                       for k in intotals]) +
                         '</td></tr></table>')
 
+    @api.onchange('type')
+    def change_type(self):
+        return {'domain': {'parties':
+                [('type', 'in', [t for t in self.type.party_types._ids])]}}
+
     name = fields.Char(
         string="Name",
         required=True,
@@ -398,7 +403,7 @@ class ContractTerm(models.Model):
                     continue
                 else:
                     executing.append(str(t.id))
-                #c['date'] = c['acquisition_date']
+                #  c['date'] = c['acquisition_date']
                 c['contract'] = contract_id
                 c['type'] = t.commitment_type.id
                 c = self.env['rea.commitment'].with_context(
@@ -424,7 +429,7 @@ class Commitment(models.Model):
             if (term.condition_resource_groups and
                 set(c.resource_type.groups
                     ).isdisjoint(set(term.condition_resource_groups))):
-                    continue
+                continue
             if (term.condition_commitment_types and
                all([ct not in c.type.search([('id', 'parent_of', c.type.id)])
                     for ct in term.condition_commitment_types])):
