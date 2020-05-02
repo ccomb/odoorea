@@ -20,7 +20,19 @@
                 <group>
                 </group>
                 <notebook>
-                  <page string="Claimed Events">
+                  <page string="Claimed">
+                    <h3>Commitments</h3>
+                    <field name="partial_commitments" nolabel="1">
+                        <tree>
+                            <field name="commitment_type"/>
+                            <field name="commitment"/>
+                            <field name="provider"/>
+                            <field name="quantity"/>
+                            <field name="resource_type" readonly="1"/>
+                            <field name="receiver"/>
+                        </tree>
+                    </field>
+                    <h3>Events</h3>
                     <field name="partial_events" nolabel="1">
                         <tree>
                             <field name="event_type"/>
@@ -103,6 +115,7 @@
                 </div>
                 <group>
                     <field name="code" placeholder="Technical code"/>
+                    <field name="commitment_types"/>
                     <field name="event_types"/>
                 </group>
                 <notebook>
@@ -126,6 +139,7 @@
             <field name="name"/>
             <field name="code"/>
             <field name="kind"/>
+            <field name="commitment_types"/>
             <field name="event_types"/>
         </search>
     </field>
@@ -248,6 +262,35 @@
     </field>
 </record>
 
+<!-- Add a tab in the commitment form -->
+<record id="rea_commitment_form_view_with_matclaim" model="ir.ui.view">
+    <field name="model">rea.commitment</field>
+    <field name="inherit_id" ref="rea_commitment_form_view" />
+    <field name="arch" type="xml">
+        <xpath expr="//notebook" position="inside">
+            <page string="Materialized claims">
+                <group>
+                    <div class="oe_inline"><p><span>Unclaimed quantity: </span><field name="matclaim_balance" style="margin: 0.5em"/></p>
+                    <p>Below are quantities added in the materialized claim.
+                    To add commitments in the materialized claim,
+                    select and claim them in the list view</p>
+                    </div>
+                </group>
+                <group>
+                    <field name="matclaim_partial_commitments" readonly="1">
+                        <tree>
+                            <field name="commitment" invisible="1"/>
+                            <field name="matclaim"/>
+                            <field name="quantity"/>
+                            <field name="resource_type" readonly="1"/>
+                        </tree>
+                    </field>
+                </group>
+            </page>
+        </xpath>
+    </field>
+</record>
+
 <!-- add a column in the list view -->
 <record id="rea_event_tree_view_with_matclaim" model="ir.ui.view">
     <field name="model">rea.event</field>
@@ -289,6 +332,15 @@
                        attrs="{'invisible': [('mode','!=','add')],
                                'required': [('mode','==','add')]}"/>
             </group>
+            <field name="matclaim_partial_commitments">
+                <tree editable="bottom">
+                    <field name="commitment"/>
+                    <field name="provider"/>
+                    <field name="quantity"/>
+                    <field name="resource_type" readonly="1"/>
+                    <field name="receiver"/>
+                </tree>
+            </field>
             <field name="matclaim_partial_events">
                 <tree editable="bottom">
                     <field name="event"/>

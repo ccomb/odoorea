@@ -36,6 +36,9 @@ class MaterializedClaimType(models.Model):
         ('exchange', "Exchange"),
         ('conversion', "Conversion")],
         string="Kind")
+    commitment_types = fields.Many2many(
+        'rea.commitment.type',
+        string="Commitment Types")
     event_types = fields.Many2many(
         'rea.event.type',
         string="Event Types")
@@ -78,6 +81,11 @@ class MaterializedClaim(models.Model):
     type = fields.Many2one(
         'rea.matclaim.type',
         string="Materialized Claim Type")
+    partial_commitments = fields.One2many(
+        'rea.matclaim.commitment',
+        'matclaim',
+        string="Partial commitments")
+
     partial_events = fields.One2many(
         'rea.matclaim.event',
         'matclaim',
@@ -86,6 +94,7 @@ class MaterializedClaim(models.Model):
     def unlink(self):
         for d in self:
             events = [p.event for p in d.partial_events]
+            commitments = [p.commitment for p in d.partial_commitments]
             super(MaterializedClaim, d).unlink()
             for event in events:
                 # force recompute as it is not triggered
@@ -93,6 +102,13 @@ class MaterializedClaim(models.Model):
                     {'matclaim_balance':
                         event.quantity - sum(
                          p.quantity for p in event.matclaim_partial_events)})
+            for commitment in commitments:
+                # force recompute as it is not triggered
+                commitment.write(
+                    {'matclaim_balance':
+                        commitment.quantity - sum(
+                         p.quantity for p in
+                         commitment.matclaim_partial_commitments)})
 
     _sql_contraints = [
         ('unique_matclaim_name', 'unique(name)',
@@ -164,6 +180,70 @@ class PartialEvent(models.Model):
                     'Claimed quantity cannot be negative')
 
 
+class PartialCommitment(models.Model):
+    """Partial commitment used in the materialized claim
+    """
+    _name = 'rea.matclaim.commitment'
+    _description = "Partial Commitment for Materialized Claims"
+
+    matclaim = fields.Many2one(
+        'rea.matclaim',
+        ondelete='cascade')
+    commitment_type = fields.Many2one(
+        'rea.commitment.type',
+        related='commitment.type',
+        readonly=True,
+        string="Commitment type")
+    commitment = fields.Many2one(
+        'rea.commitment',
+        required=True,
+        string="Commitment")
+    provider = fields.Many2one(
+        'rea.agent',
+        related='commitment.provider',
+        readonly=True,
+        string="Provider")
+    quantity = fields.Float(
+        required=True,
+        string="Quantity")
+    resource_type = fields.Many2one(
+        'rea.resource.type',
+        related='commitment.resource_type',
+        readonly=True,
+        string="Resource Type")
+    receiver = fields.Many2one(
+        'rea.agent',
+        related='commitment.receiver',
+        readonly=True,
+        string="Receiver")
+
+    def unlink(self):
+        for p in self:
+            matclaim = p.matclaim
+            super(PartialCommitment, p).unlink()
+            if len(matclaim.partial_commitments) == 0:
+                matclaim.unlink()
+            commitments = self.env['rea.commitment'].browse(
+                [p.commitment.id for p in matclaim.partial_commitments])
+            commitments.check_matclaim()
+
+    @api.onchange('commitment')
+    def onchange_commitment(self):
+        for p in self:
+            p.quantity = p.commitment.matclaim_balance
+
+    @api.constrains('quantity')
+    def constrain_quantity(self):
+        for p in self:
+            if p.quantity > p.commitment.quantity:
+                raise ValidationError(
+                    'Claimed quantity higher than related commitment %s',
+                    p.commitment.name)
+            if p.quantity < 0:
+                raise ValidationError(
+                    'Claimed quantity cannot be negative')
+
+
 class Event(models.Model):
     """add partial_event info on the event
     """
@@ -191,10 +271,57 @@ class Event(models.Model):
         pass
 
 
+class Commitment(models.Model):
+    """add partial_commitment info on the commitment
+    """
+    _inherit = 'rea.commitment'
+
+    matclaim_partial_commitments = fields.One2many(
+        'rea.matclaim.commitment',
+        'commitment',
+        string="Partial commitments",
+        help="Partial quantities gathered in a materialized claim")
+    matclaim_balance = fields.Float(
+        "Unclaimed",
+        compute='_matclaim_balance',
+        store=True)
+
+    @api.depends('matclaim_partial_commitments', 'quantity')
+    def _matclaim_balance(self):
+        for commitment in self:
+            claimed = sum(p.quantity for p in
+                          commitment.matclaim_partial_commitments)
+            commitment.matclaim_balance = commitment.quantity - claimed
+
+    def check_matclaim(self):
+        """check the validity of the materialized claim
+        """
+        pass
+
+
 class MaterializedClaimWizard(models.TransientModel):
     """Wizard used to gather events in a materialized claim
     """
     _name = 'rea.matclaim.wizard'
+
+    def _matclaim_partial_commitments(self):
+        ids = self.env.context.get('active_ids')
+        if not ids or self.env.context.get('norecs'):
+            return []
+        commitments = self.env['rea.commitment'].browse(ids)
+        commitments.check_matclaim()
+        rec_ids = []
+        for c in commitments:
+            if c.matclaim_balance < 0:
+                continue
+            rec = self.with_context(
+                {'norecs': True}
+            ).create(
+                {'commitment': c.id, 'quantity': c.matclaim_balance})
+            rec_ids.append(rec.id)
+        if not rec_ids:
+            raise UserError(u"Nothing to claim")
+        return [(6, 0, rec_ids)]
 
     def _matclaim_partial_events(self):
         ids = self.env.context.get('active_ids')
@@ -224,6 +351,9 @@ class MaterializedClaimWizard(models.TransientModel):
     matclaim = fields.Many2one(
         'rea.matclaim',
         string="Materialized Claim")
+    commitment = fields.Many2one(
+        'rea.commitment',
+        string="Commitment")
     event = fields.Many2one(
         'rea.event',
         string="Event")
@@ -246,6 +376,11 @@ class MaterializedClaimWizard(models.TransientModel):
     wizard = fields.Many2one(
         'rea.matclaim.wizard',
         string="Materialized Claim")
+    matclaim_partial_commitments = fields.One2many(
+        'rea.matclaim.wizard',
+        'wizard',
+        default=_matclaim_partial_commitments,
+        string="Partial commitments")
     matclaim_partial_events = fields.One2many(
         'rea.matclaim.wizard',
         'wizard',
