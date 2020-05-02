@@ -85,7 +85,7 @@ class Contract(models.Model):
         if not self.type.party_types:
             return {}
         return {'domain': {'parties':
-                [('type', 'in', self.type.party_types.ids)]}}
+                [('type', 'child_of', self.type.party_types.ids)]}}
 
     name = fields.Char(
         string="Name",
